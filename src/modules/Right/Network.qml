@@ -19,6 +19,15 @@ PillBase {
     readonly property bool hasWifi: NetworkService.wifiDevice !== null
     readonly property bool hasEthernet: SystemStats.activeInterface !== ""
     readonly property bool hasBluetooth: NetworkService.bluetooth.available
+    readonly property string bluetoothStatusText: {
+        if (bluetoothCount === 1) {
+            const device = NetworkService.bluetooth.connectedDevices[0];
+            if (device?.batteryAvailable) {
+                return Math.round(device.battery * 100) + "%";
+            }
+        }
+        return bluetoothCount > 9 ? "9+" : String(bluetoothCount);
+    }
 
     visible: hasWifi || hasBluetooth || hasEthernet
 
@@ -136,7 +145,7 @@ PillBase {
             id: countText
 
             anchors.centerIn: parent
-            text: root.bluetoothCount > 9 ? "9+" : String(root.bluetoothCount)
+            text: root.bluetoothStatusText
 
             font.family: Fonts.font
             font.pixelSize: 9

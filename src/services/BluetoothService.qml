@@ -28,10 +28,10 @@ Singleton {
 
     readonly property string stateText: {
         if (!root.available) return "Unavailable";
+        if (root.connectedDeviceCount > 0) return root.connectedDeviceCount + " conn.";
         if (root.enabling) return "Enabling";
         if (root.disabling) return "Disabling";
         if (root.blocked) return "Blocked";
-        if (root.connectedDeviceCount > 0) return root.connectedDeviceCount + " conn.";
         if (root.state === BluetoothAdapterState.Disabled) return "Disabled";
         if (root.state === BluetoothAdapterState.Enabled) return "Ready";
         return "Unavailable";
