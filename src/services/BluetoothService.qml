@@ -24,6 +24,7 @@ Singleton {
     readonly property var pairedDevices: root.devices.filter(device => device.paired && !device.connected)
     readonly property var availableDevices: root.devices.filter(device => !device.paired && !device.connected)
     readonly property int connectedDeviceCount: root.connectedDevices.length
+    readonly property bool effectiveEnabled: root.enabled || root.enabling || root.connectedDeviceCount > 0
     readonly property bool operational: root.enabled || root.connectedDeviceCount > 0
 
     readonly property string stateText: {
@@ -36,6 +37,16 @@ Singleton {
         if (root.state === BluetoothAdapterState.Enabled) return "Ready";
         return "Unavailable";
     }
+
+    function reconcilePowerState() {
+        if (!root.adapter) return;
+        if (root.connectedDeviceCount <= 0) return;
+        if (root.adapter.enabled) return;
+
+        root.adapter.enabled = true
+    }
+
+    onConnectedDeviceCountChanged: root.reconcilePowerState()
 
     function isPairing(address) {
         const device = root.devices.find(item => item.address === address);
@@ -89,6 +100,15 @@ Singleton {
 
     function setEnabled(value) {
         if (!root.adapter) return;
-        root.adapter.enabled = value;
+        if (value) {
+            root.adapter.enabled = true;
+            return;
+        }
+
+        if (!root.adapter.enabled && root.effectiveEnabled) {
+            root.adapter.enabled = true;
+        }
+
+        root.adapter.enabled = false;
     }
 }

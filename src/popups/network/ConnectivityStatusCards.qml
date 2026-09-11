@@ -166,12 +166,12 @@ RowLayout {
             spacing: 10
 
             Text {
-                text: NetworkService.bluetooth.enabled ? "󰂯" : "󰂲"
+                text: NetworkService.bluetooth.effectiveEnabled ? "󰂯" : "󰂲"
                 font.family: Fonts.fontM
                 font.pixelSize: 20
                 color: NetworkService.bluetooth.connectedDeviceCount > 0
                         ? Colors.on_PrimaryContainer
-                        : NetworkService.bluetooth.enabled
+                        : NetworkService.bluetooth.effectiveEnabled
                             ? Colors.primary
                             : Colors.outline
             }
@@ -211,7 +211,7 @@ RowLayout {
                 height: 22
                 radius: 11
                 color: NetworkService.bluetooth.powerActive ? Colors.primary : Colors.surfaceContainerHighest
-                border.width: NetworkService.bluetooth.enabled ? 0 : 1
+                border.width: NetworkService.bluetooth.effectiveEnabled ? 0 : 1
                 border.color: Colors.outlineVariant
                 opacity: NetworkService.bluetooth.available ? 1 : 0.45
 
@@ -220,8 +220,8 @@ RowLayout {
                     height: 16
                     radius: 8
                     anchors.verticalCenter: parent.verticalCenter
-                    x: NetworkService.bluetooth.powerActive ? 19 : 3
-                    color: NetworkService.bluetooth.powerActive ? Colors.on_Primary : Colors.outline
+                    x: NetworkService.bluetooth.effectiveEnabled ? 19 : 3
+                    color: NetworkService.bluetooth.effectiveEnabled ? Colors.on_Primary : Colors.outline
 
                     Behavior on x {
                         NumberAnimation {
@@ -235,7 +235,7 @@ RowLayout {
                     anchors.fill: parent
                     enabled: NetworkService.bluetooth.available
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: NetworkService.bluetooth.setEnabled(!NetworkService.bluetooth.powerActive)
+                    onClicked: NetworkService.bluetooth.setEnabled(!NetworkService.bluetooth.effectiveEnabled)
                 }
             }
         }
