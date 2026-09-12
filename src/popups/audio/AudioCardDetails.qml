@@ -223,7 +223,7 @@ Item {
                     left: parent.left
                     right: parent.right
                 }
-                spacing: 2
+                spacing: 8
 
                 Repeater {
                     model: Pipewire.nodes.values

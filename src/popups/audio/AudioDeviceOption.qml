@@ -48,12 +48,12 @@ Item {
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
                 radius: 14
-                color: root.isDefault ? Colors.primary : Colors.surfaceContainerHighest
+                color: root.isDefault && !rowHov.containsMouse ? Colors.surface : Colors.surfaceContainerHighest
 
                 Text {
                     anchors.centerIn: parent
                     text: root.icon
-                    color: root.isDefault ? Colors.on_Primary : Colors.on_SurfaceVariant
+                    color: root.isDefault && !rowHov.containsMouse ? Colors.on_Surface : Colors.on_SurfaceVariant
                     font.family: Fonts.font
                     font.pixelSize: 14
                 }
@@ -65,7 +65,7 @@ Item {
 
                 Text {
                     text: root.deviceName
-                    color: root.isDefault ? Colors.on_Surface : Colors.on_SurfaceVariant
+                    color: root.isDefault && !rowHov.containsMouse ? Colors.surface : Colors.on_SurfaceVariant
                     font.family: Fonts.font
                     font.pixelSize: 11
                     font.bold: root.isDefault
@@ -76,7 +76,7 @@ Item {
                 Text {
                     visible: root.isDefault
                     text: "Default device"
-                    color: Colors.on_SurfaceVariant
+                    color: root.isDefault && !rowHov.containsMouse ? Colors.surface : Colors.on_SurfaceVariant
                     font.family: Fonts.font
                     font.pixelSize: 8
                     Layout.fillWidth: true
@@ -86,7 +86,7 @@ Item {
             Text {
                 visible: root.isDefault
                 text: "󰄵"
-                color: Colors.primary
+                color: root.isDefault && !rowHov.containsMouse ? Colors.surface : Colors.primary
                 font.family: Fonts.font
                 font.pixelSize: 13
             }
