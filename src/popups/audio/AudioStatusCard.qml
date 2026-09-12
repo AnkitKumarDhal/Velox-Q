@@ -63,13 +63,13 @@ Item {
                 Layout.fillWidth: true
                 Text {
                     text: root.isOutput ? "󰕾" : "󰍬"
-                    color: root.available ? Colors.primary : Colors.outline
+                    color: root.expanded ? Colors.surface : ( root.available ? Colors.primary : Colors.outline )
                     font.family: Fonts.font
                     font.pixelSize: 16
                 }
                 Text {
                     text: root.isOutput ? "Output" : "Input"
-                    color: Colors.on_Surface
+                    color: root.expanded ? Colors.surface : Colors.on_Surface
                     font.family: Fonts.font
                     font.pixelSize: 11
                     font.bold: true
@@ -77,7 +77,7 @@ Item {
                 }
                 Text {
                     text: root.available ? Math.round(root.volume * 100) + "%" : "-"
-                    color: root.muted ? Colors.error : Colors.on_SurfaceVariant
+                    color: root.expanded ? Colors.surface : ( root.muted ? Colors.error : Colors.on_SurfaceVariant )
                     font.family: Fonts.font
                     font.pixelSize: 10
                     font.bold: true
@@ -86,7 +86,7 @@ Item {
 
             Text {
                 text: root.deviceName
-                color: Colors.on_SurfaceVariant
+                color: root.expanded ? Colors.surface : Colors.on_SurfaceVariant
                 font.family: Fonts.font
                 font.pixelSize: 10
                 elide: Text.ElideRight

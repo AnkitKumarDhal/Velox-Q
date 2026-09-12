@@ -44,7 +44,7 @@ PillBase {
     }
 
     readonly property bool wifiGood: hasWifi && NetworkService.wifiEnabled && NetworkService.wifiConnected
-    readonly property string bluetoothIcon: !hasBluetooth ? "" : NetworkService.bluetooth.enabled ? "󰂯" : "󰂲"
+    readonly property string bluetoothIcon: !hasBluetooth ? "" : NetworkService.bluetooth.effectiveEnabled ? "󰂯" : "󰂲"
     readonly property bool bluetoothGood: hasBluetooth && NetworkService.bluetooth.enabled
     readonly property int bluetoothCount: NetworkService.bluetooth.connectedDeviceCount
 

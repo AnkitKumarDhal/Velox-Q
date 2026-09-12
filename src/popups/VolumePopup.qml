@@ -113,13 +113,7 @@ PanelWindow {
                 AudioCardDetails {
                     Layout.fillWidth: true
                     mode: root.expandedCard
-                    visible: root.expandedCard !== ""
-                    Behavior on implicitHeight {
-                        NumberAnimation {
-                            duration: Theme.animDuration
-                            easing.type: Easing.OutCubic
-                        }
-                    }
+                    expanded: root.expandedCard !== ""
                 }
 
                 Rectangle {
