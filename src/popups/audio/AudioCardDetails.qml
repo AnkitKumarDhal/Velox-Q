@@ -12,8 +12,15 @@ Item {
 
     required property string mode
     property bool expanded: false
-    readonly property bool isOutput: root.mode === "output"
-    readonly property bool isInput: root.mode === "input"
+    property string activeMode: ""
+    readonly property bool isOutput: root.activeMode === "output"
+    readonly property bool isInput: root.activeMode === "input"
+
+    onModeChanged: {
+        if (root.mode !== "") {
+            root.activeMode = root.mode
+        }
+    }
 
     implicitHeight: root.expanded ? detailsColumn.implicitHeight : 0
     clip: true
