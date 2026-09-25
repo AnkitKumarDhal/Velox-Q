@@ -33,7 +33,7 @@ PanelWindow {
         if (root.clearAllAnimating) return
         if (NotificationService.notificationCount <= 0) return
         root.clearAllAnimating = true
-        clearAllTimer.interval = 420 + Math.max(0, NotificationService.notificationCount - 1) * 35
+        clearAllTimer.interval = 460 + Math.max(0, NotificationService.notificationCount - 1) * 35
         clearAllTimer.start()
     }
 
@@ -73,7 +73,14 @@ PanelWindow {
             }
 
             width: 360
-            height: Math.min(notifCol.implicitHeight + 48, root.implicitHeight - Theme.barHeight - 24)
+            height: Math.max(root.clearAllAnimating ? 48 + notifCol.padding * 2 + emptyState.height : 0, Math.min(notifCol.implicitHeight + 48, root.implicitHeight - Theme.barHeight - 24))
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 220
+                    easing.type: Easing.OutCubic
+                }
+            }
 
             radius: Theme.popupRadius
             color: Colors.background
@@ -205,6 +212,14 @@ PanelWindow {
                     Item {
                         visible: NotificationService.notificationCount === 0
 
+                        opacity: visible ? 1 : 0
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 180
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
                         width: parent.width - 16
                         height: 80
 
@@ -250,7 +265,7 @@ PanelWindow {
                             SequentialAnimation {
                                 running: root.clearAllAnimating
                                 PauseAnimation {
-                                    duration: delegateRoot.index * 35
+                                    duration: (NotificationService.notificationCount - 1 - delegateRoot.index) * 35
                                 }
                                 ParallelAnimation {
                                     NumberAnimation {
@@ -267,6 +282,14 @@ PanelWindow {
                                         to: 24
                                         duration: 180
                                         easing.type: Easing.OutCubic
+                                    }
+
+                                    NumberAnimation {
+                                        target: delegateRoot
+                                        property: "height"
+                                        to: 0
+                                        duration: 220
+                                        easing.type: Easing.InOutCubic
                                     }
                                 }
                             }
