@@ -26,7 +26,7 @@ Singleton {
         onNotification: notification => root._handleNotification(notification)
     }
 
-    readonly property var notificationsModel: server.trackedNotifications
+    readonly property var notificationsModel: server.trackedNotifications.values.slice().reverse()
     readonly property int notificationCount: server.trackedNotifications.values.length
 
     ListModel { id: toastModel }
