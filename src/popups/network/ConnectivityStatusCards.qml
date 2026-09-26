@@ -12,6 +12,9 @@ RowLayout {
     signal wifiClicked
     signal bluetoothClicked
 
+    readonly property var wifiCapability: NetworkService.wifiCapability
+    readonly property var bluetoothCapability: NetworkService.bluetooth.capability
+
     Layout.fillWidth: true
     spacing: 8
 
@@ -19,9 +22,19 @@ RowLayout {
         Layout.fillWidth: true
         implicitHeight: 66
         radius: 12
-        color: wifiCardClick.containsMouse ? Colors.surfaceContainerHighest : NetworkService.wifiConnected ? Colors.primaryContainer : Colors.surfaceContainerHigh
-        border.width: root.activeTab === "wifi" ? 2 : 0
-        border.color: Colors.primary
+        color: {
+            if (root.wifiCapability.backendFailure)
+                return wifiCardClick.containsMouse ? Colors.error : Colors.errorContainer;
+            if (!root.wifiCapability.hardwareAvailable)
+                return Colors.surfaceContainerHigh;
+            if (wifiCardClick.containsMouse)
+                return Colors.surfaceContainerHighest;
+            return NetworkService.wifiConnected ? Colors.primaryContainer : Colors.surfaceContainerHigh;
+        }
+
+        border.width: root.activeTab === "wifi" ? 2 : root.wifiCapability.backendFailure ? 1 : 0
+        border.color: root.wifiCapability.backendFailure ? Colors.error : Colors.primary
+        opacity: root.wifiCapability.hardwareAvailable ? 1 : 0.65
 
         Behavior on color {
             ColorAnimation {
@@ -29,12 +42,18 @@ RowLayout {
             }
         }
 
+        Behavior on border.width {
+            NumberAnimation {
+                duration: Theme.hoverFadeDuration
+            }
+        }
+
         MouseArea {
             id: wifiCardClick
             anchors.fill: parent
-            enabled: NetworkService.wifiDevice !== null
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
+            enabled: root.wifiCapability.hardwareAvailable
+            hoverEnabled: root.wifiCapability.hardwareAvailable
+            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: root.wifiClicked()
         }
 
@@ -49,22 +68,43 @@ RowLayout {
 
             Text {
                 text: {
+                    if (!root.wifiCapability.hardwareAvailable)
+                        return "󰤭";
+                    if (root.wifiCapability.backendFailure)
+                        return "󰅙";
                     if (!NetworkService.wifiEnabled)
                         return "󰤭";
                     if (!NetworkService.wifiConnected)
                         return "󰤭";
+
                     const s = NetworkService.signalStrength;
+
                     if (s < 0.25)
                         return "󰤟";
                     if (s < 0.50)
                         return "󰤢";
                     if (s < 0.75)
                         return "󰤥";
+
                     return "󰤨";
                 }
+
                 font.family: Fonts.fontM
                 font.pixelSize: 20
-                color: NetworkService.wifiConnected ? Colors.on_PrimaryContainer : Colors.outline
+
+                color: {
+                    if (!root.wifiCapability.hardwareAvailable)
+                        return Colors.outline;
+                    if (root.wifiCapability.backendFailure)
+                        return Colors.on_ErrorContainer;
+                    return NetworkService.wifiConnected ? Colors.on_PrimaryContainer : Colors.outline;
+                }
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 150
+                    }
+                }
             }
 
             ColumnLayout {
@@ -76,15 +116,40 @@ RowLayout {
                     font.family: Fonts.font
                     font.pixelSize: 10
                     font.bold: true
-                    color: NetworkService.wifiConnected ? Colors.on_PrimaryContainer : Colors.on_SurfaceVariant
+                    color: {
+                        if (root.wifiCapability.backendFailure)
+                            return Colors.on_ErrorContainer;
+                        if (NetworkService.wifiConnected)
+                            return Colors.on_PrimaryContainer;
+                        return Colors.on_SurfaceVariant;
+                    }
                 }
 
                 Text {
-                    text: !NetworkService.wifiEnabled ? "Disabled" : NetworkService.wifiConnected ? (NetworkService.ssid || "Connected") : "Not connected"
+                    text: {
+                        if (!root.wifiCapability.hardwareAvailable)
+                            return "Hardware unavailable";
+                        if (root.wifiCapability.backendFailure)
+                            return root.wifiCapability.errorMessage || "Backend unavailable";
+                        if (!NetworkService.wifiEnabled)
+                            return "Disabled";
+                        if (NetworkService.wifiConnected)
+                            return NetworkService.ssid || "Connected";
+                        return "Not connected";
+                    }
+
                     font.family: Fonts.font
                     font.pixelSize: 11
                     font.bold: true
-                    color: NetworkService.wifiConnected ? Colors.on_PrimaryContainer : Colors.on_Surface
+
+                    color: {
+                        if (root.wifiCapability.backendFailure)
+                            return Colors.on_ErrorContainer;
+                        if (NetworkService.wifiConnected)
+                            return Colors.on_PrimaryContainer;
+                        return Colors.on_Surface;
+                    }
+
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -94,7 +159,7 @@ RowLayout {
                 Layout.preferredWidth: 1
                 Layout.preferredHeight: 28
                 radius: 1
-                color: Colors.outline
+                color: root.wifiCapability.backendFailure ? Colors.on_ErrorContainer : Colors.outline
                 opacity: 0.7
             }
 
@@ -102,20 +167,28 @@ RowLayout {
                 width: 38
                 height: 22
                 radius: 11
+                color: {
+                    if (!root.wifiCapability.operational)
+                        return Colors.surfaceContainerHighest;
+                    return NetworkService.wifiEnabled ? Colors.primary : Colors.surfaceContainerHighest;
+                }
 
-                color: NetworkService.wifiEnabled ? Colors.primary : Colors.surfaceContainerHighest
+                border.width: {
+                    if (root.wifiCapability.backendFailure)
+                        return 1;
+                    return NetworkService.wifiEnabled ? 0 : 1;
+                }
 
-                border.width: NetworkService.wifiEnabled ? 0 : 1
-                border.color: Colors.outlineVariant
+                border.color: root.wifiCapability.backendFailure ? Colors.error : Colors.outlineVariant
+                opacity: root.wifiCapability.hardwareAvailable ? 1 : 0.45
 
                 Rectangle {
                     width: 16
                     height: 16
                     radius: 8
                     anchors.verticalCenter: parent.verticalCenter
-                    x: NetworkService.wifiEnabled ? 19 : 3
-                    color: NetworkService.wifiEnabled ? Colors.on_Primary : Colors.outline
-
+                    x: NetworkService.wifiEnabled && root.wifiCapability.operational ? 19 : 3
+                    color: NetworkService.wifiEnabled && root.wifiCapability.operational ? Colors.on_Primary : Colors.outline
                     Behavior on x {
                         NumberAnimation {
                             duration: Theme.hoverFadeDuration
@@ -126,9 +199,13 @@ RowLayout {
 
                 MouseArea {
                     anchors.fill: parent
-                    enabled: NetworkService.wifiHardwareEnabled ?? true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: NetworkService.setWifiEnabled(!NetworkService.wifiEnabled)
+                    enabled: root.wifiCapability.operational
+                    cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    onClicked: {
+                        if (!root.wifiCapability.operational)
+                            return;
+                        NetworkService.setWifiEnabled(!NetworkService.wifiEnabled);
+                    }
                 }
             }
         }
@@ -138,9 +215,19 @@ RowLayout {
         Layout.fillWidth: true
         implicitHeight: 66
         radius: 12
-        color: bluetoothCardClick.containsMouse ? Colors.surfaceContainerHighest : NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.primaryContainer : Colors.surfaceContainerHigh
-        border.width: root.activeTab === "bluetooth" ? 2 : 0
-        border.color: Colors.primary
+        color: {
+            if (root.bluetoothCapability.backendFailure)
+                return bluetoothCardClick.containsMouse ? Colors.error : Colors.errorContainer;
+            if (!root.bluetoothCapability.hardwareAvailable)
+                return Colors.surfaceContainerHigh;
+            if (bluetoothCardClick.containsMouse)
+                return Colors.surfaceContainerHighest;
+            return NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.primaryContainer : Colors.surfaceContainerHigh;
+        }
+
+        border.width: root.activeTab === "bluetooth" ? 2 : root.bluetoothCapability.backendFailure ? 1 : 0
+        border.color: root.bluetoothCapability.backendFailure ? Colors.error : Colors.primary
+        opacity: root.bluetoothCapability.hardwareAvailable ? 1 : 0.65
 
         Behavior on color {
             ColorAnimation {
@@ -148,12 +235,18 @@ RowLayout {
             }
         }
 
+        Behavior on border.width {
+            NumberAnimation {
+                duration: Theme.hoverFadeDuration
+            }
+        }
+
         MouseArea {
             id: bluetoothCardClick
             anchors.fill: parent
-            enabled: NetworkService.bluetooth.available
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
+            enabled: root.bluetoothCapability.hardwareAvailable
+            hoverEnabled: root.bluetoothCapability.hardwareAvailable
+            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: root.bluetoothClicked()
         }
 
@@ -167,10 +260,30 @@ RowLayout {
             spacing: 10
 
             Text {
-                text: NetworkService.bluetooth.effectiveEnabled ? "󰂯" : "󰂲"
+                text: {
+                    if (!root.bluetoothCapability.hardwareAvailable)
+                        return "󰂲";
+                    if (root.bluetoothCapability.backendFailure)
+                        return "󰅙";
+                    return NetworkService.bluetooth.effectiveEnabled ? "󰂯" : "󰂲";
+                }
+
                 font.family: Fonts.fontM
                 font.pixelSize: 20
-                color: NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.on_PrimaryContainer : NetworkService.bluetooth.effectiveEnabled ? Colors.primary : Colors.outline
+
+                color: {
+                    if (root.bluetoothCapability.backendFailure)
+                        return Colors.on_ErrorContainer;
+                    if (NetworkService.bluetooth.connectedDeviceCount > 0)
+                        return Colors.on_PrimaryContainer;
+                    return NetworkService.bluetooth.effectiveEnabled ? Colors.primary : Colors.outline;
+                }
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 150
+                    }
+                }
             }
 
             ColumnLayout {
@@ -182,16 +295,38 @@ RowLayout {
                     font.family: Fonts.font
                     font.pixelSize: 10
                     font.bold: true
-                    color: NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.on_PrimaryContainer : Colors.on_SurfaceVariant
+                    color: {
+                        if (root.bluetoothCapability.backendFailure)
+                            return Colors.on_ErrorContainer;
+                        if (NetworkService.bluetooth.connectedDeviceCount > 0)
+                            return Colors.on_PrimaryContainer;
+                        return Colors.on_SurfaceVariant;
+                    }
                 }
 
                 Text {
-                    text: NetworkService.bluetooth.stateText
+                    text: {
+                        if (!root.bluetoothCapability.hardwareAvailable)
+                            return "Hardware unavailable";
+                        if (root.bluetoothCapability.backendFailure)
+                            return root.bluetoothCapability.errorMessage || "Backend unavailable";
+                        return NetworkService.bluetooth.stateText;
+                    }
+
                     font.family: Fonts.font
                     font.pixelSize: 11
                     font.bold: true
-                    color: NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.on_PrimaryContainer : Colors.on_Surface
+
+                    color: {
+                        if (root.bluetoothCapability.backendFailure)
+                            return Colors.on_ErrorContainer;
+                        if (NetworkService.bluetooth.connectedDeviceCount > 0)
+                            return Colors.on_PrimaryContainer;
+                        return Colors.on_Surface;
+                    }
+
                     Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
             }
 
@@ -199,7 +334,7 @@ RowLayout {
                 Layout.preferredWidth: 1
                 Layout.preferredHeight: 28
                 radius: 1
-                color: Colors.outline
+                color: root.bluetoothCapability.backendFailure ? Colors.on_ErrorContainer : Colors.outline
                 opacity: 0.7
             }
 
@@ -207,18 +342,29 @@ RowLayout {
                 width: 38
                 height: 22
                 radius: 11
-                color: NetworkService.bluetooth.powerActive ? Colors.primary : Colors.surfaceContainerHighest
-                border.width: NetworkService.bluetooth.effectiveEnabled ? 0 : 1
-                border.color: Colors.outlineVariant
-                opacity: NetworkService.bluetooth.available ? 1 : 0.45
+
+                color: {
+                    if (!root.bluetoothCapability.operational)
+                        return Colors.surfaceContainerHighest;
+                    return NetworkService.bluetooth.powerActive ? Colors.primary : Colors.surfaceContainerHighest;
+                }
+
+                border.width: {
+                    if (root.bluetoothCapability.backendFailure)
+                        return 1;
+                    return NetworkService.bluetooth.effectiveEnabled ? 0 : 1;
+                }
+
+                border.color: root.bluetoothCapability.backendFailure ? Colors.error : Colors.outlineVariant
+                opacity: root.bluetoothCapability.hardwareAvailable ? 1 : 0.45
 
                 Rectangle {
                     width: 16
                     height: 16
                     radius: 8
                     anchors.verticalCenter: parent.verticalCenter
-                    x: NetworkService.bluetooth.effectiveEnabled ? 19 : 3
-                    color: NetworkService.bluetooth.effectiveEnabled ? Colors.on_Primary : Colors.outline
+                    x: NetworkService.bluetooth.effectiveEnabled && root.bluetoothCapability.operational ? 19 : 3
+                    color: NetworkService.bluetooth.effectiveEnabled && root.bluetoothCapability.operational ? Colors.on_Primary : Colors.outline
 
                     Behavior on x {
                         NumberAnimation {
@@ -230,9 +376,14 @@ RowLayout {
 
                 MouseArea {
                     anchors.fill: parent
-                    enabled: NetworkService.bluetooth.available
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: NetworkService.bluetooth.setEnabled(!NetworkService.bluetooth.effectiveEnabled)
+                    enabled: root.bluetoothCapability.operational
+                    cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+                    onClicked: {
+                        if (!root.bluetoothCapability.operational)
+                            return;
+                        NetworkService.bluetooth.setEnabled(!NetworkService.bluetooth.effectiveEnabled);
+                    }
                 }
             }
         }
