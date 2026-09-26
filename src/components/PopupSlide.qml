@@ -5,7 +5,7 @@ import qs.src.theme
 Item {
     id: root
 
-    property string edge: "top" // "top" | "bottom" | "left" | "right"
+    property string edge: "top" // Options: "top" | "bottom" | "left" | "right"
     property bool open: false
 
     property bool hoverEnabled: false

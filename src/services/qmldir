@@ -13,4 +13,4 @@ singleton MediaService           1.0 MediaService.qml
 singleton LauncherService        1.0 LauncherService.qml
 singleton LauncherSearchService  1.0 LauncherSearchService.qml
 singleton LauncherConvertService 1.0 LauncherConvertService.qml
-
+IntegrationCapability            1.0 IntegrationCapability.qml
