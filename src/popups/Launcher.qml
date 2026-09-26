@@ -184,7 +184,7 @@ PanelWindow {
 
     Rectangle {
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.55)
+        color: Colors.scrim
         opacity: Popups.launcherOpen ? 1 : 0
 
         Behavior on opacity {

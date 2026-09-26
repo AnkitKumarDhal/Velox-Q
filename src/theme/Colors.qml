@@ -59,4 +59,12 @@ QtObject {
     readonly property color outline: palette.outline || "#a08c8b"
     readonly property color outlineVariant: palette.outline_variant || "#534342"
     readonly property color shadow: palette.shadow || "#000000"
+    readonly property color scrim: palette.scrim || "#000000"
+
+    // --- Surface Overlays ---
+    readonly property color onSurfaceWeak: Qt.rgba(on_Surface.r, on_Surface.g, on_Surface.b, 0.07)
+    readonly property color onSurfaceMedium: Qt.rgba(on_Surface.r, on_Surface.g, on_Surface.b, 0.12)
+    readonly property color onSurfaceOverlay: Qt.rgba(on_Surface.r, on_Surface.g, on_Surface.b, 0.25)
+    readonly property color onSurfaceMuted: Qt.rgba(on_Surface.r, on_Surface.g, on_Surface.b, 0.40)
+    readonly property color onSurfaceStrong: Qt.rgba(on_Surface.r, on_Surface.g, on_Surface.b, 0.75)
 }

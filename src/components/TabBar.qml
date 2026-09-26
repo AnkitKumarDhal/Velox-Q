@@ -66,7 +66,7 @@ Item {
                     width: Math.min(parent.width - Theme.spacingXs, hIcon.implicitWidth + (hLabel.visible ? hLabel.implicitWidth + Theme.spacingMd : 0) + 24)
                     height: parent.height - Theme.spacingMd
                     radius: height / 2
-                    color: hTab.isActive ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : (hHov.containsMouse ? Qt.rgba(1, 1, 1, 0.07) : "transparent")
+                    color: hTab.isActive ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : (hHov.containsMouse ? Colors.onSurfaceWeak : "transparent")
 
                     Behavior on color {
                         ColorAnimation {
@@ -85,7 +85,7 @@ Item {
                         font.pixelSize: Theme.fontSizeBody
                         font.family: Fonts.font
                         anchors.verticalCenter: parent.verticalCenter
-                        color: hTab.isActive ? Colors.primary : (hHov.containsMouse ? Qt.rgba(1, 1, 1, 0.75) : Qt.rgba(1, 1, 1, 0.4))
+                        color: hTab.isActive ? Colors.primary : (hHov.containsMouse ? Colors.onSurfaceStrong : Colors.onSurfaceMuted)
 
                         Behavior on color {
                             ColorAnimation {
@@ -102,7 +102,7 @@ Item {
                         font.weight: hTab.isActive ? Theme.fontWeightBold : Theme.fontWeightRegular
                         font.family: Fonts.font
                         anchors.verticalCenter: parent.verticalCenter
-                        color: hTab.isActive ? Colors.primary : (hHov.containsMouse ? Qt.rgba(1, 1, 1, 0.75) : Qt.rgba(1, 1, 1, 0.4))
+                        color: hTab.isActive ? Colors.primary : (hHov.containsMouse ? Colors.onSurfaceStrong : Colors.onSurfaceMuted)
 
                         Behavior on color {
                             ColorAnimation {
@@ -153,7 +153,7 @@ Item {
                 width: Theme.controlHeightLarge
                 height: vCol.tabH
                 radius: Theme.pillRadius
-                color: vTab.isActive ? Colors.primary : (vHov.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent")
+                color: vTab.isActive ? Colors.primary : (vHov.containsMouse ? Colors.onSurfaceWeak : "transparent")
 
                 Behavior on color {
                     ColorAnimation {

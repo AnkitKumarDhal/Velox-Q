@@ -158,7 +158,7 @@ Rectangle {
 
                 radius: 10
 
-                color: dismissArea.containsMouse ? Qt.rgba(1, 1, 1, 0.12) : "transparent"
+                color: dismissArea.containsMouse ? Colors.onSurfaceMedium : "transparent"
 
                 z: 2
 

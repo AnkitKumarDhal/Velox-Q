@@ -27,7 +27,7 @@ Item {
                 implicitWidth: Theme.spacingXs - 1
                 implicitHeight: 40
                 radius: 1.5
-                color: Qt.rgba(1, 1, 1, 0.25)
+                color: Colors.onSurfaceOverlay
             }
             background: Item {}
         }
