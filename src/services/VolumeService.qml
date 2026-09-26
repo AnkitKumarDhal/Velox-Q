@@ -6,7 +6,6 @@ import Quickshell.Services.Pipewire
 Singleton {
     id: root
 
-    // Output
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
     }
@@ -15,6 +14,14 @@ Singleton {
     property var audio: sink?.audio ?? null
     property real volume: audio?.volume ?? 0.0
     property bool muted: audio?.muted ?? false
+
+    property IntegrationCapability outputCapability: IntegrationCapability {
+        hardwareAvailable: root.sink !== null
+        backendAvailable: Pipewire.ready
+        errorMessage: Pipewire.ready ? "" : "PipeWire is unavailable"
+    }
+
+    readonly property bool outputOperational: root.outputCapability.operational
 
     function toggleMute() {
         if (audio)
@@ -26,7 +33,6 @@ Singleton {
             audio.volume = Math.max(0.0, Math.min(1.0, audio.volume + step));
     }
 
-    // Input
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSource]
     }
@@ -35,6 +41,14 @@ Singleton {
     property var inputAudio: source?.audio ?? null
     property real inputVolume: inputAudio?.volume ?? 0.0
     property bool inputMuted: inputAudio?.muted ?? false
+
+    property IntegrationCapability inputCapability: IntegrationCapability {
+        hardwareAvailable: root.source !== null
+        backendAvailable: Pipewire.ready
+        errorMessage: Pipewire.ready ? "" : "PipeWire is unavailable"
+    }
+
+    readonly property bool inputOperational: root.inputCapability.operational
 
     function toggleInputMute() {
         if (inputAudio)
