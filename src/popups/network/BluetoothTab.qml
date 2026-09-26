@@ -9,26 +9,100 @@ import qs.src.theme
 ColumnLayout {
     id: root
 
+    readonly property var capability: NetworkService.bluetooth.capability
+    readonly property bool hardwareAvailable: root.capability.hardwareAvailable
+    readonly property bool backendFailure: root.capability.backendFailure
+    readonly property bool backendOperational: root.capability.operational
+
     Layout.fillWidth: true
     spacing: 8
 
     ScriptModel {
         id: btConnectedModel
         objectProp: "address"
-        values: NetworkService.bluetooth.connectedDevices
+        values: {
+            if (!root.backendOperational)
+                return [];
+            return NetworkService.bluetooth.connectedDevices;
+        }
     }
+
     ScriptModel {
         id: btPairedModel
         objectProp: "address"
-        values: NetworkService.bluetooth.pairedDevices
+        values: {
+            if (!root.backendOperational)
+                return [];
+            return NetworkService.bluetooth.pairedDevices;
+        }
     }
+
     ScriptModel {
         id: btAvailableModel
         objectProp: "address"
-        values: NetworkService.bluetooth.availableDevices
+        values: {
+            if (!root.backendOperational)
+                return [];
+            return NetworkService.bluetooth.availableDevices;
+        }
+    }
+
+    Rectangle {
+        visible: root.backendFailure || !root.hardwareAvailable
+        Layout.fillWidth: true
+        implicitHeight: capabilityErrorColumn.implicitHeight + 20
+        radius: 12
+        color: root.backendFailure ? Colors.errorContainer : Colors.surfaceContainerHigh
+        border.width: root.backendFailure ? 1 : 0
+        border.color: Colors.error
+
+        ColumnLayout {
+            id: capabilityErrorColumn
+            anchors {
+                fill: parent
+                margins: 10
+            }
+            spacing: 4
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: root.backendFailure ? "󰅙" : "󰂲"
+                    font.family: Fonts.fontM
+                    font.pixelSize: 17
+                    color: root.backendFailure ? Colors.on_ErrorContainer : Colors.outline
+                }
+
+                Text {
+                    text: {
+                        if (!root.hardwareAvailable)
+                            return "Bluetooth hardware unavailable";
+                        return "Bluetooth backend unavailable";
+                    }
+                    font.family: Fonts.font
+                    font.pixelSize: 11
+                    font.bold: true
+                    color: root.backendFailure ? Colors.on_ErrorContainer : Colors.on_SurfaceVariant
+                    Layout.fillWidth: true
+                }
+            }
+
+            Text {
+                visible: root.backendFailure
+                text: root.capability.errorMessage || "The Bluetooth backend could not be reached."
+                font.family: Fonts.font
+                font.pixelSize: 9
+                color: Colors.on_ErrorContainer
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+            }
+        }
     }
 
     RowLayout {
+        visible: root.backendOperational
         Layout.fillWidth: true
 
         Text {
@@ -44,11 +118,24 @@ ColumnLayout {
             width: scanLabel.implicitWidth + 20
             height: 28
             radius: 14
-            enabled: NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning
-            color: NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
+            enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
+            color: {
+                if (!enabled)
+                    return Colors.surfaceContainerHighest;
+                return NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest;
+            }
+
+            opacity: enabled ? 1 : 0.45
+
             Behavior on color {
                 ColorAnimation {
                     duration: Theme.hoverFadeDuration
+                }
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 120
                 }
             }
 
@@ -59,20 +146,24 @@ ColumnLayout {
                 font.family: Fonts.font
                 font.pixelSize: 10
                 font.bold: true
-                color: NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
+                color: (root.backendOperational && (NetworkService.bluetooth.scanning || btScanHover.hovered)) ? Colors.on_Primary : Colors.on_Surface
             }
 
             HoverHandler {
                 id: btScanHover
+                enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
             }
 
             MouseArea {
                 anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
+                enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
+                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                 onClicked: {
+                    if (!root.backendOperational)
+                        return;
                     if (NetworkService.bluetooth.scanning) {
                         NetworkService.bluetooth.stopScan();
-                    } else {
+                    } else if (NetworkService.bluetooth.operational) {
                         NetworkService.bluetooth.scan();
                     }
                 }
@@ -81,6 +172,7 @@ ColumnLayout {
     }
 
     Flickable {
+        visible: root.backendOperational
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(contentColumn.implicitHeight, 320)
         contentHeight: contentColumn.implicitHeight
@@ -161,7 +253,9 @@ ColumnLayout {
                             width: disconnectLabel.implicitWidth + 18
                             height: 24
                             radius: 12
-                            color: disconnectHover.hovered ? Colors.primary : Colors.primary
+                            enabled: root.backendOperational
+                            color: enabled ? disconnectHover.hovered ? Colors.primary : Colors.primary : Colors.surfaceContainerHighest
+                            opacity: enabled ? 1 : 0.45
 
                             Text {
                                 id: disconnectLabel
@@ -175,12 +269,18 @@ ColumnLayout {
 
                             HoverHandler {
                                 id: disconnectHover
+                                enabled: root.backendOperational
                             }
 
                             MouseArea {
                                 anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: NetworkService.bluetooth.disconnect(modelData.address)
+                                enabled: root.backendOperational
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: {
+                                    if (!root.backendOperational)
+                                        return;
+                                    NetworkService.bluetooth.disconnect(modelData.address);
+                                }
                             }
                         }
                     }
@@ -243,8 +343,10 @@ ColumnLayout {
                             width: connectLabel.implicitWidth + 18
                             height: 24
                             radius: 12
-                            enabled: !NetworkService.bluetooth.isConnecting(modelData.address)
-                            color: NetworkService.bluetooth.isConnecting(modelData.address) ? Colors.surfaceContainerHighest : pairedConnectHover.hovered ? Colors.primary : Colors.primaryContainer
+                            enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
+                            color: !enabled ? Colors.surfaceContainerHighest : pairedConnectHover.hovered ? Colors.primary : Colors.primaryContainer
+                            opacity: enabled ? 1 : 0.45
+
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Theme.hoverFadeDuration
@@ -252,6 +354,7 @@ ColumnLayout {
                             }
                             HoverHandler {
                                 id: pairedConnectHover
+                                enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
                             }
 
                             Text {
@@ -261,13 +364,18 @@ ColumnLayout {
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true
-                                color: NetworkService.bluetooth.isConnecting(modelData.address) ? Colors.on_SurfaceVariant : pairedConnectHover.hovered ? Colors.on_Primary : Colors.on_PrimaryContainer
+                                color: !parent.enabled ? Colors.on_SurfaceVariant : pairedConnectHover.hovered ? Colors.on_Primary : Colors.on_PrimaryContainer
                             }
 
                             MouseArea {
                                 anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: NetworkService.bluetooth.connect(modelData.address)
+                                enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: {
+                                    if (!root.backendOperational)
+                                        return;
+                                    NetworkService.bluetooth.connect(modelData.address);
+                                }
                             }
                         }
 
@@ -275,7 +383,9 @@ ColumnLayout {
                             width: 26
                             height: 26
                             radius: 13
-                            color: removeHover.hovered ? Colors.errorContainer : "transparent"
+                            enabled: root.backendOperational
+                            color: enabled && removeHover.hovered ? Colors.errorContainer : "transparent"
+                            opacity: enabled ? 1 : 0.45
 
                             Behavior on color {
                                 ColorAnimation {
@@ -284,6 +394,7 @@ ColumnLayout {
                             }
                             HoverHandler {
                                 id: removeHover
+                                enabled: root.backendOperational
                             }
 
                             Text {
@@ -296,8 +407,13 @@ ColumnLayout {
 
                             MouseArea {
                                 anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: NetworkService.bluetooth.remove(modelData.address)
+                                enabled: root.backendOperational
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: {
+                                    if (!root.backendOperational)
+                                        return;
+                                    NetworkService.bluetooth.remove(modelData.address);
+                                }
                             }
                         }
                     }
@@ -361,8 +477,9 @@ ColumnLayout {
                             width: pairLabel.implicitWidth + 18
                             height: 24
                             radius: 12
-                            color: NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
-
+                            enabled: root.backendOperational
+                            color: !enabled ? Colors.surfaceContainerHighest : NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
+                            opacity: enabled ? 1 : 0.45
                             Behavior on color {
                                 ColorAnimation {
                                     duration: Theme.hoverFadeDuration
@@ -370,6 +487,7 @@ ColumnLayout {
                             }
                             HoverHandler {
                                 id: availablePairHover
+                                enabled: root.backendOperational
                             }
 
                             Text {
@@ -379,13 +497,16 @@ ColumnLayout {
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true
-                                color: NetworkService.bluetooth.isPairing(modelData.address) ? availablePairHover.hovered ? Colors.on_ErrorContainer : Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.on_PrimaryContainer : Colors.on_Primary
+                                color: !parent.enabled ? Colors.on_SurfaceVariant : NetworkService.bluetooth.isPairing(modelData.address) ? availablePairHover.hovered ? Colors.on_ErrorContainer : Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.on_PrimaryContainer : Colors.on_Primary
                             }
 
                             MouseArea {
                                 anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
+                                enabled: root.backendOperational
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: {
+                                    if (!root.backendOperational)
+                                        return;
                                     if (NetworkService.bluetooth.isPairing(modelData.address)) {
                                         NetworkService.bluetooth.cancelPair(modelData.address);
                                     } else {
@@ -399,7 +520,7 @@ ColumnLayout {
             }
 
             Text {
-                visible: NetworkService.bluetooth.enabled && btConnectedModel.values.length === 0 && btPairedModel.values.length === 0 && btAvailableModel.values.length === 0
+                visible: root.backendOperational && NetworkService.bluetooth.enabled && btConnectedModel.values.length === 0 && btPairedModel.values.length === 0 && btAvailableModel.values.length === 0
                 Layout.alignment: Qt.AlignHCenter
                 text: "No Bluetooth devices"
                 font.family: Fonts.font
@@ -410,7 +531,7 @@ ColumnLayout {
             }
 
             Text {
-                visible: NetworkService.bluetooth.available && !NetworkService.bluetooth.operational && (NetworkService.bluetooth.enabling || NetworkService.bluetooth.disabling || NetworkService.bluetooth.blocked || NetworkService.bluetooth.state === BluetoothAdapterState.Disabled)
+                visible: root.backendOperational && NetworkService.bluetooth.available && !NetworkService.bluetooth.operational && (NetworkService.bluetooth.enabling || NetworkService.bluetooth.disabling || NetworkService.bluetooth.blocked || NetworkService.bluetooth.state === BluetoothAdapterState.Disabled)
                 Layout.alignment: Qt.AlignHCenter
                 text: NetworkService.bluetooth.enabling ? "Bluetooth is starting…" : NetworkService.bluetooth.disabling ? "Bluetooth is turning off…" : NetworkService.bluetooth.blocked ? "Bluetooth is blocked" : "Bluetooth is disabled"
                 font.family: Fonts.font
