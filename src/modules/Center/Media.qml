@@ -40,7 +40,7 @@ Item {
         border.width: Popups.mediaOpen ? 1 : 0
         Behavior on border.width {
             NumberAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
 
@@ -100,7 +100,7 @@ Item {
 
                         Behavior on targetHeight {
                             NumberAnimation {
-                                duration: 160 + (index % 5) * 30
+                                duration: Theme.motionSmooth + (index % 5) * 30
                                 easing.type: Easing.InOutSine
                             }
                         }

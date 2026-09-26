@@ -190,7 +190,7 @@ PanelWindow {
                 target: monthGridTransform
                 property: "x"
                 to: root.monthSlideDirection * (gridViewport.width + 24)
-                duration: 180
+                duration: Theme.motionSmooth
                 easing.type: Easing.InCubic
             }
 
@@ -198,7 +198,7 @@ PanelWindow {
                 target: gridViewport
                 property: "opacity"
                 to: 0
-                duration: 140
+                duration: Theme.motionCompact
                 easing.type: Easing.InCubic
             }
 
@@ -206,7 +206,7 @@ PanelWindow {
                 target: monthHeader
                 property: "opacity"
                 to: 0
-                duration: 140
+                duration: Theme.motionCompact
                 easing.type: Easing.InCubic
             }
         }
@@ -228,7 +228,7 @@ PanelWindow {
                 target: monthGridTransform
                 property: "x"
                 to: 0
-                duration: 220
+                duration: Theme.motionNormal
                 easing.type: Easing.OutCubic
             }
 
@@ -236,7 +236,7 @@ PanelWindow {
                 target: gridViewport
                 property: "opacity"
                 to: 1
-                duration: 180
+                duration: Theme.motionSmooth
                 easing.type: Easing.OutCubic
             }
 
@@ -244,7 +244,7 @@ PanelWindow {
                 target: monthHeaderTransform
                 property: "x"
                 to: 0
-                duration: 220
+                duration: Theme.motionNormal
                 easing.type: Easing.OutCubic
             }
 
@@ -252,7 +252,7 @@ PanelWindow {
                 target: monthHeader
                 property: "opacity"
                 to: 1
-                duration: 180
+                duration: Theme.motionSmooth
                 easing.type: Easing.OutCubic
             }
         }
@@ -481,35 +481,35 @@ PanelWindow {
 
                         Behavior on x {
                             NumberAnimation {
-                                duration: 180
+                                duration: Theme.motionSmooth
                                 easing.type: Easing.OutCubic
                             }
                         }
 
                         Behavior on y {
                             NumberAnimation {
-                                duration: 180
+                                duration: Theme.motionSmooth
                                 easing.type: Easing.OutCubic
                             }
                         }
 
                         Behavior on width {
                             NumberAnimation {
-                                duration: 180
+                                duration: Theme.motionSmooth
                                 easing.type: Easing.OutCubic
                             }
                         }
 
                         Behavior on height {
                             NumberAnimation {
-                                duration: 180
+                                duration: Theme.motionSmooth
                                 easing.type: Easing.OutCubic
                             }
                         }
 
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: 120
+                                duration: Theme.motionFast
                                 easing.type: Easing.OutCubic
                             }
                         }
@@ -573,7 +573,7 @@ PanelWindow {
 
                                 Behavior on scale {
                                     NumberAnimation {
-                                        duration: 160
+                                        duration: Theme.motionSmooth
                                         easing.type: Easing.OutBack
                                     }
                                 }
@@ -680,14 +680,14 @@ PanelWindow {
 
                             Behavior on opacity {
                                 NumberAnimation {
-                                    duration: 160
+                                    duration: Theme.motionSmooth
                                     easing.type: Easing.OutCubic
                                 }
                             }
 
                             Behavior on scale {
                                 NumberAnimation {
-                                    duration: 200
+                                    duration: Theme.motionNormal
                                     easing.type: Easing.OutBack
                                 }
                             }

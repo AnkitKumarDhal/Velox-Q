@@ -53,11 +53,18 @@ QtObject {
     readonly property int controlIconLarge: 20
 
     // Animation
+    readonly property int motionInstant: 80
+    readonly property int motionQuick: 100
     readonly property int motionFast: 120
+    readonly property int motionCompact: 140
     readonly property int motionHover: 150
+    readonly property int motionSmooth: 180
     readonly property int motionNormal: 250
+    readonly property int motionMedium: 300
     readonly property int motionSlow: 400
     readonly property int motionEmphasis: 600
+    readonly property int motionAmbient: 900
+    readonly property int motionLoop: 1000
 
     readonly property int animDuration: motionNormal
     readonly property int hoverFadeDuration: motionHover

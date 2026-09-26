@@ -41,13 +41,13 @@ Item {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 140
+                duration: Theme.motionCompact
                 easing.type: Easing.OutCubic
             }
         }
         Behavior on scale {
             NumberAnimation {
-                duration: 160
+                duration: Theme.motionSmooth
                 easing.type: Easing.OutBack
             }
         }

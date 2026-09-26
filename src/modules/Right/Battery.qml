@@ -15,7 +15,7 @@ PillBase {
     border.width: Popups.batteryOpen ? 1 : 0
     Behavior on border.width {
         NumberAnimation {
-            duration: 150
+            duration: Theme.motionHover
         }
     }
 
@@ -30,7 +30,7 @@ PillBase {
 
         Behavior on color {
             ColorAnimation {
-                duration: 300
+                duration: Theme.motionMedium
             }
         }
 
@@ -39,12 +39,12 @@ PillBase {
             loops: Animation.Infinite
             NumberAnimation {
                 to: 0.3
-                duration: 600
+                duration: Theme.motionEmphasis
                 easing.type: Easing.InOutSine
             }
             NumberAnimation {
                 to: 1.0
-                duration: 600
+                duration: Theme.motionEmphasis
                 easing.type: Easing.InOutSine
             }
         }

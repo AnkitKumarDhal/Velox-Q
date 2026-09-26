@@ -281,14 +281,14 @@ PanelWindow {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 280
+                duration: Theme.motionMedium
                 easing.type: Easing.OutCubic
             }
         }
 
         Behavior on scale {
             NumberAnimation {
-                duration: 320
+                duration: Theme.motionMedium
                 easing.type: Easing.OutBack
             }
         }
@@ -351,7 +351,7 @@ PanelWindow {
                         }
 
                         NumberAnimation {
-                            duration: 280
+                            duration: Theme.motionMedium
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -364,7 +364,7 @@ PanelWindow {
                         }
 
                         NumberAnimation {
-                            duration: 280
+                            duration: Theme.motionMedium
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -377,7 +377,7 @@ PanelWindow {
                         }
 
                         NumberAnimation {
-                            duration: 180
+                            duration: Theme.motionSmooth
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -385,7 +385,7 @@ PanelWindow {
 
                 Behavior on scale {
                     NumberAnimation {
-                        duration: 150
+                        duration: Theme.motionHover
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -408,13 +408,13 @@ PanelWindow {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
 
                     Behavior on border.color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
 
@@ -431,7 +431,7 @@ PanelWindow {
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 150
+                                    duration: Theme.motionHover
                                 }
                             }
                         }
@@ -463,7 +463,7 @@ PanelWindow {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
                 }

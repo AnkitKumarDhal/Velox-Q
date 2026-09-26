@@ -19,7 +19,7 @@ Item {
         color: rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.3) : "transparent")
         Behavior on color {
             ColorAnimation {
-                duration: 120
+                duration: Theme.motionFast
             }
         }
 
@@ -38,7 +38,7 @@ Item {
                 font.family: Fonts.font
                 Behavior on color {
                     ColorAnimation {
-                        duration: 120
+                        duration: Theme.motionFast
                     }
                 }
             }
@@ -54,7 +54,7 @@ Item {
                 Layout.fillWidth: true
                 Behavior on color {
                     ColorAnimation {
-                        duration: 120
+                        duration: Theme.motionFast
                     }
                 }
             }

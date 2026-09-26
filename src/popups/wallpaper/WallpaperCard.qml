@@ -191,7 +191,7 @@ Item {
                 NumberAnimation on rotation {
                     from: 0
                     to: 360
-                    duration: 1000
+                    duration: Theme.motionLoop
                     loops: Animation.Infinite
                     running: root.applying && root.selected
                 }

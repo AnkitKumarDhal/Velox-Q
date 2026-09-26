@@ -22,13 +22,13 @@ Item {
 
         Behavior on color {
             ColorAnimation {
-                duration: 120
+                duration: Theme.motionFast
             }
         }
 
         Behavior on border.width {
             NumberAnimation {
-                duration: 120
+                duration: Theme.motionFast
             }
         }
 

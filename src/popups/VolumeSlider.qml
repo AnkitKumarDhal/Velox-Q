@@ -28,7 +28,7 @@ Item {
             color: root.muted ? Colors.error : Colors.primary
             Behavior on color {
                 ColorAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                 }
             }
         }
@@ -46,7 +46,7 @@ Item {
 
         Behavior on color {
             ColorAnimation {
-                duration: 120
+                duration: Theme.motionFast
             }
         }
 
@@ -60,7 +60,7 @@ Item {
             opacity: dragArea.pressed ? 0.2 : 0
             Behavior on opacity {
                 NumberAnimation {
-                    duration: 100
+                    duration: Theme.motionQuick
                 }
             }
         }

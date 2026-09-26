@@ -49,7 +49,7 @@ Item {
         color: rowHov.containsMouse ? Colors.surfaceContainerHighest : Colors.surfaceContainerHigh
         Behavior on color {
             ColorAnimation {
-                duration: 120
+                duration: Theme.motionFast
             }
         }
 
@@ -135,7 +135,7 @@ Item {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 120
+                        duration: Theme.motionFast
                     }
                 }
 

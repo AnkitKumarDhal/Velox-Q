@@ -14,7 +14,7 @@ Canvas {
         property: "slideOffset"
         from: 1.0
         to: 0.0
-        duration: 900
+        duration: Theme.motionAmbient
         easing.type: Easing.OutCubic
     }
 

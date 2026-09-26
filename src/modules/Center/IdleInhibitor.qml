@@ -15,7 +15,7 @@ PillBase {
 
     Behavior on border.width {
         NumberAnimation {
-            duration: 150
+            duration: Theme.motionHover
         }
     }
 
@@ -52,7 +52,7 @@ PillBase {
 
         Behavior on color {
             ColorAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
     }
@@ -76,7 +76,7 @@ PillBase {
 
         Behavior on color {
             ColorAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
     }

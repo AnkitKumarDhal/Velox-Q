@@ -146,13 +146,13 @@ PanelWindow {
 
                             NumberAnimation {
                                 to: 0.3
-                                duration: 600
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.InOutSine
                             }
 
                             NumberAnimation {
                                 to: 0.7
-                                duration: 600
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.InOutSine
                             }
                         }

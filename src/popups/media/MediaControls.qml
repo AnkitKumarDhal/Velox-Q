@@ -31,7 +31,7 @@ RowLayout {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 120
+                duration: Theme.motionFast
             }
         }
 
@@ -44,13 +44,13 @@ RowLayout {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                     easing.type: Easing.OutCubic
                 }
             }
             Behavior on height {
                 NumberAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                     easing.type: Easing.OutCubic
                 }
             }
@@ -110,7 +110,7 @@ RowLayout {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 130
+                    duration: Theme.motionFast
                     easing.type: Easing.OutCubic
                 }
             }

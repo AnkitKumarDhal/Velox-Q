@@ -70,7 +70,7 @@ PanelWindow {
                         property: "x"
                         from: toastList.width + 36
                         to: 0
-                        duration: 350
+                        duration: Theme.motionMedium
                         easing.type: Easing.OutCubic
                     }
 
@@ -78,7 +78,7 @@ PanelWindow {
                         property: "opacity"
                         from: 0
                         to: 1
-                        duration: 280
+                        duration: Theme.motionMedium
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -88,7 +88,7 @@ PanelWindow {
             addDisplaced: Transition {
                 NumberAnimation {
                     properties: "y"
-                    duration: 320
+                    duration: Theme.motionMedium
                     easing.type: Easing.OutCubic
                 }
             }
@@ -99,14 +99,14 @@ PanelWindow {
                     NumberAnimation {
                         property: "x"
                         to: toastList.width + 24
-                        duration: 300
+                        duration: Theme.motionMedium
                         easing.type: Easing.InCubic
                     }
 
                     NumberAnimation {
                         property: "opacity"
                         to: 0
-                        duration: 220
+                        duration: Theme.motionNormal
                         easing.type: Easing.InCubic
                     }
                 }
@@ -116,7 +116,7 @@ PanelWindow {
             removeDisplaced: Transition {
                 NumberAnimation {
                     properties: "y"
-                    duration: 300
+                    duration: Theme.motionMedium
                     easing.type: Easing.OutCubic
                 }
             }

@@ -213,13 +213,13 @@ PanelWindow {
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 120
+                                    duration: Theme.motionFast
                                 }
                             }
 
                             Behavior on border.color {
                                 ColorAnimation {
-                                    duration: 120
+                                    duration: Theme.motionFast
                                 }
                             }
 
@@ -325,7 +325,7 @@ PanelWindow {
 
                         Behavior on x {
                             NumberAnimation {
-                                duration: 100
+                                duration: Theme.motionQuick
                                 easing.type: Easing.OutCubic
                             }
                         }

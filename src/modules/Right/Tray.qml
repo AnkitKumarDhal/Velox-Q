@@ -276,13 +276,13 @@ PillBase {
 
                                 NumberAnimation {
                                     to: 0.35
-                                    duration: 650
+                                    duration: Theme.motionEmphasis
                                     easing.type: Easing.InOutSine
                                 }
 
                                 NumberAnimation {
                                     to: 1
-                                    duration: 650
+                                    duration: Theme.motionEmphasis
                                     easing.type: Easing.InOutSine
                                 }
                             }
@@ -514,13 +514,13 @@ PillBase {
 
                                     NumberAnimation {
                                         to: 0.35
-                                        duration: 650
+                                        duration: Theme.motionEmphasis
                                         easing.type: Easing.InOutSine
                                     }
 
                                     NumberAnimation {
                                         to: 1
-                                        duration: 650
+                                        duration: Theme.motionEmphasis
                                         easing.type: Easing.InOutSine
                                     }
                                 }

@@ -180,7 +180,7 @@ PanelWindow {
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: 300
+                                duration: Theme.motionMedium
                             }
                         }
 
@@ -189,12 +189,12 @@ PanelWindow {
                             loops: Animation.Infinite
                             NumberAnimation {
                                 to: 0.3
-                                duration: 600
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.InOutSine
                             }
                             NumberAnimation {
                                 to: 1.0
-                                duration: 600
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.InOutSine
                             }
                         }
@@ -225,7 +225,7 @@ PanelWindow {
                             font.family: Fonts.font
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 200
+                                    duration: Theme.motionNormal
                                 }
                             }
                         }
@@ -268,13 +268,13 @@ PanelWindow {
                         color: BatteryService.getColor()
                         Behavior on width {
                             NumberAnimation {
-                                duration: 600
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.OutCubic
                             }
                         }
                         Behavior on color {
                             ColorAnimation {
-                                duration: 300
+                                duration: Theme.motionMedium
                             }
                         }
                     }
@@ -373,12 +373,12 @@ PanelWindow {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
                     Behavior on border.color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
 

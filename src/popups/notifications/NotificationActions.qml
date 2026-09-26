@@ -40,13 +40,13 @@ Item {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 120
+                        duration: Theme.motionFast
                     }
                 }
 
                 Behavior on border.color {
                     ColorAnimation {
-                        duration: 120
+                        duration: Theme.motionFast
                     }
                 }
 

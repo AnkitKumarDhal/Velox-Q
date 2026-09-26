@@ -36,7 +36,7 @@ Item {
         id: carouselAnimation
         target: wallCarousel
         property: "contentX"
-        duration: 340
+        duration: Theme.motionMedium
         easing.type: Easing.OutBack
         easing.overshoot: 1.15
     }

@@ -136,7 +136,7 @@ Item {
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 80
+                            duration: Theme.motionInstant
                         }
                     }
                 }
@@ -155,7 +155,7 @@ Item {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 100
+                            duration: Theme.motionQuick
                         }
                     }
                 }

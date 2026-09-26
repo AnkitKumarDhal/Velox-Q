@@ -286,26 +286,26 @@ PillBase {
 
                     Behavior on width {
                         NumberAnimation {
-                            duration: 250
+                            duration: Theme.motionNormal
                             easing.type: Easing.OutExpo
                         }
                     }
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 200
+                            duration: Theme.motionNormal
                         }
                     }
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 200
+                            duration: Theme.motionNormal
                         }
                     }
 
                     Behavior on border.width {
                         NumberAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
 
@@ -313,7 +313,7 @@ PillBase {
 
                     Behavior on scale {
                         NumberAnimation {
-                            duration: 120
+                            duration: Theme.motionFast
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -338,13 +338,13 @@ PillBase {
 
                             NumberAnimation {
                                 to: 0.75
-                                duration: 550
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.InOutSine
                             }
 
                             NumberAnimation {
                                 to: 0.2
-                                duration: 550
+                                duration: Theme.motionEmphasis
                                 easing.type: Easing.InOutSine
                             }
                         }

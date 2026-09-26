@@ -75,7 +75,7 @@ Item {
         opacity: root.visible ? 1 : 0
         Behavior on opacity {
             NumberAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
 
@@ -91,7 +91,7 @@ Item {
                 color: !root.available ? Colors.surfaceContainerHighest : muted ? Colors.errorContainer : Colors.surfaceContainerHighest
                 Behavior on color {
                     ColorAnimation {
-                        duration: 150
+                        duration: Theme.motionHover
                     }
                 }
                 Text {
@@ -106,7 +106,7 @@ Item {
                     font.pixelSize: 16
                     Behavior on color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
                 }
@@ -165,12 +165,12 @@ Item {
             border.color: Colors.error
             Behavior on color {
                 ColorAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                 }
             }
             Behavior on border.width {
                 NumberAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                 }
             }
             RowLayout {

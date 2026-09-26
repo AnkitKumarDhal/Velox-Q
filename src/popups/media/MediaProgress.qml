@@ -40,7 +40,7 @@ ColumnLayout {
 
             Behavior on height {
                 NumberAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                 }
             }
         }
@@ -56,13 +56,13 @@ ColumnLayout {
             Behavior on width {
                 enabled: !root.seeking
                 NumberAnimation {
-                    duration: 250
+                    duration: Theme.motionNormal
                     easing.type: Easing.OutCubic
                 }
             }
             Behavior on height {
                 NumberAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                 }
             }
         }
@@ -78,13 +78,13 @@ ColumnLayout {
             Behavior on x {
                 enabled: !root.seeking
                 NumberAnimation {
-                    duration: 250
+                    duration: Theme.motionNormal
                     easing.type: Easing.OutCubic
                 }
             }
             Behavior on width {
                 NumberAnimation {
-                    duration: 120
+                    duration: Theme.motionFast
                 }
             }
         }

@@ -79,14 +79,14 @@ Item {
 
                     Behavior on width {
                         NumberAnimation {
-                            duration: 450
+                            duration: Theme.motionSlow
                             easing.type: Easing.OutCubic
                         }
                     }
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 250
+                            duration: Theme.motionNormal
                         }
                     }
                 }

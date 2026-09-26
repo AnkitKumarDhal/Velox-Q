@@ -115,7 +115,7 @@ PanelWindow {
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: 350
+                        duration: Theme.motionMedium
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -181,7 +181,7 @@ PanelWindow {
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 200
+                                    duration: Theme.motionNormal
                                 }
                             }
                         }

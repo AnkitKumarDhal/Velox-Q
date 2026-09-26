@@ -68,7 +68,7 @@ PanelWindow {
         property: "opacity"
         from: 0
         to: 1
-        duration: 220
+        duration: Theme.motionNormal
         easing.type: Easing.OutCubic
     }
 
@@ -105,7 +105,7 @@ PanelWindow {
 
             Behavior on height {
                 NumberAnimation {
-                    duration: 220
+                    duration: Theme.motionNormal
                     easing.type: Easing.OutCubic
                 }
             }
@@ -176,7 +176,7 @@ PanelWindow {
 
                             Behavior on opacity {
                                 NumberAnimation {
-                                    duration: 150
+                                    duration: Theme.motionHover
                                 }
                             }
                         }
@@ -264,7 +264,7 @@ PanelWindow {
                                         target: delegateRoot
                                         property: "opacity"
                                         to: 0
-                                        duration: 180
+                                        duration: Theme.motionSmooth
                                         easing.type: Easing.OutCubic
                                     }
 
@@ -272,7 +272,7 @@ PanelWindow {
                                         target: delegateRoot
                                         property: "x"
                                         to: 24
-                                        duration: 180
+                                        duration: Theme.motionSmooth
                                         easing.type: Easing.OutCubic
                                     }
 
@@ -280,7 +280,7 @@ PanelWindow {
                                         target: delegateRoot
                                         property: "height"
                                         to: 0
-                                        duration: 220
+                                        duration: Theme.motionNormal
                                         easing.type: Easing.InOutCubic
                                     }
                                 }

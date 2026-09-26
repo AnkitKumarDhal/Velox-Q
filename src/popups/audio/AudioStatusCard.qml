@@ -45,18 +45,18 @@ Item {
         border.color: root.backendFailure ? Colors.error : Colors.primary
         Behavior on color {
             ColorAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
         Behavior on border.width {
             NumberAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
 
         Behavior on border.color {
             ColorAnimation {
-                duration: 150
+                duration: Theme.motionHover
             }
         }
 
@@ -85,7 +85,7 @@ Item {
                     font.pixelSize: 16
                     Behavior on color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
                 }
@@ -126,7 +126,7 @@ Item {
                 Layout.fillWidth: true
                 Behavior on color {
                     ColorAnimation {
-                        duration: 150
+                        duration: Theme.motionHover
                     }
                 }
             }
@@ -143,12 +143,12 @@ Item {
                     color: root.backendFailure ? Colors.error : root.muted ? Colors.error : Colors.primary
                     Behavior on width {
                         NumberAnimation {
-                            duration: 100
+                            duration: Theme.motionQuick
                         }
                     }
                     Behavior on color {
                         ColorAnimation {
-                            duration: 150
+                            duration: Theme.motionHover
                         }
                     }
                 }

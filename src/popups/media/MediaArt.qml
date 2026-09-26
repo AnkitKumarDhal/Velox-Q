@@ -52,7 +52,7 @@ Item {
             target: previousImage
             property: "x"
             to: -root.width * 0.08
-            duration: 300
+            duration: Theme.motionMedium
             easing.type: Easing.InOutCubic
         }
 
@@ -60,7 +60,7 @@ Item {
             target: previousImage
             property: "opacity"
             to: 0
-            duration: 240
+            duration: Theme.motionNormal
             easing.type: Easing.InOutCubic
         }
 
@@ -68,7 +68,7 @@ Item {
             target: currentImage
             property: "x"
             to: 0
-            duration: 350
+            duration: Theme.motionMedium
             easing.type: Easing.OutCubic
         }
 
@@ -76,7 +76,7 @@ Item {
             target: currentImage
             property: "opacity"
             to: 1
-            duration: 320
+            duration: Theme.motionMedium
             easing.type: Easing.OutCubic
         }
 

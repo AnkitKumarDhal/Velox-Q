@@ -64,7 +64,7 @@ Item {
             target: currentMetadata
             property: "x"
             to: -root.width * 0.06
-            duration: 280
+            duration: Theme.motionMedium
             easing.type: Easing.InOutCubic
         }
 
@@ -72,7 +72,7 @@ Item {
             target: currentMetadata
             property: "opacity"
             to: 0
-            duration: 220
+            duration: Theme.motionNormal
             easing.type: Easing.InOutCubic
         }
 
@@ -80,7 +80,7 @@ Item {
             target: incomingMetadata
             property: "x"
             to: 0
-            duration: 330
+            duration: Theme.motionMedium
             easing.type: Easing.OutCubic
         }
 
@@ -88,7 +88,7 @@ Item {
             target: incomingMetadata
             property: "opacity"
             to: 1
-            duration: 300
+            duration: Theme.motionMedium
             easing.type: Easing.OutCubic
         }
 

@@ -415,7 +415,7 @@ PanelWindow {
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: 300
+                                duration: Theme.motionMedium
                             }
                         }
                     }
