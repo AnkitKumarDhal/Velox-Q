@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Mpris
@@ -27,16 +28,14 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     visible: slide.windowVisible
 
-    mask: Region {
-        x: (win.implicitWidth - mediaCard.width) / 2
-        y: Theme.barHeight + 8
-        width: mediaCard.width
-        height: mediaCard.height
-    }
-
     property var player: MediaService.activePlayer
     property bool isPlaying: MediaService.isPlaying
     property bool hasArt: MediaService.hasArt
+    readonly property var capability: MediaService.capability
+    readonly property bool backendOperational: MediaService.backendOperational
+    readonly property bool backendFailure: MediaService.capability.backendFailure
+    readonly property bool hasPlayer: MediaService.hasPlayer
+    readonly property bool mediaOperational: MediaService.operational
     property real _position: 0
     property bool _seeking: false
     property int trackChangeToken: 0
@@ -49,7 +48,7 @@ PanelWindow {
     Timer {
         interval: 1000
         repeat: true
-        running: win.player !== null && win.isPlaying && !win._seeking && win.player.positionSupported
+        running: win.mediaOperational && win.player !== null && win.isPlaying && !win._seeking && win.player.positionSupported
         onTriggered: {
             if (!win.player)
                 return;
@@ -73,6 +72,13 @@ PanelWindow {
         }
     }
 
+    mask: Region {
+        x: (win.implicitWidth - mediaCard.width) / 2
+        y: Theme.barHeight + 8
+        width: mediaCard.width
+        height: mediaCard.height
+    }
+
     PopupSlide {
         id: slide
 
@@ -88,10 +94,12 @@ PanelWindow {
 
             width: 560
             height: 210
+            anchors {
+                top: parent.top
+                horizontalCenter: parent.horizontalCenter
+                topMargin: Theme.barHeight + 8
+            }
 
-            anchors.top: parent.top
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.topMargin: Theme.barHeight + 8
             radius: Theme.popupRadius
 
             color: Colors.surfaceContainer
@@ -101,8 +109,9 @@ PanelWindow {
             clip: true
 
             Item {
+                visible: win.mediaOperational && win.hasArt
                 anchors.fill: parent
-                opacity: win.hasArt ? 0.14 : 0
+                opacity: win.mediaOperational && win.hasArt ? 0.14 : 0
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -113,7 +122,7 @@ PanelWindow {
 
                 Image {
                     anchors.fill: parent
-                    source: win.hasArt ? win.player.trackArtUrl : ""
+                    source: win.mediaOperational && win.hasArt ? win.player.trackArtUrl : ""
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
                     smooth: true
@@ -122,7 +131,6 @@ PanelWindow {
                         radius: 12
                         transparentBorder: false
                     }
-
                     opacity: 0.95
                 }
 
@@ -134,6 +142,7 @@ PanelWindow {
             }
 
             RowLayout {
+                visible: win.mediaOperational
                 anchors.fill: parent
                 anchors.margins: 16
                 spacing: 16
@@ -180,11 +189,9 @@ PanelWindow {
                         Text {
                             text: MediaService.playerIdentity
                             color: Colors.on_SurfaceVariant
-
                             font.family: Fonts.font
                             font.pointSize: 8.5
                             font.bold: true
-
                             elide: Text.ElideRight
                             maximumLineCount: 1
                         }
@@ -201,7 +208,6 @@ PanelWindow {
                         player: win.player
                         position: win._position
                         seeking: win._seeking
-
                         Layout.fillWidth: true
                         Layout.preferredHeight: 24
 
@@ -213,7 +219,7 @@ PanelWindow {
                             win._position = pos;
                         }
                         onSeekReleased: pos => {
-                            if (win.player && win.player.canSeek) {
+                            if (win.mediaOperational && win.player && win.player.canSeek) {
                                 win.player.position = pos;
                             }
                             win._seeking = false;
@@ -238,6 +244,63 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                         }
                     }
+                }
+            }
+
+            ColumnLayout {
+                visible: !win.mediaOperational
+
+                anchors {
+                    fill: parent
+                    margins: 24
+                }
+
+                spacing: 10
+
+                Item {
+                    Layout.fillHeight: true
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignHCenter
+                    text: {
+                        if (win.backendFailure)
+                            return "Media backend unavailable";
+                        if (!win.hasPlayer)
+                            return "No media player detected";
+                        return "Media unavailable";
+                    }
+
+                    color: win.backendFailure ? Colors.error : Colors.on_Surface
+                    font.family: Fonts.font
+                    font.pixelSize: 15
+                    font.bold: true
+                }
+
+                Text {
+                    visible: win.backendFailure
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignHCenter
+                    text: win.capability.errorMessage || "The user D-Bus session is unavailable."
+                    color: Colors.error
+                    font.family: Fonts.font
+                    font.pixelSize: 10
+                    wrapMode: Text.WordWrap
+                }
+
+                Text {
+                    visible: !win.backendFailure && !win.hasPlayer
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignHCenter
+                    text: "Start a media player to use media controls."
+                    color: Colors.on_SurfaceVariant
+                    font.family: Fonts.font
+                    font.pixelSize: 10
+                }
+
+                Item {
+                    Layout.fillHeight: true
                 }
             }
         }
