@@ -20,6 +20,8 @@ PillBase {
     }
 
     readonly property string caffeineText: {
+        if (CaffeineService.capability.backendFailure)
+            return "󰾪 Unavailable";
         if (!CaffeineService.caffeineActive)
             return "󰾪 Off";
         if (CaffeineService.infinite)
@@ -27,25 +29,25 @@ PillBase {
         return "󰛨 " + formatRemaining(CaffeineService.remainingSeconds);
     }
 
-    readonly property color caffeineColor: CaffeineService.caffeineActive ? Colors.tertiary : Colors.outline
+    readonly property color caffeineColor: {
+        if (CaffeineService.capability.backendFailure)
+            return Colors.error;
+        return CaffeineService.caffeineActive ? Colors.tertiary : Colors.outline;
+    }
 
     function formatRemaining(totalSeconds) {
         const seconds = Math.max(0, Number(totalSeconds));
         const minutes = Math.floor(seconds / 60);
         const remaining = seconds % 60;
-
         return String(minutes).padStart(2, "0") + ":" + String(remaining).padStart(2, "0");
     }
 
     Text {
         text: root.caffeineText
-
         color: root.caffeineColor
-
         font.pointSize: 11
         font.bold: CaffeineService.caffeineActive
         font.family: Fonts.fontM
-
         verticalAlignment: Text.AlignVCenter
 
         Behavior on color {
@@ -58,9 +60,7 @@ PillBase {
     Rectangle {
         Layout.preferredWidth: 1
         Layout.preferredHeight: 13
-
         radius: 1
-
         color: Colors.outlineVariant
         opacity: 0.8
     }
@@ -68,18 +68,21 @@ PillBase {
     Text {
         visible: BrightnessService.available
         text: "󰃠 " + BrightnessService.brightness + "%"
-
         color: Colors.primary
-
         font.pointSize: 11
         font.bold: true
         font.family: Fonts.fontM
-
         verticalAlignment: Text.AlignVCenter
     }
 
     onClicked: {
         Popups.caffeineOpen = !Popups.caffeineOpen;
     }
-    onRightClicked: CaffeineService.cyclePreset()
+
+    onRightClicked: {
+        if (!CaffeineService.operational)
+            return;
+
+        CaffeineService.cyclePreset();
+    }
 }
