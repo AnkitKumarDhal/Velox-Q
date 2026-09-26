@@ -27,7 +27,6 @@ PanelWindow {
 
     readonly property bool isFocusedScreen: {
         const monitor = root.screen ? Hyprland.monitorFor(root.screen) : null;
-
         return monitor ? monitor.focused : false;
     }
 
@@ -73,6 +72,8 @@ PanelWindow {
         }
     ]
 
+    readonly property string selectedActionKey: root.actions[root.selectedIndex]?.key ?? ""
+    readonly property bool selectedActionAvailable: root.actionAvailable(root.selectedActionKey)
     property int selectedIndex: 0
 
     property bool _shouldShow: false
@@ -81,18 +82,47 @@ PanelWindow {
     visible: root._shouldShow && root.isFocusedScreen
     WlrLayershell.keyboardFocus: root._shouldShow && root.isFocusedScreen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
+    function actionAvailable(action) {
+        switch (action) {
+        case "lock":
+            return SessionService.lockOperational;
+        case "logout":
+            return SessionService.compositorOperational;
+        case "suspend":
+        case "hibernate":
+        case "reboot":
+        case "poweroff":
+            return SessionService.powerOperational;
+        default:
+            return false;
+        }
+    }
+
+    function actionError(action) {
+        switch (action) {
+        case "lock":
+            return SessionService.lockCapability.errorMessage;
+        case "logout":
+            return SessionService.compositorCapability.errorMessage;
+        case "suspend":
+        case "hibernate":
+        case "reboot":
+        case "poweroff":
+            return SessionService.powerCapability.errorMessage;
+        default:
+            return "";
+        }
+    }
+
     Connections {
         target: Popups
 
         function onSessionOpenChanged() {
             if (Popups.sessionOpen) {
                 closeDelay.stop();
-
                 root._shouldShow = true;
                 root._visualOpen = false;
-
                 root.selectedIndex = 0;
-
                 openVisualTimer.start();
                 focusTimer.start();
             } else {
@@ -104,10 +134,8 @@ PanelWindow {
 
     Timer {
         id: openVisualTimer
-
         interval: 30
         repeat: false
-
         onTriggered: {
             root._visualOpen = true;
         }
@@ -115,10 +143,8 @@ PanelWindow {
 
     Timer {
         id: focusTimer
-
         interval: 90
         repeat: false
-
         onTriggered: {
             keyFocus.forceActiveFocus();
         }
@@ -126,10 +152,8 @@ PanelWindow {
 
     Timer {
         id: closeDelay
-
         interval: Theme.animDuration + 70
         repeat: false
-
         onTriggered: {
             if (!Popups.sessionOpen)
                 root._shouldShow = false;
@@ -140,9 +164,7 @@ PanelWindow {
         if (Popups.sessionOpen) {
             root._shouldShow = true;
             root._visualOpen = false;
-
             root.selectedIndex = 0;
-
             openVisualTimer.start();
             focusTimer.start();
         }
@@ -150,7 +172,6 @@ PanelWindow {
 
     Item {
         id: keyFocus
-
         anchors.fill: parent
         focus: root._shouldShow
 
@@ -220,13 +241,14 @@ PanelWindow {
         const action = root.actions[index];
         if (!action || !action.key)
             return;
+        if (!root.actionAvailable(action.key))
+            return;
         SessionService.perform(action.key);
         Popups.sessionOpen = false;
     }
 
     Rectangle {
         anchors.fill: parent
-
         color: Qt.rgba(0, 0, 0, 0.60)
         opacity: root._visualOpen ? 1 : 0
 
@@ -248,16 +270,12 @@ PanelWindow {
 
         width: root.cardSize
         height: root.cardSize
-
         anchors.centerIn: parent
         z: 10
         radius: 34
-
         color: Colors.surfaceContainer
-
         border.width: Theme.popupBorder
         border.color: Colors.outlineVariant
-
         opacity: root._visualOpen ? 1 : 0
         scale: root._visualOpen ? 1 : 0.90
 
@@ -277,17 +295,13 @@ PanelWindow {
 
         Column {
             anchors.centerIn: parent
-
             spacing: 4
             z: 5
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
-
                 text: "Session"
-
                 color: Colors.on_Surface
-
                 font.family: Fonts.font
                 font.pixelSize: 17
                 font.bold: true
@@ -295,11 +309,12 @@ PanelWindow {
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
-
-                text: "Power & session"
-
-                color: Colors.on_SurfaceVariant
-
+                text: {
+                    if (!root.selectedActionAvailable && root._visualOpen)
+                        return root.actionError(root.selectedActionKey) || "Selected action is unavailable";
+                    return "Power & session";
+                }
+                color: !root.selectedActionAvailable && root._visualOpen ? Colors.error : Colors.on_SurfaceVariant
                 font.family: Fonts.font
                 font.pixelSize: 10
             }
@@ -313,10 +328,8 @@ PanelWindow {
 
                 required property var modelData
                 required property int index
-
                 width: 128
                 height: 116
-
                 z: 20
 
                 readonly property real angleRadians: modelData.angle * Math.PI / 180
@@ -324,12 +337,12 @@ PanelWindow {
                 readonly property real targetCenterY: card.height / 2 + Math.sin(angleRadians) * root.buttonRadius
                 readonly property real closedCenterX: card.width / 2
                 readonly property real closedCenterY: card.height / 2
+                readonly property bool available: root.actionAvailable(modelData.key)
 
                 x: root._visualOpen ? targetCenterX - width / 2 : closedCenterX - width / 2
                 y: root._visualOpen ? targetCenterY - height / 2 : closedCenterY - height / 2
-
-                opacity: root._visualOpen ? 1 : 0
-                scale: root._visualOpen ? root.selectedIndex === index ? 1.07 : 1 : 0.72
+                opacity: root._visualOpen ? available ? 1 : 0.45 : 0
+                scale: root._visualOpen ? root.selectedIndex === index ? available ? 1.07 : 1.02 : 1 : 0.72
 
                 Behavior on x {
                     SequentialAnimation {
@@ -382,19 +395,16 @@ PanelWindow {
 
                     width: 100
                     height: 100
-
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
-
                     radius: width / 2
 
                     readonly property bool selected: root.selectedIndex === actionItem.index
                     readonly property bool destructive: actionItem.modelData.key === "poweroff"
 
-                    color: selected ? destructive ? Colors.error : Colors.primary : Colors.surfaceContainerHigh
-
+                    color: !actionItem.available ? Colors.surfaceContainerHigh : selected ? destructive ? Colors.error : Colors.primary : Colors.surfaceContainerHigh
                     border.width: selected ? 2 : 1
-                    border.color: selected ? destructive ? Colors.error : Colors.primary : Colors.outlineVariant
+                    border.color: !actionItem.available ? Colors.outlineVariant : selected ? destructive ? Colors.error : Colors.primary : Colors.outlineVariant
 
                     Behavior on color {
                         ColorAnimation {
@@ -415,9 +425,7 @@ PanelWindow {
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: actionItem.modelData.icon
-
-                            color: button.selected ? button.destructive ? Colors.on_Error : Colors.on_Primary : Colors.on_Surface
-
+                            color: !actionItem.available ? Colors.outline : button.selected ? button.destructive ? Colors.on_Error : Colors.on_Primary : Colors.on_Surface
                             font.family: "SpaceMono Nerd Font"
                             font.pixelSize: 30
 
@@ -431,9 +439,8 @@ PanelWindow {
 
                     MouseArea {
                         anchors.fill: parent
-
-                        hoverEnabled: true
-
+                        hoverEnabled: actionItem.available
+                        enabled: actionItem.available
                         onEntered: root.selectedIndex = actionItem.index
                         onPressed: root.selectedIndex = actionItem.index
                         onClicked: root.activate(actionItem.index)
@@ -448,13 +455,10 @@ PanelWindow {
                     }
 
                     text: actionItem.modelData.label
-
-                    color: root.selectedIndex === actionItem.index ? actionItem.modelData.key === "poweroff" ? Colors.error : Colors.on_Surface : Colors.on_SurfaceVariant
-
+                    color: !actionItem.available ? Colors.outline : root.selectedIndex === actionItem.index ? actionItem.modelData.key === "poweroff" ? Colors.error : Colors.on_Surface : Colors.on_SurfaceVariant
                     font.family: Fonts.font
                     font.pixelSize: 12
                     font.bold: root.selectedIndex === actionItem.index
-
                     horizontalAlignment: Text.AlignHCenter
 
                     Behavior on color {
