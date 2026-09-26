@@ -37,13 +37,18 @@ PanelWindow {
             if (BatteryService.initialized && !BatteryService.hasBattery)
                 Popups.batteryOpen = false;
         }
+
+        function onCapabilityChanged() {
+            if (!BatteryService.capability.hardwareAvailable)
+                Popups.batteryOpen = false;
+        }
     }
 
     PopupSlide {
         id: slidePanel
         anchors.fill: parent
         edge: "top"
-        open: Popups.batteryOpen && BatteryService.initialized && BatteryService.hasBattery
+        open: Popups.batteryOpen && BatteryService.capability.hardwareAvailable
         onCloseRequested: Popups.batteryOpen = false
 
         Rectangle {
@@ -59,7 +64,7 @@ PanelWindow {
             height: cardCol.implicitHeight + 20
             radius: Theme.popupRadius
             color: Colors.surfaceContainer
-            border.color: Colors.outlineVariant
+            border.color: BatteryService.capability.backendFailure ? Colors.error : Colors.outlineVariant
             border.width: Theme.popupBorder
             clip: true
 
@@ -91,7 +96,78 @@ PanelWindow {
                 }
                 spacing: 14
 
+                Rectangle {
+                    visible: BatteryService.capability.backendFailure
+
+                    Layout.fillWidth: true
+                    implicitHeight: backendErrorColumn.implicitHeight + 20
+
+                    radius: 12
+                    color: Colors.errorContainer
+                    border.width: 1
+                    border.color: Colors.error
+
+                    ColumnLayout {
+                        id: backendErrorColumn
+
+                        anchors {
+                            fill: parent
+                            margins: 10
+                        }
+
+                        spacing: 4
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 8
+
+                            Text {
+                                text: "󰅙"
+                                color: Colors.on_ErrorContainer
+                                font.pixelSize: 17
+                                font.family: Fonts.fontM
+                            }
+
+                            Text {
+                                text: "Battery backend unavailable"
+                                color: Colors.on_ErrorContainer
+                                font.pixelSize: 11
+                                font.bold: true
+                                font.family: Fonts.font
+                                Layout.fillWidth: true
+                            }
+                        }
+
+                        Text {
+                            text: BatteryService.capability.errorMessage || "The battery backend could not be reached."
+                            color: Colors.on_ErrorContainer
+                            font.pixelSize: 9
+                            font.family: Fonts.font
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                        }
+                    }
+                }
+
+                Rectangle {
+                    visible: BatteryService.capability.hardwareAvailable && !BatteryService.operational && !BatteryService.capability.backendFailure
+
+                    Layout.fillWidth: true
+                    implicitHeight: 44
+                    radius: 12
+                    color: Colors.surfaceContainerHigh
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Waiting for battery backend..."
+                        color: Colors.outline
+                        font.pixelSize: 10
+                        font.family: Fonts.font
+                    }
+                }
+
                 RowLayout {
+                    visible: BatteryService.operational
                     Layout.fillWidth: true
                     spacing: 14
 
@@ -171,6 +247,7 @@ PanelWindow {
                 }
 
                 Item {
+                    visible: BatteryService.operational
                     Layout.fillWidth: true
                     height: 6
 
@@ -204,6 +281,7 @@ PanelWindow {
                 }
 
                 Rectangle {
+                    visible: BatteryService.operational
                     Layout.fillWidth: true
                     height: 1
                     color: Colors.outlineVariant
@@ -212,7 +290,7 @@ PanelWindow {
 
                 SettingRow {
                     label: "Performance"
-                    visible: BatteryService.performanceAvailable
+                    visible: BatteryService.operational && BatteryService.performanceAvailable
                     currentValue: BatteryService.cpuTier
                     options: BatteryService.performanceOptions.map(id => ({
                                 id: id,
@@ -223,7 +301,7 @@ PanelWindow {
 
                 SettingRow {
                     label: "Charging"
-                    visible: BatteryService.chargingAvailable
+                    visible: BatteryService.operational && BatteryService.chargingAvailable
                     currentValue: BatteryService.chargeMode
                     options: BatteryService.chargingOptions.map(id => ({
                                 id: id,
@@ -234,7 +312,7 @@ PanelWindow {
 
                 SettingRow {
                     label: "Display"
-                    visible: BatteryService.displayAvailable
+                    visible: BatteryService.operational && BatteryService.displayAvailable
                     currentValue: String(BatteryService.refreshRate)
                     options: BatteryService.displayOptions.map(rate => {
                         const value = Math.round(Number(rate));
