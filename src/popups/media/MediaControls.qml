@@ -1,12 +1,16 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.src.theme
+import qs.src.services
 
 RowLayout {
     id: root
 
     required property var player
     required property bool isPlaying
+
+    readonly property bool backendOperational: MediaService.backendOperational
+    readonly property bool playerAvailable: root.backendOperational && root.player !== null
 
     Layout.fillWidth: true
     spacing: 2
@@ -83,9 +87,9 @@ RowLayout {
     IconButton {
         icon: "󰒮"
         iconSize: 16
-        enabledState: root.player?.canGoPrevious ?? false
+        enabledState: root.playerAvailable && root.player?.canGoPrevious
         onClicked: {
-            if (root.player?.canGoPrevious) {
+            if (root.playerAvailable && root.player?.canGoPrevious) {
                 root.player.previous();
             }
         }
@@ -122,7 +126,7 @@ RowLayout {
             text: root.isPlaying ? "󰏤" : "󰐊"
             font.family: Fonts.fontM
             font.pointSize: 18
-            color: Colors.primary
+            color: root.playerAvailable ? Colors.primary : Colors.outline
         }
 
         MouseArea {
@@ -130,10 +134,10 @@ RowLayout {
 
             anchors.fill: parent
             hoverEnabled: true
-            enabled: root.player?.canTogglePlaying ?? false
+            enabled: root.playerAvailable && (root.player?.canTogglePlaying ?? false)
             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: {
-                if (root.player?.canTogglePlaying) {
+                if (root.playerAvailable && root.player?.canTogglePlaying) {
                     root.player.togglePlaying();
                 }
             }
@@ -144,9 +148,9 @@ RowLayout {
     IconButton {
         icon: "󰒭"
         iconSize: 16
-        enabledState: root.player?.canGoNext ?? false
+        enabledState: root.playerAvailable && root.player?.canGoNext
         onClicked: {
-            if (root.player?.canGoNext) {
+            if (root.playerAvailable && root.player?.canGoNext) {
                 root.player.next();
             }
         }
