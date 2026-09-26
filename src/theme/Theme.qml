@@ -6,7 +6,7 @@ QtObject {
     id: root
 
     // Pill geometry
-    readonly property int borderWidth: 3
+    readonly property int borderWidth: borderStrong
     readonly property int barHeight: 36
     readonly property int pillHeight: 30
     readonly property int pillRadius: 15
@@ -16,12 +16,52 @@ QtObject {
 
     // Popup geometry
     readonly property int popupRadius: 14
-    readonly property int popupBorder: 1
+    readonly property int popupBorder: borderThin
+
+    // Spacing
+    readonly property int spacingXs: 4
+    readonly property int spacingSm: 6
+    readonly property int spacingMd: 8
+    readonly property int spacingLg: 10
+    readonly property int spacingXl: 12
+    readonly property int spacingXxl: 16
+
+    // Typography
+    readonly property int fontSizeCaption: 10
+    readonly property int fontSizeLabel: 12
+    readonly property int fontSizeBody: 14
+    readonly property int fontSizeTitle: 16
+    readonly property int fontSizeHeadline: 18
+    readonly property int fontSizeDisplay: 30
+
+    readonly property int fontWeightRegular: 400
+    readonly property int fontWeightMedium: 500
+    readonly property int fontWeightBold: 700
+
+    // Borders
+    readonly property int borderNone: 0
+    readonly property int borderThin: 1
+    readonly property int borderMedium: 2
+    readonly property int borderStrong: 3
+
+    // Control sizes
+    readonly property int controlHeightSmall: 28
+    readonly property int controlHeightMedium: 32
+    readonly property int controlHeightLarge: 40
+    readonly property int controlIconSmall: 14
+    readonly property int controlIconMedium: 16
+    readonly property int controlIconLarge: 20
 
     // Animation
-    readonly property int animDuration: 250
-    readonly property int hoverFadeDuration: 150
-    readonly property int slideInDuration: 400
+    readonly property int motionFast: 120
+    readonly property int motionHover: 150
+    readonly property int motionNormal: 250
+    readonly property int motionSlow: 400
+    readonly property int motionEmphasis: 600
+
+    readonly property int animDuration: motionNormal
+    readonly property int hoverFadeDuration: motionHover
+    readonly property int slideInDuration: motionSlow
     readonly property int hoverCloseDelay: 300
 
     // Bezier curve used on popup open/close (matches your SystemPopup)

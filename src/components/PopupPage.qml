@@ -7,8 +7,8 @@ Item {
 
     default property alias content: contentCol.data
 
-    property int padH: 8
-    property int padV: 8
+    property int padH: Theme.spacingMd
+    property int padV: Theme.spacingMd
 
     clip: true
 
@@ -24,7 +24,7 @@ Item {
             policy: contentCol.implicitHeight + root.padV * 2 > flick.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
             contentItem: Rectangle {
-                implicitWidth: 3
+                implicitWidth: Theme.spacingXs - 1
                 implicitHeight: 40
                 radius: 1.5
                 color: Qt.rgba(1, 1, 1, 0.25)
@@ -34,7 +34,7 @@ Item {
 
         Column {
             id: contentCol
-            spacing: 8
+            spacing: Theme.spacingMd
             anchors {
                 top: parent.top
                 topMargin: root.padV

@@ -54,7 +54,7 @@ Rectangle {
     RowLayout {
         id: innerLayout
         anchors.centerIn: parent
-        spacing: 8
+        spacing: Theme.spacingMd
         z: 3
     }
 

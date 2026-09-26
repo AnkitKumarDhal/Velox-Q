@@ -15,7 +15,7 @@ Item {
         pageChanged(defaultPage);
     }
 
-    implicitWidth: orientation === "vertical" ? 40 : 0
+    implicitWidth: orientation === "vertical" ? Theme.controlHeightLarge : 0
     implicitHeight: orientation === "horizontal" ? 46 : 0
 
     property bool _scrollBusy: false
@@ -48,7 +48,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: 40
+        height: Theme.controlHeightLarge
         visible: root.orientation === "horizontal"
 
         Repeater {
@@ -63,33 +63,33 @@ Item {
 
                 Rectangle {
                     anchors.centerIn: parent
-                    width: Math.min(parent.width - 4, hIcon.implicitWidth + (hLabel.visible ? hLabel.implicitWidth + 8 : 0) + 24)
-                    height: parent.height - 8
+                    width: Math.min(parent.width - Theme.spacingXs, hIcon.implicitWidth + (hLabel.visible ? hLabel.implicitWidth + Theme.spacingMd : 0) + 24)
+                    height: parent.height - Theme.spacingMd
                     radius: height / 2
                     color: hTab.isActive ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : (hHov.containsMouse ? Qt.rgba(1, 1, 1, 0.07) : "transparent")
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 120
+                            duration: Theme.motionFast
                         }
                     }
                 }
 
                 Row {
                     anchors.centerIn: parent
-                    spacing: 6
+                    spacing: Theme.spacingSm
 
                     Text {
                         id: hIcon
                         text: modelData.icon
-                        font.pixelSize: 14
+                        font.pixelSize: Theme.fontSizeBody
                         font.family: Fonts.font
                         anchors.verticalCenter: parent.verticalCenter
                         color: hTab.isActive ? Colors.primary : (hHov.containsMouse ? Qt.rgba(1, 1, 1, 0.75) : Qt.rgba(1, 1, 1, 0.4))
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: 120
+                                duration: Theme.motionFast
                             }
                         }
                     }
@@ -98,15 +98,15 @@ Item {
                         id: hLabel
                         visible: modelData.label !== undefined
                         text: modelData.label ?? ""
-                        font.pixelSize: 12
-                        font.bold: hTab.isActive
+                        font.pixelSize: Theme.fontSizeLabel
+                        font.weight: hTab.isActive ? Theme.fontWeightBold : Theme.fontWeightRegular
                         font.family: Fonts.font
                         anchors.verticalCenter: parent.verticalCenter
                         color: hTab.isActive ? Colors.primary : (hHov.containsMouse ? Qt.rgba(1, 1, 1, 0.75) : Qt.rgba(1, 1, 1, 0.4))
 
                         Behavior on color {
                             ColorAnimation {
-                                duration: 120
+                                duration: Theme.motionFast
                             }
                         }
                     }
@@ -129,7 +129,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 1
+        height: Theme.borderThin
         color: Colors.outlineVariant
         opacity: 0.5
     }
@@ -150,27 +150,27 @@ Item {
                 id: vTab
                 readonly property bool isActive: root.currentPage === modelData.key
 
-                width: 40
+                width: Theme.controlHeightLarge
                 height: vCol.tabH
                 radius: Theme.pillRadius
                 color: vTab.isActive ? Colors.primary : (vHov.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent")
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: 120
+                        duration: Theme.motionFast
                     }
                 }
 
                 Text {
                     anchors.centerIn: parent
                     text: modelData.icon
-                    font.pixelSize: 16
+                    font.pixelSize: Theme.fontSizeTitle
                     font.family: Fonts.font
                     color: vTab.isActive ? Colors.on_Primary : Colors.primary
 
                     Behavior on color {
                         ColorAnimation {
-                            duration: 120
+                            duration: Theme.motionFast
                         }
                     }
                 }
