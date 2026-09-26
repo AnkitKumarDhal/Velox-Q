@@ -92,7 +92,7 @@ PanelWindow {
 
             radius: Theme.popupRadius
             color: Colors.surfaceContainer
-            border.color: Colors.outlineVariant
+            border.color: wallpaperModel.backendFailure ? Colors.error : Colors.outlineVariant
             border.width: Theme.popupBorder
             clip: true
 
@@ -113,7 +113,7 @@ PanelWindow {
                     Text {
                         text: "󰋲"
 
-                        color: Colors.primary
+                        color: wallpaperModel.backendFailure ? Colors.error : Colors.primary
 
                         font.pixelSize: 18
                         font.family: Fonts.fontM
@@ -132,14 +132,13 @@ PanelWindow {
                     }
 
                     Text {
-                        visible: wallpaperModel.applying
-
-                        text: "Applying…"
-
-                        color: Colors.primary
-
+                        visible: wallpaperModel.applying || wallpaperModel.backendFailure
+                        text: wallpaperModel.backendFailure ? wallpaperModel.capability.errorMessage || "Wallpaper backend unavailable" : "Applying…"
+                        color: wallpaperModel.backendFailure ? Colors.error : Colors.primary
                         font.pixelSize: 11
                         font.family: Fonts.font
+                        elide: Text.ElideRight
+                        maximumLineCount: 1
 
                         SequentialAnimation on opacity {
                             running: wallpaperModel.applying
@@ -162,9 +161,7 @@ PanelWindow {
 
                 WallpaperDirectoryBar {
                     id: directoryBar
-
                     Layout.fillWidth: true
-
                     directory: wallpaperModel.wallpaperDir
 
                     onDirectoryAccepted: directory => {
@@ -187,9 +184,7 @@ PanelWindow {
                 // Divider
                 Rectangle {
                     Layout.fillWidth: true
-
                     height: 1
-
                     color: Colors.outlineVariant
                     opacity: 0.5
                 }
@@ -202,13 +197,12 @@ PanelWindow {
 
                     WallpaperCarousel {
                         id: wallpaperCarousel
-
                         anchors.fill: parent
-
                         wallpapers: wallpaperModel.wallpapers
                         selectedIndex: wallpaperModel.selectedIndex
                         currentWall: wallpaperModel.currentWall
                         applying: wallpaperModel.applying
+                        canApply: wallpaperModel.operational
                         thumbnailWidth: wallpaperModel.thumbnailWidth
                         thumbnailHeight: wallpaperModel.thumbnailHeight
                         wallpaperDir: wallpaperModel.wallpaperDir
@@ -232,16 +226,12 @@ PanelWindow {
                     id: controls
 
                     Layout.fillWidth: true
-
                     filename: wallpaperModel.wallpapers.count > 0 && wallpaperModel.selectedIndex < wallpaperModel.wallpapers.count ? wallpaperModel.wallpapers.get(wallpaperModel.selectedIndex).sourcePath.split("/").pop() : "No wallpaper selected"
-
                     metadata: wallpaperModel.selectedFormat !== "" && wallpaperModel.selectedDimensions !== "" && wallpaperModel.selectedFileSize !== "" ? wallpaperModel.selectedFormat + " · " + wallpaperModel.selectedDimensions + " · " + wallpaperModel.selectedFileSize : ""
-
                     index: wallpaperModel.selectedIndex
                     count: wallpaperModel.wallpapers.count
-
                     applying: wallpaperModel.applying
-
+                    canApply: wallpaperModel.operational
                     applied: wallpaperModel.wallpapers.count > 0 && wallpaperModel.selectedIndex < wallpaperModel.wallpapers.count && wallpaperModel.wallpapers.get(wallpaperModel.selectedIndex).sourcePath === wallpaperModel.currentWall
 
                     onApplyRequested: {

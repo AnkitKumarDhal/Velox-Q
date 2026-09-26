@@ -13,6 +13,7 @@ Item {
     property int selectedIndex: 0
     property string currentWall: ""
     property bool applying: false
+    property bool canApply: true
     property int thumbnailWidth: 420
     property int thumbnailHeight: 280
     property string wallpaperDir: "~/wallpapers"
@@ -33,43 +34,27 @@ Item {
 
     NumberAnimation {
         id: carouselAnimation
-
         target: wallCarousel
         property: "contentX"
-
         duration: 340
-
         easing.type: Easing.OutBack
         easing.overshoot: 1.15
     }
 
     ListView {
         id: wallCarousel
-
         anchors.fill: parent
-
         orientation: ListView.Horizontal
-
         model: root.wallpapers
-
         clip: true
-
         boundsBehavior: Flickable.StopAtBounds
-
         snapMode: ListView.SnapToItem
-
         spacing: -40
-
         interactive: root.wallpapers && root.wallpapers.count > 1
-
         focus: true
-
         preferredHighlightBegin: Math.max(0, (width - 500) / 2)
-
         preferredHighlightEnd: Math.max(0, (width - 500) / 2) + 500
-
         highlightRangeMode: ListView.StrictlyEnforceRange
-
         highlightFollowsCurrentItem: true
 
         delegate: Item {
@@ -86,21 +71,13 @@ Item {
             z: visualZ
 
             readonly property real delegateCenter: x + width / 2
-
             readonly property real viewportCenter: wallCarousel.contentX + wallCarousel.width / 2
-
             readonly property real distance: Math.abs(delegateCenter - viewportCenter)
-
             readonly property real normalizedDistance: Math.min(distance / 500, 1.0)
-
             readonly property real visualScale: 1.0 - (normalizedDistance * 0.16)
-
             readonly property real visualOpacity: 1.0 - (normalizedDistance * 0.30)
-
             readonly property real visualOffsetY: normalizedDistance * 8
-
             readonly property real visualZ: 100 - Math.round(normalizedDistance * 50)
-
             readonly property bool isCentered: distance < 40
 
             WallpaperCard {
@@ -111,9 +88,7 @@ Item {
                 thumbReady: thumbDelegate.thumbReady
 
                 selected: thumbDelegate.isCentered
-
                 active: root.currentWall === thumbDelegate.sourcePath
-
                 applying: root.applying
 
                 thumbnailWidth: root.thumbnailWidth
@@ -125,7 +100,6 @@ Item {
 
                 onClicked: {
                     root.selectWallpaper(thumbDelegate.index);
-
                     wallCarousel.forceActiveFocus();
                 }
             }
@@ -147,7 +121,7 @@ Item {
             } else if (event.key === Qt.Key_End) {
                 root.selectWallpaper(root.wallpapers.count - 1);
                 event.accepted = true;
-            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            } else if (root.canApply && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space)) {
                 root.applyRequested();
                 event.accepted = true;
             }
@@ -163,15 +137,12 @@ Item {
     // Previous button
     Rectangle {
         visible: root.wallpapers && root.wallpapers.count > 1
-
         anchors.left: parent.left
         anchors.leftMargin: 6
         anchors.verticalCenter: parent.verticalCenter
-
         width: 38
         height: 38
         radius: 19
-
         color: previousHov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : Qt.rgba(Colors.surfaceContainerHighest.r, Colors.surfaceContainerHighest.g, Colors.surfaceContainerHighest.b, 0.88)
 
         Behavior on color {
@@ -182,20 +153,15 @@ Item {
 
         Text {
             anchors.centerIn: parent
-
             text: "󰁍"
-
             color: previousHov.containsMouse ? Colors.primary : Colors.on_SurfaceVariant
-
             font.pixelSize: 16
             font.family: Fonts.fontM
         }
 
         MouseArea {
             id: previousHov
-
             anchors.fill: parent
-
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
@@ -228,20 +194,15 @@ Item {
 
         Text {
             anchors.centerIn: parent
-
             text: "󰁔"
-
             color: nextHov.containsMouse ? Colors.primary : Colors.on_SurfaceVariant
-
             font.pixelSize: 16
             font.family: Fonts.fontM
         }
 
         MouseArea {
             id: nextHov
-
             anchors.fill: parent
-
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
@@ -254,11 +215,8 @@ Item {
 
     Text {
         visible: !root.wallpapers || root.wallpapers.count === 0
-
         anchors.centerIn: parent
-
         text: "No images found in " + root.wallpaperDir
-
         font.family: Fonts.font
         font.pixelSize: 12
         color: Colors.outline
@@ -268,9 +226,7 @@ Item {
         if (!root.wallpapers || root.wallpapers.count === 0) {
             return;
         }
-
         const nextIndex = Math.max(0, Math.min(index, root.wallpapers.count - 1));
-
         root.wallpaperSelected(nextIndex);
     }
 
@@ -278,7 +234,6 @@ Item {
         if (!root.wallpapers || root.wallpapers.count === 0) {
             return;
         }
-
         root.selectWallpaper(root.selectedIndex + delta);
     }
 
@@ -294,25 +249,18 @@ Item {
         if (wallCarousel.count <= index)
             return;
         carouselAnimation.stop();
-
         const oldX = wallCarousel.contentX;
-
         wallCarousel.currentIndex = index;
-
         wallCarousel.positionViewAtIndex(index, ListView.SnapPosition);
-
         const targetX = wallCarousel.contentX;
-
         if (!animate || Math.abs(targetX - oldX) < 1) {
             wallCarousel.contentX = targetX;
             return;
         }
 
         wallCarousel.contentX = oldX;
-
         carouselAnimation.from = oldX;
         carouselAnimation.to = targetX;
-
         carouselAnimation.start();
     }
 
