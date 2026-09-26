@@ -20,21 +20,24 @@ Item {
 
     readonly property bool available: root.node !== null && root.node.ready && root.node.audio !== null
     readonly property string applicationName: {
-        const properties = root.node?.properties
-        if (properties?.["application.name"]) return properties["application.name"]
-        return root.node?.description || root.node?.name || "Unknown application"
+        const properties = root.node?.properties;
+        if (properties?.["application.name"])
+            return properties["application.name"];
+        return root.node?.description || root.node?.name || "Unknown application";
     }
 
     readonly property string mediaName: {
-        const properties = root.node?.properties
-        if (properties?.["media.name"]) return properties["media.name"]
-        if (properties?.["media.title"]) return properties["media.title"]
-        return ""
+        const properties = root.node?.properties;
+        if (properties?.["media.name"])
+            return properties["media.name"];
+        if (properties?.["media.title"])
+            return properties["media.title"];
+        return "";
     }
 
     readonly property string applicationIcon: {
-        const properties = root.node?.properties
-        return properties?.["application.icon-name"] || "application-x-executable"
+        const properties = root.node?.properties;
+        return properties?.["application.icon-name"] || "application-x-executable";
     }
 
     readonly property real volume: root.available ? root.node.audio.volume : 0.0
@@ -117,8 +120,9 @@ Item {
                     implicitHeight: 20
                     value: root.volume
                     muted: root.muted
-                    onMoved: (value) => {
-                        if (root.available) root.node.audio.volume = value
+                    onMoved: value => {
+                        if (root.available)
+                            root.node.audio.volume = value;
                     }
                 }
             }
@@ -148,7 +152,8 @@ Item {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        if (root.available) root.node.audio.muted = !root.node.audio.muted
+                        if (root.available)
+                            root.node.audio.muted = !root.node.audio.muted;
                     }
                 }
             }

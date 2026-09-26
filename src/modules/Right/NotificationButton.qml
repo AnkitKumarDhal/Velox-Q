@@ -50,10 +50,9 @@ PillBase {
     }
 
     onClicked: {
-        NotificationService.panelScreen = root.screen
-        Popups.notificationsOpen = !Popups.notificationsOpen
+        NotificationService.panelScreen = root.screen;
+        Popups.notificationsOpen = !Popups.notificationsOpen;
     }
 
-    onRightClicked:
-        NotificationService.toggleSuppressed()
+    onRightClicked: NotificationService.toggleSuppressed()
 }

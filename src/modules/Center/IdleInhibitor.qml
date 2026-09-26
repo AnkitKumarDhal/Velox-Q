@@ -13,22 +13,28 @@ PillBase {
     border.color: Popups.caffeineOpen ? Colors.primary : "transparent"
     border.width: Popups.caffeineOpen ? 1 : 0
 
-    Behavior on border.width { NumberAnimation { duration: 150 } }
+    Behavior on border.width {
+        NumberAnimation {
+            duration: 150
+        }
+    }
 
     readonly property string caffeineText: {
-        if (!CaffeineService.caffeineActive) return "󰾪 Off"
-        if (CaffeineService.infinite) return "󰛨 ∞"
-        return "󰛨 " + formatRemaining(CaffeineService.remainingSeconds)
+        if (!CaffeineService.caffeineActive)
+            return "󰾪 Off";
+        if (CaffeineService.infinite)
+            return "󰛨 ∞";
+        return "󰛨 " + formatRemaining(CaffeineService.remainingSeconds);
     }
 
     readonly property color caffeineColor: CaffeineService.caffeineActive ? Colors.tertiary : Colors.outline
 
     function formatRemaining(totalSeconds) {
-        const seconds = Math.max(0, Number(totalSeconds))
-        const minutes = Math.floor(seconds / 60)
-        const remaining = seconds % 60
+        const seconds = Math.max(0, Number(totalSeconds));
+        const minutes = Math.floor(seconds / 60);
+        const remaining = seconds % 60;
 
-        return String(minutes).padStart(2, "0") + ":" + String(remaining).padStart(2, "0")
+        return String(minutes).padStart(2, "0") + ":" + String(remaining).padStart(2, "0");
     }
 
     Text {
@@ -42,7 +48,11 @@ PillBase {
 
         verticalAlignment: Text.AlignVCenter
 
-        Behavior on color { ColorAnimation { duration: 150 } }
+        Behavior on color {
+            ColorAnimation {
+                duration: 150
+            }
+        }
     }
 
     Rectangle {
@@ -68,6 +78,8 @@ PillBase {
         verticalAlignment: Text.AlignVCenter
     }
 
-    onClicked: { Popups.caffeineOpen = !Popups.caffeineOpen }
+    onClicked: {
+        Popups.caffeineOpen = !Popups.caffeineOpen;
+    }
     onRightClicked: CaffeineService.cyclePreset()
 }

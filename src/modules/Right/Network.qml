@@ -14,7 +14,11 @@ PillBase {
 
     border.color: Colors.primary
     border.width: Popups.networkOpen ? 1 : 0
-    Behavior on border.width { NumberAnimation { duration: 150 } }
+    Behavior on border.width {
+        NumberAnimation {
+            duration: 150
+        }
+    }
 
     readonly property bool hasWifi: NetworkService.wifiDevice !== null
     readonly property bool hasEthernet: SystemStats.activeInterface !== ""
@@ -32,14 +36,20 @@ PillBase {
     visible: hasWifi || hasBluetooth || hasEthernet
 
     readonly property string wifiIcon: {
-        if (!hasWifi) return hasEthernet ? "󰈀" : "󰤭";
-        if (!NetworkService.wifiEnabled) return "󰤭";
-        if (!NetworkService.wifiConnected) return "󰤭";
+        if (!hasWifi)
+            return hasEthernet ? "󰈀" : "󰤭";
+        if (!NetworkService.wifiEnabled)
+            return "󰤭";
+        if (!NetworkService.wifiConnected)
+            return "󰤭";
         const signal = NetworkService.signalStrength;
 
-        if (signal < 0.25) return "󰤟";
-        if (signal < 0.50) return "󰤢";
-        if (signal < 0.75) return "󰤥";
+        if (signal < 0.25)
+            return "󰤟";
+        if (signal < 0.50)
+            return "󰤢";
+        if (signal < 0.75)
+            return "󰤥";
         return "󰤨";
     }
 
@@ -49,11 +59,16 @@ PillBase {
     readonly property int bluetoothCount: NetworkService.bluetooth.connectedDeviceCount
 
     function defaultNetworkTab(preferBluetooth = false) {
-        if (preferBluetooth && root.hasBluetooth) return 1;
-        if (root.wifiGood) return 0;
-        if (root.bluetoothGood) return 0;
-        if (root.hasWifi) return 0;
-        if (root.hasBluetooth) return 1;
+        if (preferBluetooth && root.hasBluetooth)
+            return 1;
+        if (root.wifiGood)
+            return 0;
+        if (root.bluetoothGood)
+            return 0;
+        if (root.hasWifi)
+            return 0;
+        if (root.hasBluetooth)
+            return 1;
         return 0;
     }
 

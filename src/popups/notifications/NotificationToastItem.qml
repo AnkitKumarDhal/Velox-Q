@@ -13,26 +13,27 @@ Item {
     height: implicitHeight
 
     function startCountdown() {
-        if (root.stackHovered) return
-        if (!root.notification) return
-
+        if (root.stackHovered)
+            return;
+        if (!root.notification)
+            return;
         if (root.remainingMs <= 0) {
-            NotificationService.expireToast(root.notification)
-            return
+            NotificationService.expireToast(root.notification);
+            return;
         }
 
-        root.countdownStartedAt = Date.now()
+        root.countdownStartedAt = Date.now();
 
-        lifetimeTimer.interval = root.remainingMs
-        lifetimeTimer.start()
+        lifetimeTimer.interval = root.remainingMs;
+        lifetimeTimer.start();
     }
 
     function pauseCountdown() {
-        if (!lifetimeTimer.running) return
-
-        const elapsed = Date.now() - root.countdownStartedAt
-        root.remainingMs = Math.max(0, root.remainingMs - elapsed)
-        lifetimeTimer.stop()
+        if (!lifetimeTimer.running)
+            return;
+        const elapsed = Date.now() - root.countdownStartedAt;
+        root.remainingMs = Math.max(0, root.remainingMs - elapsed);
+        lifetimeTimer.stop();
     }
 
     property int remainingMs: NotificationService.toastDuration
@@ -44,9 +45,9 @@ Item {
         repeat: false
 
         onTriggered: {
-            root.remainingMs = 0
+            root.remainingMs = 0;
             if (root.notification && root.notification.tracked)
-                NotificationService.expireToast(root.notification)
+                NotificationService.expireToast(root.notification);
         }
     }
 
@@ -54,9 +55,9 @@ Item {
 
     onStackHoveredChanged: {
         if (root.stackHovered)
-            root.pauseCountdown()
+            root.pauseCountdown();
         else
-            root.startCountdown()
+            root.startCountdown();
     }
 
     NotificationCard {

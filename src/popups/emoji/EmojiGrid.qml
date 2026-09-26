@@ -9,17 +9,21 @@ Item {
 
     signal emojiSelected(string emoji)
     signal typedChar(string ch)
-    signal escapePressed()
+    signal escapePressed
 
-    function forceActiveFocus() { grid.forceActiveFocus() }
-    function resetIndex()       { grid.currentIndex = 0  }
+    function forceActiveFocus() {
+        grid.forceActiveFocus();
+    }
+    function resetIndex() {
+        grid.currentIndex = 0;
+    }
 
     GridView {
         id: grid
 
         anchors.fill: parent
 
-        cellWidth:  44
+        cellWidth: 44
         cellHeight: 44
 
         clip: true
@@ -33,24 +37,26 @@ Item {
 
         model: root.emojis
 
-        Keys.onEscapePressed: (event) => {
-            root.escapePressed()
-            event.accepted = true
+        Keys.onEscapePressed: event => {
+            root.escapePressed();
+            event.accepted = true;
         }
-        Keys.onReturnPressed: (event) => {
-            const e = root.emojis[currentIndex]
-            if (e) root.emojiSelected(e)
-            event.accepted = true
+        Keys.onReturnPressed: event => {
+            const e = root.emojis[currentIndex];
+            if (e)
+                root.emojiSelected(e);
+            event.accepted = true;
         }
-        Keys.onEnterPressed: (event) => {
-            const e = root.emojis[currentIndex]
-            if (e) root.emojiSelected(e)
-            event.accepted = true
+        Keys.onEnterPressed: event => {
+            const e = root.emojis[currentIndex];
+            if (e)
+                root.emojiSelected(e);
+            event.accepted = true;
         }
-        Keys.onPressed: (event) => {
+        Keys.onPressed: event => {
             if (event.text.length > 0 && event.key !== Qt.Key_Space && event.key !== Qt.Key_Return) {
-                root.typedChar(event.text)
-                event.accepted = true
+                root.typedChar(event.text);
+                event.accepted = true;
             }
         }
 
@@ -58,19 +64,24 @@ Item {
             required property var modelData
             required property int index
 
-            width:  grid.cellWidth
+            width: grid.cellWidth
             height: grid.cellHeight
 
             radius: 8
 
             color: {
-                if (index === grid.currentIndex) return Colors.primaryContainer
-                if (hov.containsMouse)           return Colors.surfaceContainerHigh
-                return "transparent"
+                if (index === grid.currentIndex)
+                    return Colors.primaryContainer;
+                if (hov.containsMouse)
+                    return Colors.surfaceContainerHigh;
+                return "transparent";
             }
 
             Behavior on color {
-                ColorAnimation { duration: 120; easing.type: Easing.OutCubic }
+                ColorAnimation {
+                    duration: 120
+                    easing.type: Easing.OutCubic
+                }
             }
 
             Text {

@@ -14,33 +14,33 @@ Item {
 
     Flickable {
         id: flick
-        anchors.fill:   parent
-        contentWidth:   width
-        contentHeight:  contentCol.implicitHeight + root.padV * 2
+        anchors.fill: parent
+        contentWidth: width
+        contentHeight: contentCol.implicitHeight + root.padV * 2
         boundsBehavior: Flickable.StopAtBounds
-        clip:           true
+        clip: true
 
         ScrollBar.vertical: ScrollBar {
             policy: contentCol.implicitHeight + root.padV * 2 > flick.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
             contentItem: Rectangle {
-                implicitWidth:  3
+                implicitWidth: 3
                 implicitHeight: 40
-                radius:         1.5
-                color:          Qt.rgba(1, 1, 1, 0.25)
+                radius: 1.5
+                color: Qt.rgba(1, 1, 1, 0.25)
             }
             background: Item {}
         }
 
         Column {
-            id:      contentCol
+            id: contentCol
             spacing: 8
-            anchors  {
-                top:         parent.top
-                topMargin:   root.padV
-                left:        parent.left
-                leftMargin:  root.padH
-                right:       parent.right
+            anchors {
+                top: parent.top
+                topMargin: root.padV
+                left: parent.left
+                leftMargin: root.padH
+                right: parent.right
                 rightMargin: root.padH + 6
             }
         }

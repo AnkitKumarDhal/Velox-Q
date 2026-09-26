@@ -9,7 +9,7 @@ Item {
 
     required property string mode
     property bool expanded: false
-    signal clicked()
+    signal clicked
 
     implicitHeight: 84
 
@@ -20,18 +20,18 @@ Item {
     readonly property string deviceName: {
         if (root.isOutput) {
             if (VolumeService.sink)
-                return VolumeService.sink.description || VolumeService.sink.name || "Unknown"
+                return VolumeService.sink.description || VolumeService.sink.name || "Unknown";
             if (!Pipewire.ready)
-                return "Waiting for Pipewire"
-            return "No output device"
+                return "Waiting for Pipewire";
+            return "No output device";
         }
 
         if (VolumeService.source)
-            return VolumeService.source.description || VolumeService.source.name || "Unknown"
+            return VolumeService.source.description || VolumeService.source.name || "Unknown";
         if (!Pipewire.ready)
-            return "Waiting for pipewire"
+            return "Waiting for pipewire";
 
-        return "No input device"
+        return "No input device";
     }
 
     Rectangle {
@@ -63,7 +63,7 @@ Item {
                 Layout.fillWidth: true
                 Text {
                     text: root.isOutput ? "󰕾" : "󰍬"
-                    color: root.expanded ? Colors.surface : ( root.available ? Colors.primary : Colors.outline )
+                    color: root.expanded ? Colors.surface : (root.available ? Colors.primary : Colors.outline)
                     font.family: Fonts.font
                     font.pixelSize: 16
                 }
@@ -77,7 +77,7 @@ Item {
                 }
                 Text {
                     text: root.available ? Math.round(root.volume * 100) + "%" : "-"
-                    color: root.expanded ? Colors.surface : ( root.muted ? Colors.error : Colors.on_SurfaceVariant )
+                    color: root.expanded ? Colors.surface : (root.muted ? Colors.error : Colors.on_SurfaceVariant)
                     font.family: Fonts.font
                     font.pixelSize: 10
                     font.bold: true

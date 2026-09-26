@@ -17,21 +17,15 @@ ColumnLayout {
 
     signal networkSelected(var network)
 
-    readonly property bool selectedNetworkSupportsPsk:
-        root.selectedNetwork !== null &&
-        (
-            root.selectedNetwork.security === WifiSecurityType.WpaPsk ||
-            root.selectedNetwork.security === WifiSecurityType.Wpa2Psk ||
-            root.selectedNetwork.security === WifiSecurityType.Sae
-        )
+    readonly property bool selectedNetworkSupportsPsk: root.selectedNetwork !== null && (root.selectedNetwork.security === WifiSecurityType.WpaPsk || root.selectedNetwork.security === WifiSecurityType.Wpa2Psk || root.selectedNetwork.security === WifiSecurityType.Sae)
 
     Layout.fillWidth: true
     spacing: 8
 
     onSelectedNetworkChanged: {
-        root.showPassword = false
+        root.showPassword = false;
         if (root.selectedNetworkSupportsPsk) {
-            Qt.callLater(function() {
+            Qt.callLater(function () {
                 passwordField.forceActiveFocus();
             });
         }
@@ -41,7 +35,7 @@ ColumnLayout {
         target: root.pendingKnownNetwork
 
         function onConnectionFailed(reason) {
-            if ( reason === ConnectionFailReason.NoSecrets && root.pendingKnownNetwork !== null) {
+            if (reason === ConnectionFailReason.NoSecrets && root.pendingKnownNetwork !== null) {
                 root.selectedNetwork = root.pendingKnownNetwork;
                 root.pendingKnownNetwork = null;
             }
@@ -52,11 +46,10 @@ ColumnLayout {
         id: wifiConnectedModel
         objectProp: "name"
         values: {
-            if (!NetworkService.wifiDevice) return [];
+            if (!NetworkService.wifiDevice)
+                return [];
 
-            return [ ...NetworkService.wifiDevice.networks.values ]
-            .filter(network => network.connected)
-            .sort((a, b) => b.signalStrength - a.signalStrength);
+            return [...NetworkService.wifiDevice.networks.values].filter(network => network.connected).sort((a, b) => b.signalStrength - a.signalStrength);
         }
     }
 
@@ -64,11 +57,10 @@ ColumnLayout {
         id: wifiAvailableModel
         objectProp: "name"
         values: {
-            if (!NetworkService.wifiDevice) return [];
+            if (!NetworkService.wifiDevice)
+                return [];
 
-            return [...NetworkService.wifiDevice.networks.values]
-            .filter(network => !network.connected && network !== root.selectedNetwork)
-            .sort((a, b) => b.signalStrength - a.signalStrength);
+            return [...NetworkService.wifiDevice.networks.values].filter(network => !network.connected && network !== root.selectedNetwork).sort((a, b) => b.signalStrength - a.signalStrength);
         }
     }
 
@@ -76,9 +68,7 @@ ColumnLayout {
         Layout.fillWidth: true
 
         Text {
-            text: NetworkService.wifiScanning
-                    ? "Wi-Fi networks · Scanning"
-                    : "Wi-Fi networks"
+            text: NetworkService.wifiScanning ? "Wi-Fi networks · Scanning" : "Wi-Fi networks"
 
             font.family: Fonts.font
             font.pixelSize: 14
@@ -94,9 +84,7 @@ ColumnLayout {
             height: 28
             radius: 14
 
-            color: wifiScanHover.hovered
-                    ? Colors.primary
-                    : Colors.surfaceContainerHighest
+            color: wifiScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
 
             Behavior on color {
                 ColorAnimation {
@@ -114,9 +102,7 @@ ColumnLayout {
                 font.pixelSize: 10
                 font.bold: true
 
-                color: wifiScanHover.hovered
-                        ? Colors.on_Primary
-                        : Colors.on_Surface
+                color: wifiScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
             }
 
             HoverHandler {
@@ -164,16 +150,15 @@ ColumnLayout {
             Repeater {
                 model: wifiConnectedModel
 
-                delegate:
-                    NetworkRow {
-                        required property var modelData
+                delegate: NetworkRow {
+                    required property var modelData
 
-                        Layout.fillWidth: true
-                        network: modelData
-                        onNetworkSelected: (network) => {
-                                root.networkSelected(network);
-                            }
+                    Layout.fillWidth: true
+                    network: modelData
+                    onNetworkSelected: network => {
+                        root.networkSelected(network);
                     }
+                }
             }
 
             Text {
@@ -250,9 +235,7 @@ ColumnLayout {
                             }
 
                             Text {
-                                text: root.selectedNetworkSupportsPsk
-                                        ? "Enter Wi-Fi password"
-                                        : "Additional authentication may be required"
+                                text: root.selectedNetworkSupportsPsk ? "Enter Wi-Fi password" : "Additional authentication may be required"
 
                                 font.family: Fonts.font
                                 font.pixelSize: 9
@@ -270,9 +253,7 @@ ColumnLayout {
                             height: 28
                             radius: 14
 
-                            color: closeConnectHover.hovered
-                                    ? Colors.surfaceContainerHighest
-                                    : "transparent"
+                            color: closeConnectHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
                             Behavior on color {
                                 ColorAnimation {
@@ -357,9 +338,7 @@ ColumnLayout {
                                     font.family: Fonts.fontM
                                     font.pixelSize: 15
 
-                                    color: passwordVisibilityHover.hovered
-                                            ? Colors.primary
-                                            : Colors.outline
+                                    color: passwordVisibilityHover.hovered ? Colors.primary : Colors.outline
 
                                     Behavior on color {
                                         ColorAnimation {
@@ -375,9 +354,9 @@ ColumnLayout {
                                     acceptedButtons: Qt.LeftButton
                                     cursorShape: Qt.PointingHandCursor
 
-                                    onPressed: (mouse) => mouse.accepted = true
-                                    onReleased: (mouse) => mouse.accepted = true
-                                    onClicked: (mouse) => {
+                                    onPressed: mouse => mouse.accepted = true
+                                    onReleased: mouse => mouse.accepted = true
+                                    onClicked: mouse => {
                                         mouse.accepted = true;
                                         root.showPassword = !root.showPassword;
                                         passwordField.forceActiveFocus();
@@ -400,9 +379,7 @@ ColumnLayout {
                             height: 34
                             radius: 8
 
-                            color: confirmHover.hovered
-                                    ? Colors.primary
-                                    : Colors.on_Surface
+                            color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
 
                             Behavior on color {
                                 ColorAnimation {
@@ -476,27 +453,26 @@ ColumnLayout {
             Repeater {
                 model: wifiAvailableModel
 
-                delegate:
-                    NetworkRow {
-                        required property var modelData
-                        Layout.fillWidth: true
-                        network: modelData
+                delegate: NetworkRow {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    network: modelData
 
-                        onNetworkSelected: (network) => {
-                                if (network.security === WifiSecurityType.Open) {
-                                    network.connect();
-                                    return;
-                                }
+                    onNetworkSelected: network => {
+                        if (network.security === WifiSecurityType.Open) {
+                            network.connect();
+                            return;
+                        }
 
-                                if (network.known) {
-                                    root.pendingKnownNetwork = network;
-                                    network.connect();
-                                    return;
-                                }
+                        if (network.known) {
+                            root.pendingKnownNetwork = network;
+                            network.connect();
+                            return;
+                        }
 
-                                root.networkSelected(network);
-                            }
+                        root.networkSelected(network);
                     }
+                }
             }
 
             Text {

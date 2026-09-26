@@ -30,38 +30,38 @@ Item {
                 Layout.fillWidth: true
 
                 Text {
-                    text:           root.label
+                    text: root.label
 
-                    font.family:    Fonts.fontM
+                    font.family: Fonts.fontM
                     font.pointSize: 11
-                    font.bold:      true
+                    font.bold: true
 
-                    color:          Colors.on_SurfaceVariant
+                    color: Colors.on_SurfaceVariant
 
                     Layout.fillWidth: true
                 }
 
                 Text {
-                    text:           root.value
+                    text: root.value
 
-                    font.family:    Fonts.font
+                    font.family: Fonts.font
                     font.pixelSize: 16
-                    font.bold:      true
+                    font.bold: true
 
-                    color:          Colors.on_Surface
+                    color: Colors.on_Surface
                 }
             }
 
             Text {
-                text:           root.detail
+                text: root.detail
 
-                font.family:    Fonts.font
+                font.family: Fonts.font
                 font.pixelSize: 10
-                font.bold:      true
+                font.bold: true
 
-                color:          Colors.on_SurfaceVariant
+                color: Colors.on_SurfaceVariant
 
-                elide:          Text.ElideRight
+                elide: Text.ElideRight
                 Layout.fillWidth: true
             }
 

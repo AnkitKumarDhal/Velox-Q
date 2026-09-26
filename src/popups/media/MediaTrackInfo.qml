@@ -22,37 +22,39 @@ Item {
     implicitHeight: 54
 
     Component.onCompleted: {
-        loadCurrentMetadata()
-        initialized = true
+        loadCurrentMetadata();
+        initialized = true;
     }
 
     onPlayerChanged: {
-        if (!root.player) return
-        loadCurrentMetadata()
-        incomingMetadata.opacity = 0
-        incomingMetadata.x = width * 0.06
-        currentMetadata.opacity = 1
-        currentMetadata.x = 0
+        if (!root.player)
+            return;
+        loadCurrentMetadata();
+        incomingMetadata.opacity = 0;
+        incomingMetadata.x = width * 0.06;
+        currentMetadata.opacity = 1;
+        currentMetadata.x = 0;
     }
 
     onTransitionKeyChanged: {
-        if (!root.initialized || !root.player) return
-        animateToCurrentMetadata()
+        if (!root.initialized || !root.player)
+            return;
+        animateToCurrentMetadata();
     }
 
     function loadCurrentMetadata() {
-        currentTitle = root.player?.trackTitle || "Nothing Playing"
-        currentArtist = root.player?.trackArtist || "Unknown Artist"
-        currentAlbum = root.player?.trackAlbum || "Unknown Album"
+        currentTitle = root.player?.trackTitle || "Nothing Playing";
+        currentArtist = root.player?.trackArtist || "Unknown Artist";
+        currentAlbum = root.player?.trackAlbum || "Unknown Album";
     }
 
     function animateToCurrentMetadata() {
-        incomingTitle = root.player?.trackTitle || "Nothing Playing"
-        incomingArtist = root.player?.trackArtist || "Unknown Artist"
-        incomingAlbum = root.player?.trackAlbum || "Unknown Album"
-        incomingMetadata.x = width * 0.06
-        incomingMetadata.opacity = 0
-        metadataTransition.restart()
+        incomingTitle = root.player?.trackTitle || "Nothing Playing";
+        incomingArtist = root.player?.trackArtist || "Unknown Artist";
+        incomingAlbum = root.player?.trackAlbum || "Unknown Album";
+        incomingMetadata.x = width * 0.06;
+        incomingMetadata.opacity = 0;
+        metadataTransition.restart();
     }
 
     ParallelAnimation {
@@ -91,13 +93,13 @@ Item {
         }
 
         onFinished: {
-            currentTitle = incomingTitle
-            currentArtist = incomingArtist
-            currentAlbum = incomingAlbum
-            currentMetadata.x = 0
-            currentMetadata.opacity = 1
-            incomingMetadata.x = width * 0.06
-            incomingMetadata.opacity = 0
+            currentTitle = incomingTitle;
+            currentArtist = incomingArtist;
+            currentAlbum = incomingAlbum;
+            currentMetadata.x = 0;
+            currentMetadata.opacity = 1;
+            incomingMetadata.x = width * 0.06;
+            incomingMetadata.opacity = 0;
         }
     }
 

@@ -21,131 +21,187 @@ ShellRoot {
                 required property var modelData
 
                 // Bar
-                TopBar { screen: modelData }
+                TopBar {
+                    screen: modelData
+                }
 
                 // Popup dismiss overlay
-                PopupDismiss { screen: modelData }
+                PopupDismiss {
+                    screen: modelData
+                }
 
                 // Popups
                 PopupLoader {
                     open: Popups.systemOpen && Popups.systemScreen === modelData
-                    popup: Component { SystemPopup { screen: modelData } }
+                    popup: Component {
+                        SystemPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.volumeOpen && Popups.volumeScreen === modelData
-                    popup: Component { VolumePopup { screen: modelData } }
+                    popup: Component {
+                        VolumePopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.networkOpen
-                    popup: Component { NetworkPopup { screen: modelData } }
+                    popup: Component {
+                        NetworkPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.mediaOpen
-                    popup: Component { MediaPopup { screen: modelData } }
+                    popup: Component {
+                        MediaPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.launcherOpen
-                    popup: Component { Launcher { screen: modelData } }
+                    popup: Component {
+                        Launcher {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.clipboardOpen
-                    popup: Component { ClipboardPopup { screen: modelData } }
+                    popup: Component {
+                        ClipboardPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.emojiOpen
-                    popup: Component { EmojiPicker { screen: modelData } }
+                    popup: Component {
+                        EmojiPicker {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.wallpaperOpen
-                    popup: Component { WallpaperPopup { screen: modelData } }
+                    popup: Component {
+                        WallpaperPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.batteryOpen
-                    popup: Component { BatteryPopup { screen: modelData } }
+                    popup: Component {
+                        BatteryPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.sessionOpen
-                    popup: Component { SessionPopup { screen: modelData } }
+                    popup: Component {
+                        SessionPopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.caffeineOpen
-                    popup: Component { CaffeinePopup { screen: modelData } }
+                    popup: Component {
+                        CaffeinePopup {
+                            screen: modelData
+                        }
+                    }
                 }
                 PopupLoader {
                     open: Popups.calendarOpen
-                    popup: Component { CalendarPopup { screen: modelData } }
+                    popup: Component {
+                        CalendarPopup {
+                            screen: modelData
+                        }
+                    }
                 }
 
-                PolkitPopup { screen: modelData }
-                KeybindsPopup { screen: modelData }
+                PolkitPopup {
+                    screen: modelData
+                }
+                KeybindsPopup {
+                    screen: modelData
+                }
             }
         }
     }
 
-NotificationToast {}
+    NotificationToast {}
 
-PopupLoader {
-    open: Popups.notificationsOpen
+    PopupLoader {
+        open: Popups.notificationsOpen
 
-    popup: Component {
-        NotificationPanel {}
+        popup: Component {
+            NotificationPanel {}
+        }
     }
-}
 
     // Global Keybinds
     // Hyprland lua config bind:
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "focusModeToggle"
+        appid: "quickshell"
+        name: "focusModeToggle"
         description: "Toggle bar visibility in fullscreen"
-        onPressed:   ShellState.toggleManualOverride()
+        onPressed: ShellState.toggleManualOverride()
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "barHideToggle"
+        appid: "quickshell"
+        name: "barHideToggle"
         description: "Toggle bar visibility anytime"
-        onPressed:   ShellState.toggleManualHide()
+        onPressed: ShellState.toggleManualHide()
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "launcherToggle"
+        appid: "quickshell"
+        name: "launcherToggle"
         description: "Toggle app launcher"
-        onPressed:   Popups.launcherOpen = !Popups.launcherOpen
+        onPressed: Popups.launcherOpen = !Popups.launcherOpen
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "clipboardToggle"
+        appid: "quickshell"
+        name: "clipboardToggle"
         description: "Toggle Clipboard Manager overlay"
-        onPressed:   Popups.clipboardOpen = !Popups.clipboardOpen
+        onPressed: Popups.clipboardOpen = !Popups.clipboardOpen
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "emojiPickerToggle"
+        appid: "quickshell"
+        name: "emojiPickerToggle"
         description: "Toggle Emoji Picker"
-        onPressed:   Popups.emojiOpen = !Popups.emojiOpen
+        onPressed: Popups.emojiOpen = !Popups.emojiOpen
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "mediaPlayerPopup"
+        appid: "quickshell"
+        name: "mediaPlayerPopup"
         description: "Toggle Media Player Popup"
-        onPressed:   Popups.mediaOpen = !Popups.mediaOpen
+        onPressed: Popups.mediaOpen = !Popups.mediaOpen
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "wallpaperPickerToggle"
+        appid: "quickshell"
+        name: "wallpaperPickerToggle"
         description: "Toggle Wallpaper Picker"
-        onPressed:   Popups.wallpaperOpen = !Popups.wallpaperOpen
+        onPressed: Popups.wallpaperOpen = !Popups.wallpaperOpen
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "keybindsToggle"
+        appid: "quickshell"
+        name: "keybindsToggle"
         description: "Toggle keybinds viewer"
-        onPressed:   Popups.keybindsOpen = !Popups.keybindsOpen
+        onPressed: Popups.keybindsOpen = !Popups.keybindsOpen
     }
     GlobalShortcut {
-        appid:       "quickshell"
-        name:        "sessionToggle"
+        appid: "quickshell"
+        name: "sessionToggle"
         description: "Toggle Session Manager"
-        onPressed:   Popups.sessionOpen = !Popups.sessionOpen
+        onPressed: Popups.sessionOpen = !Popups.sessionOpen
     }
 }

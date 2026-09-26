@@ -19,7 +19,7 @@ RowLayout {
         property int iconSize: 16
         property bool enabledState: true
 
-        signal clicked()
+        signal clicked
 
         Layout.preferredWidth: 32
         Layout.preferredHeight: 32
@@ -36,14 +36,7 @@ RowLayout {
             width: mouse.containsMouse ? 30 : 26
             height: width
             radius: width / 2
-            color: mouse.containsMouse
-                ? Qt.rgba(
-                      Colors.primary.r,
-                      Colors.primary.g,
-                      Colors.primary.b,
-                      0.12
-                  )
-                : "transparent"
+            color: mouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.12) : "transparent"
 
             Behavior on width {
                 NumberAnimation {
@@ -82,7 +75,9 @@ RowLayout {
         }
     }
 
-    Item { Layout.fillWidth: true }
+    Item {
+        Layout.fillWidth: true
+    }
 
     // Previous
     IconButton {
@@ -91,7 +86,7 @@ RowLayout {
         enabledState: root.player?.canGoPrevious ?? false
         onClicked: {
             if (root.player?.canGoPrevious) {
-                root.player.previous()
+                root.player.previous();
             }
         }
     }
@@ -107,19 +102,7 @@ RowLayout {
             width: parent.hovered ? 42 : 38
             height: width
             radius: width / 2
-            color: parent.hovered
-                ? Qt.rgba(
-                      Colors.primary.r,
-                      Colors.primary.g,
-                      Colors.primary.b,
-                      0.28
-                  )
-                : Qt.rgba(
-                      Colors.primary.r,
-                      Colors.primary.g,
-                      Colors.primary.b,
-                      0.18
-                  )
+            color: parent.hovered ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.28) : Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18)
 
             Behavior on width {
                 NumberAnimation {
@@ -151,7 +134,7 @@ RowLayout {
             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: {
                 if (root.player?.canTogglePlaying) {
-                    root.player.togglePlaying()
+                    root.player.togglePlaying();
                 }
             }
         }
@@ -164,10 +147,12 @@ RowLayout {
         enabledState: root.player?.canGoNext ?? false
         onClicked: {
             if (root.player?.canGoNext) {
-                root.player.next()
+                root.player.next();
             }
         }
     }
 
-    Item { Layout.fillWidth: true }
+    Item {
+        Layout.fillWidth: true
+    }
 }

@@ -10,32 +10,29 @@ import qs.src.popups.wallpaper
 PanelWindow {
     id: root
 
-    color:         "transparent"
+    color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
     anchors {
         bottom: true
-        left:   true
-        right:  true
+        left: true
+        right: true
     }
 
-    implicitWidth:  screen ? screen.width : 1880
+    implicitWidth: screen ? screen.width : 1880
     implicitHeight: 520
 
-    WlrLayershell.layer:         WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: Popups.wallpaperOpen
-                                  ? WlrKeyboardFocus.Exclusive
-                                  : WlrKeyboardFocus.None
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: Popups.wallpaperOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     visible: slide.windowVisible
 
-    mask:
-        Region {
-            x:      (root.implicitWidth - wallRec.width) / 2
-            y:      root.implicitHeight - wallRec.height - 18
-            width:  wallRec.width
-            height: wallRec.height
-        }
+    mask: Region {
+        x: (root.implicitWidth - wallRec.width) / 2
+        y: root.implicitHeight - wallRec.height - 18
+        width: wallRec.width
+        height: wallRec.height
+    }
 
     WallpaperModel {
         id: wallpaperModel
@@ -46,40 +43,38 @@ PanelWindow {
 
         function onWallpaperOpenChanged() {
             if (Popups.wallpaperOpen) {
-                root._preparePopup()
+                root._preparePopup();
             }
         }
     }
 
     Component.onCompleted: {
-        wallpaperModel.queryCurrentWallpaper()
+        wallpaperModel.queryCurrentWallpaper();
 
         if (Popups.wallpaperOpen) {
-            root._preparePopup()
+            root._preparePopup();
         }
     }
 
     function _preparePopup() {
-        directoryBar.updateDirectory(
-            wallpaperModel.wallpaperDir
-        )
+        directoryBar.updateDirectory(wallpaperModel.wallpaperDir);
 
-        wallpaperModel.queryCurrentWallpaper()
-        wallpaperModel.scanWallpapers()
+        wallpaperModel.queryCurrentWallpaper();
+        wallpaperModel.scanWallpapers();
 
         Qt.callLater(() => {
-            wallpaperCarousel.forceActiveFocus()
-        })
+            wallpaperCarousel.forceActiveFocus();
+        });
     }
 
     PopupSlide {
-        id:           slide
+        id: slide
 
         anchors.fill: parent
 
-        edge:         "bottom"
+        edge: "bottom"
 
-        open:         Popups.wallpaperOpen
+        open: Popups.wallpaperOpen
 
         onCloseRequested: Popups.wallpaperOpen = false
 
@@ -87,24 +82,24 @@ PanelWindow {
             id: wallRec
 
             anchors {
-                bottom:           parent.bottom
+                bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
-                bottomMargin:     18
+                bottomMargin: 18
             }
 
-            width:  Math.min(parent.width - 36, 960)
+            width: Math.min(parent.width - 36, 960)
             height: 460
 
-            radius:       Theme.popupRadius
-            color:        Colors.surfaceContainer
+            radius: Theme.popupRadius
+            color: Colors.surfaceContainer
             border.color: Colors.outlineVariant
             border.width: Theme.popupBorder
-            clip:         true
+            clip: true
 
             ColumnLayout {
                 anchors {
-                    fill:         parent
-                    margins:      16
+                    fill: parent
+                    margins: 16
                     bottomMargin: 12
                 }
 
@@ -116,48 +111,48 @@ PanelWindow {
                     spacing: 10
 
                     Text {
-                        text:           "󰋲"
+                        text: "󰋲"
 
-                        color:          Colors.primary
+                        color: Colors.primary
 
                         font.pixelSize: 18
-                        font.family:    Fonts.fontM
+                        font.family: Fonts.fontM
                     }
 
                     Text {
-                        text:             "Wallpapers"
+                        text: "Wallpapers"
 
-                        color:            Colors.on_Surface
+                        color: Colors.on_Surface
 
-                        font.pixelSize:   14
-                        font.bold:        true
-                        font.family:      Fonts.font
+                        font.pixelSize: 14
+                        font.bold: true
+                        font.family: Fonts.font
 
                         Layout.fillWidth: true
                     }
 
                     Text {
-                        visible:        wallpaperModel.applying
+                        visible: wallpaperModel.applying
 
-                        text:           "Applying…"
+                        text: "Applying…"
 
-                        color:          Colors.primary
+                        color: Colors.primary
 
                         font.pixelSize: 11
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
 
                         SequentialAnimation on opacity {
                             running: wallpaperModel.applying
-                            loops:   Animation.Infinite
+                            loops: Animation.Infinite
 
                             NumberAnimation {
-                                to:       0.3
+                                to: 0.3
                                 duration: 600
                                 easing.type: Easing.InOutSine
                             }
 
                             NumberAnimation {
-                                to:       0.7
+                                to: 0.7
                                 duration: 600
                                 easing.type: Easing.InOutSine
                             }
@@ -172,20 +167,20 @@ PanelWindow {
 
                     directory: wallpaperModel.wallpaperDir
 
-                    onDirectoryAccepted: (directory) => {
-                        wallpaperModel.wallpaperDir = directory
-                        wallpaperModel.scanWallpapers()
-                        wallpaperCarousel.forceActiveFocus()
+                    onDirectoryAccepted: directory => {
+                        wallpaperModel.wallpaperDir = directory;
+                        wallpaperModel.scanWallpapers();
+                        wallpaperCarousel.forceActiveFocus();
                     }
 
-                    onRescanRequested: (directory) => {
-                        wallpaperModel.wallpaperDir = directory
-                        wallpaperModel.scanWallpapers()
-                        wallpaperCarousel.forceActiveFocus()
+                    onRescanRequested: directory => {
+                        wallpaperModel.wallpaperDir = directory;
+                        wallpaperModel.scanWallpapers();
+                        wallpaperCarousel.forceActiveFocus();
                     }
 
                     onEscapeRequested: {
-                        Popups.wallpaperOpen = false
+                        Popups.wallpaperOpen = false;
                     }
                 }
 
@@ -193,42 +188,42 @@ PanelWindow {
                 Rectangle {
                     Layout.fillWidth: true
 
-                    height:           1
+                    height: 1
 
-                    color:            Colors.outlineVariant
-                    opacity:          0.5
+                    color: Colors.outlineVariant
+                    opacity: 0.5
                 }
 
                 Item {
-                    Layout.fillWidth:  true
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    clip:              true
+                    clip: true
 
                     WallpaperCarousel {
                         id: wallpaperCarousel
 
                         anchors.fill: parent
 
-                        wallpapers:      wallpaperModel.wallpapers
-                        selectedIndex:   wallpaperModel.selectedIndex
-                        currentWall:     wallpaperModel.currentWall
-                        applying:        wallpaperModel.applying
-                        thumbnailWidth:  wallpaperModel.thumbnailWidth
+                        wallpapers: wallpaperModel.wallpapers
+                        selectedIndex: wallpaperModel.selectedIndex
+                        currentWall: wallpaperModel.currentWall
+                        applying: wallpaperModel.applying
+                        thumbnailWidth: wallpaperModel.thumbnailWidth
                         thumbnailHeight: wallpaperModel.thumbnailHeight
-                        wallpaperDir:    wallpaperModel.wallpaperDir
+                        wallpaperDir: wallpaperModel.wallpaperDir
 
-                        onWallpaperSelected: (index) => {
-                            wallpaperModel.selectWallpaper(index)
+                        onWallpaperSelected: index => {
+                            wallpaperModel.selectWallpaper(index);
                         }
 
                         onApplyRequested: {
-                            wallpaperModel.applySelectedWallpaper(controls.applied)
-                            wallpaperCarousel.forceActiveFocus()
+                            wallpaperModel.applySelectedWallpaper(controls.applied);
+                            wallpaperCarousel.forceActiveFocus();
                         }
 
                         onEscapeRequested: {
-                            Popups.wallpaperOpen = false
+                            Popups.wallpaperOpen = false;
                         }
                     }
                 }
@@ -238,37 +233,20 @@ PanelWindow {
 
                     Layout.fillWidth: true
 
-                    filename: wallpaperModel.wallpapers.count > 0 &&
-                              wallpaperModel.selectedIndex < wallpaperModel.wallpapers.count
-                                  ? wallpaperModel.wallpapers.get(
-                                        wallpaperModel.selectedIndex
-                                    ).sourcePath.split("/").pop()
-                                  : "No wallpaper selected"
+                    filename: wallpaperModel.wallpapers.count > 0 && wallpaperModel.selectedIndex < wallpaperModel.wallpapers.count ? wallpaperModel.wallpapers.get(wallpaperModel.selectedIndex).sourcePath.split("/").pop() : "No wallpaper selected"
 
-                    metadata: wallpaperModel.selectedFormat !== "" &&
-                              wallpaperModel.selectedDimensions !== "" &&
-                              wallpaperModel.selectedFileSize !== ""
-                                  ? wallpaperModel.selectedFormat
-                                    + " · "
-                                    + wallpaperModel.selectedDimensions
-                                    + " · "
-                                    + wallpaperModel.selectedFileSize
-                                  : ""
+                    metadata: wallpaperModel.selectedFormat !== "" && wallpaperModel.selectedDimensions !== "" && wallpaperModel.selectedFileSize !== "" ? wallpaperModel.selectedFormat + " · " + wallpaperModel.selectedDimensions + " · " + wallpaperModel.selectedFileSize : ""
 
-                    index:     wallpaperModel.selectedIndex
-                    count:     wallpaperModel.wallpapers.count
+                    index: wallpaperModel.selectedIndex
+                    count: wallpaperModel.wallpapers.count
 
-                    applying:  wallpaperModel.applying
+                    applying: wallpaperModel.applying
 
-                    applied: wallpaperModel.wallpapers.count > 0 &&
-                             wallpaperModel.selectedIndex < wallpaperModel.wallpapers.count &&
-                             wallpaperModel.wallpapers.get(
-                                 wallpaperModel.selectedIndex
-                             ).sourcePath === wallpaperModel.currentWall
+                    applied: wallpaperModel.wallpapers.count > 0 && wallpaperModel.selectedIndex < wallpaperModel.wallpapers.count && wallpaperModel.wallpapers.get(wallpaperModel.selectedIndex).sourcePath === wallpaperModel.currentWall
 
                     onApplyRequested: {
-                        wallpaperModel.applySelectedWallpaper(controls.applied)
-                        wallpaperCarousel.forceActiveFocus()
+                        wallpaperModel.applySelectedWallpaper(controls.applied);
+                        wallpaperCarousel.forceActiveFocus();
                     }
                 }
             }

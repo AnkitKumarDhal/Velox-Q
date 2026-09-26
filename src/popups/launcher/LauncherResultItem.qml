@@ -7,24 +7,20 @@ import qs.src.services
 Item {
     id: root
 
-    property var   appData:    ({})
-    property bool  isSelected: false
+    property var appData: ({})
+    property bool isSelected: false
 
-    signal activated()
-    signal hovered()
+    signal activated
+    signal hovered
 
     height: 54
 
     Rectangle {
         anchors.fill: parent
-        topRightRadius:    15
+        topRightRadius: 15
         bottomRightRadius: 15
 
-        color: root.isSelected
-                ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18)
-                : hov.containsMouse
-                    ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08)
-                    : "transparent"
+        color: root.isSelected ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : hov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08) : "transparent"
 
         Behavior on color {
             ColorAnimation {
@@ -40,9 +36,9 @@ Item {
             bottom: parent.bottom
         }
 
-        width:   3
-        radius:  1.5
-        color:   Colors.primary
+        width: 3
+        radius: 1.5
+        color: Colors.primary
         opacity: root.isSelected ? 1 : 0
 
         Behavior on opacity {
@@ -62,15 +58,13 @@ Item {
         spacing: 12
 
         Rectangle {
-            width:  36
+            width: 36
             height: 36
             radius: 9
 
             Layout.alignment: Qt.AlignVCenter
 
-            color: iconImg.status === Image.Ready
-                    ? "transparent"
-                    : (root.isSelected ? Colors.primaryContainer : Colors.surfaceContainerHigh)
+            color: iconImg.status === Image.Ready ? "transparent" : (root.isSelected ? Colors.primaryContainer : Colors.surfaceContainerHigh)
 
             Behavior on color {
                 ColorAnimation {
@@ -84,9 +78,9 @@ Item {
                 anchors.margins: 3
                 source: root.appData.icon ? Quickshell.iconPath(root.appData.icon, true) : ""
                 fillMode: Image.PreserveAspectFit
-                smooth:       true
-                mipmap:       true
-                visible:      status === Image.Ready
+                smooth: true
+                mipmap: true
+                visible: status === Image.Ready
                 asynchronous: true
             }
 
@@ -96,8 +90,8 @@ Item {
                 text: (root.appData.name || "?").charAt(0).toUpperCase()
                 color: root.isSelected ? Colors.on_PrimaryContainer : Colors.on_SurfaceVariant
                 font.pixelSize: 15
-                font.bold:       true
-                font.family:     Fonts.fontM
+                font.bold: true
+                font.family: Fonts.fontM
 
                 Behavior on color {
                     ColorAnimation {
@@ -132,7 +126,7 @@ Item {
                 text: root.metaText
                 color: Colors.on_SurfaceVariant
                 font.pixelSize: 11
-                font.family:     Fonts.font
+                font.family: Fonts.font
                 elide: Text.ElideRight
                 Layout.fillWidth: true
                 opacity: 0.65
@@ -141,10 +135,11 @@ Item {
     }
 
     readonly property string metaText: {
-        const generic = String(root.appData.genericName || "").trim()
-        const comment = String(root.appData.comment || "").trim()
-        if (generic && comment) return generic + " · " + comment
-        return generic || comment
+        const generic = String(root.appData.genericName || "").trim();
+        const comment = String(root.appData.comment || "").trim();
+        if (generic && comment)
+            return generic + " · " + comment;
+        return generic || comment;
     }
 
     MouseArea {
@@ -154,11 +149,11 @@ Item {
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-        onClicked: (mouse) => {
+        onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {
-                LauncherService.togglePin(root.appData)
+                LauncherService.togglePin(root.appData);
             } else {
-                root.activated()
+                root.activated();
             }
         }
 

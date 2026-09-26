@@ -76,41 +76,39 @@ PanelWindow {
                 RowLayout {
                     Layout.fillWidth: true
 
-                        Text {
-                            Layout.alignment: Qt.AlignLeft
-                            text: "Caffeine"
+                    Text {
+                        Layout.alignment: Qt.AlignLeft
+                        text: "Caffeine"
 
-                            color: Colors.on_Surface
+                        color: Colors.on_Surface
 
-                            font.pixelSize: 15
-                            font.bold: true
-                            font.family: Fonts.font
-                        }
+                        font.pixelSize: 15
+                        font.bold: true
+                        font.family: Fonts.font
+                    }
 
-                        Item {
-                            Layout.fillWidth: true
-                        }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
-                        Text {
-                            Layout.alignment: Qt.AlignRight
-                            text: {
-                                if (CaffeineService.caffeineActive) {
-                                    if (CaffeineService.infinite)
-                                        return "Keeping the system awake indefinitely"
+                    Text {
+                        Layout.alignment: Qt.AlignRight
+                        text: {
+                            if (CaffeineService.caffeineActive) {
+                                if (CaffeineService.infinite)
+                                    return "Keeping the system awake indefinitely";
 
-                                    return CaffeineService.remainingSeconds > 0
-                                        ? CaffeineService.remainingSeconds + " seconds remaining"
-                                        : "Finishing…"
-                                }
-
-                                return "Caffeine is off"
+                                return CaffeineService.remainingSeconds > 0 ? CaffeineService.remainingSeconds + " seconds remaining" : "Finishing…";
                             }
 
-                            color: Colors.on_SurfaceVariant
-
-                            font.pixelSize: 10
-                            font.family: Fonts.font
+                            return "Caffeine is off";
                         }
+
+                        color: Colors.on_SurfaceVariant
+
+                        font.pixelSize: 10
+                        font.family: Fonts.font
+                    }
                 }
 
                 Rectangle {
@@ -142,12 +140,30 @@ PanelWindow {
 
                     Repeater {
                         model: [
-                            { index: 1, label: "2 min" },
-                            { index: 2, label: "5 min" },
-                            { index: 3, label: "10 min" },
-                            { index: 4, label: "15 min" },
-                            { index: 5, label: "30 min" },
-                            { index: 6, label: "∞" }
+                            {
+                                index: 1,
+                                label: "2 min"
+                            },
+                            {
+                                index: 2,
+                                label: "5 min"
+                            },
+                            {
+                                index: 3,
+                                label: "10 min"
+                            },
+                            {
+                                index: 4,
+                                label: "15 min"
+                            },
+                            {
+                                index: 5,
+                                label: "30 min"
+                            },
+                            {
+                                index: 6,
+                                label: "∞"
+                            }
                         ]
 
                         delegate: Rectangle {
@@ -159,20 +175,9 @@ PanelWindow {
 
                             readonly property bool selected: CaffeineService.caffeineActive && CaffeineService.presetIndex === modelData.index
 
-                            color: selected
-                                    ? Qt.rgba(
-                                        Colors.primary.r,
-                                        Colors.primary.g,
-                                        Colors.primary.b,
-                                        0.16
-                                    )
-                                    : optionHover.hovered
-                                        ? Colors.surfaceContainerHighest
-                                        : Colors.surfaceContainerHigh
+                            color: selected ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.16) : optionHover.hovered ? Colors.surfaceContainerHighest : Colors.surfaceContainerHigh
 
-                            border.color: selected
-                                    ? Colors.primary
-                                    : Colors.outlineVariant
+                            border.color: selected ? Colors.primary : Colors.outlineVariant
 
                             border.width: selected ? 1.5 : 1
 
@@ -192,9 +197,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: modelData.label
 
-                                color: selected
-                                        ? Colors.primary
-                                        : Colors.on_Surface
+                                color: selected ? Colors.primary : Colors.on_Surface
 
                                 font.pixelSize: 10
                                 font.bold: selected
@@ -247,7 +250,9 @@ PanelWindow {
                         font.family: Fonts.fontM
                     }
 
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     Text {
                         visible: BrightnessService.available
@@ -320,21 +325,24 @@ PanelWindow {
                         cursorShape: Qt.PointingHandCursor
 
                         function valueFromX(x) {
-                            return Math.max(1, Math.min(100, Math.round((x / width) * 100)))
+                            return Math.max(1, Math.min(100, Math.round((x / width) * 100)));
                         }
 
-                        onPressed: (mouse) => {
-                            brightnessSlider.dragValue = valueFromX(mouse.x)
-                            BrightnessService.setBrightness(brightnessSlider.dragValue)
+                        onPressed: mouse => {
+                            brightnessSlider.dragValue = valueFromX(mouse.x);
+                            BrightnessService.setBrightness(brightnessSlider.dragValue);
                         }
 
-                        onPositionChanged: (mouse) => {
-                            if (!pressed) return
-                            brightnessSlider.dragValue = valueFromX(mouse.x)
-                            BrightnessService.setBrightness(brightnessSlider.dragValue)
+                        onPositionChanged: mouse => {
+                            if (!pressed)
+                                return;
+                            brightnessSlider.dragValue = valueFromX(mouse.x);
+                            BrightnessService.setBrightness(brightnessSlider.dragValue);
                         }
 
-                        onReleased: { BrightnessService.setBrightness(brightnessSlider.dragValue) }
+                        onReleased: {
+                            BrightnessService.setBrightness(brightnessSlider.dragValue);
+                        }
                     }
                 }
 

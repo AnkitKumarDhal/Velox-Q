@@ -101,22 +101,23 @@ Item {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onEntered: {
-                    hideTimer.stop()
-                    root.expanded = true
+                    hideTimer.stop();
+                    root.expanded = true;
                 }
                 onExited: hideTimer.restart()
 
                 function volumeFromX(x) {
-                    return Math.max(0, Math.min( x / width, 1))
+                    return Math.max(0, Math.min(x / width, 1));
                 }
 
-                onPressed: (mouse) => {
-                    if (!root.player) return
-                    root.player.volume = volumeFromX(mouse.x)
+                onPressed: mouse => {
+                    if (!root.player)
+                        return;
+                    root.player.volume = volumeFromX(mouse.x);
                 }
-                onPositionChanged: (mouse) => {
+                onPositionChanged: mouse => {
                     if (pressed && root.player) {
-                        root.player.volume = volumeFromX(mouse.x)
+                        root.player.volume = volumeFromX(mouse.x);
                     }
                 }
             }
@@ -129,12 +130,15 @@ Item {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         text: {
-            const volume = root.player?.volume ?? 0
+            const volume = root.player?.volume ?? 0;
 
-            if (volume <= 0) return "󰝟"
-            if (volume < 0.4) return "󰕿"
-            if (volume < 0.75) return "󰖀"
-            return "󰕾"
+            if (volume <= 0)
+                return "󰝟";
+            if (volume < 0.4)
+                return "󰕿";
+            if (volume < 0.75)
+                return "󰖀";
+            return "󰕾";
         }
         font.family: Fonts.fontM
         font.pointSize: 14
@@ -155,16 +159,17 @@ Item {
         cursorShape: Qt.PointingHandCursor
         z: 110
         onEntered: {
-            hideTimer.stop()
-            root.expanded = true
+            hideTimer.stop();
+            root.expanded = true;
         }
         onExited: hideTimer.restart()
         onClicked: {
-            if (!root.player) return
+            if (!root.player)
+                return;
             if (root.player.volume <= 0) {
-                root.player.volume = 0.5
+                root.player.volume = 0.5;
             } else {
-                root.player.volume = 0
+                root.player.volume = 0;
             }
         }
     }

@@ -33,47 +33,51 @@ Singleton {
         running: false
 
         stdout: SplitParser {
-            onRead: (line) => {
-                const parts = line.split(/\s+/)
-                if (parts.length < 2) return
-
-                const value = parseInt(parts[1])
-                if (isNaN(value)) return
-
-                if      (line.startsWith("MemTotal:"))     root._memTotal = value
-                else if (line.startsWith("MemAvailable:")) root._memAvailable = value
-                else if (line.startsWith("SwapTotal:"))    root._swapTotal = value
-                else if (line.startsWith("SwapFree:"))     root._swapFree = value
+            onRead: line => {
+                const parts = line.split(/\s+/);
+                if (parts.length < 2)
+                    return;
+                const value = parseInt(parts[1]);
+                if (isNaN(value))
+                    return;
+                if (line.startsWith("MemTotal:"))
+                    root._memTotal = value;
+                else if (line.startsWith("MemAvailable:"))
+                    root._memAvailable = value;
+                else if (line.startsWith("SwapTotal:"))
+                    root._swapTotal = value;
+                else if (line.startsWith("SwapFree:"))
+                    root._swapFree = value;
             }
         }
 
         onExited: {
-            const usedKb = Math.max(0, root._memTotal - root._memAvailable)
-            const swapUsedKb = Math.max(0, root._swapTotal - root._swapFree)
+            const usedKb = Math.max(0, root._memTotal - root._memAvailable);
+            const swapUsedKb = Math.max(0, root._swapTotal - root._swapFree);
 
-            root._totalGb     = root._memTotal / 1024 / 1024
-            root._usedGb      = usedKb / 1024 / 1024
-            root._availableGb = root._memAvailable / 1024 / 1024
-            root._usage       = root._memTotal > 0 ? usedKb / root._memTotal : 0.0
+            root._totalGb = root._memTotal / 1024 / 1024;
+            root._usedGb = usedKb / 1024 / 1024;
+            root._availableGb = root._memAvailable / 1024 / 1024;
+            root._usage = root._memTotal > 0 ? usedKb / root._memTotal : 0.0;
 
-            root._swapTotalGb = root._swapTotal / 1024 / 1024
-            root._swapUsedGb  = swapUsedKb / 1024 / 1024
-            root._swapUsage   = root._swapTotal > 0 ? swapUsedKb / root._swapTotal : 0.0
+            root._swapTotalGb = root._swapTotal / 1024 / 1024;
+            root._swapUsedGb = swapUsedKb / 1024 / 1024;
+            root._swapUsage = root._swapTotal > 0 ? swapUsedKb / root._swapTotal : 0.0;
         }
     }
 
     Timer {
-        interval:        1000
-        running:         true
-        repeat:          true
+        interval: 1000
+        running: true
+        repeat: true
         triggeredOnStart: true
 
         onTriggered: {
-            root._memTotal = 0
-            root._memAvailable = 0
-            root._swapTotal = 0
-            root._swapFree = 0
-            memProc.running = true
+            root._memTotal = 0;
+            root._memAvailable = 0;
+            root._swapTotal = 0;
+            root._swapFree = 0;
+            memProc.running = true;
         }
     }
 }

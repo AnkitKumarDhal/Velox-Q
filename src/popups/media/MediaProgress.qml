@@ -75,8 +75,7 @@ ColumnLayout {
                 enabled: !root.seeking
                 NumberAnimation {
                     duration: 250
-                    easing.type:
-                        Easing.OutCubic
+                    easing.type: Easing.OutCubic
                 }
             }
             Behavior on width {
@@ -95,18 +94,19 @@ ColumnLayout {
             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
 
             function positionFromMouse(mouseX) {
-                return Math.max(0, Math.min(mouseX / width, 1)) * (root.player?.length ?? 0)
+                return Math.max(0, Math.min(mouseX / width, 1)) * (root.player?.length ?? 0);
             }
 
-            onPressed: (mouse) => {
-                root.seekStarted(positionFromMouse(mouse.x))
+            onPressed: mouse => {
+                root.seekStarted(positionFromMouse(mouse.x));
             }
-            onPositionChanged: (mouse) => {
-                if (!pressed) return
-                root.seekMoved(positionFromMouse(mouse.x))
+            onPositionChanged: mouse => {
+                if (!pressed)
+                    return;
+                root.seekMoved(positionFromMouse(mouse.x));
             }
-            onReleased: (mouse) => {
-                root.seekReleased(positionFromMouse(mouse.x))
+            onReleased: mouse => {
+                root.seekReleased(positionFromMouse(mouse.x));
             }
         }
     }
@@ -122,7 +122,9 @@ ColumnLayout {
             font.pointSize: 8
         }
 
-        Item { Layout.fillWidth: true }
+        Item {
+            Layout.fillWidth: true
+        }
 
         Text {
             text: root.formatTime(root.player?.length ?? 0)
@@ -133,10 +135,10 @@ ColumnLayout {
     }
 
     function formatTime(seconds) {
-        const s = Math.max(0, Math.floor(seconds))
-        const minutes = Math.floor(s / 60)
-        const secs = String(s % 60).padStart(2, "0")
+        const s = Math.max(0, Math.floor(seconds));
+        const minutes = Math.floor(s / 60);
+        const secs = String(s % 60).padStart(2, "0");
 
-        return "%1:%2".arg(minutes).arg(secs)
+        return "%1:%2".arg(minutes).arg(secs);
     }
 }

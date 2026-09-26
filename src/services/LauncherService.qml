@@ -11,8 +11,8 @@ Singleton {
 
     property string stateFilePath: Quickshell.statePath("launcher.json")
 
-    property var pinnedIds:  []
-    property var recentIds:  []
+    property var pinnedIds: []
+    property var recentIds: []
     property var pinnedApps: []
     property var recentApps: []
 
@@ -24,149 +24,151 @@ Singleton {
     property bool pendingSave: false
 
     function appKey(app) {
-        if (!app) return ""
-        if (app.id) return app.id
+        if (!app)
+            return "";
+        if (app.id)
+            return app.id;
 
-        return (app.name || "") + "|" + (app.command || []).join("\u0001")
+        return (app.name || "") + "|" + (app.command || []).join("\u0001");
     }
 
     function refreshApps(apps) {
-        const source = apps && apps.length !== undefined ? apps : []
-        const byKey = {}
-        const pinned = []
-        const recent = []
+        const source = apps && apps.length !== undefined ? apps : [];
+        const byKey = {};
+        const pinned = [];
+        const recent = [];
 
         for (let i = 0; i < source.length; i++) {
-            const app = source[i]
-            const key = root.appKey(app)
-            if (!key || app.noDisplay) continue
-            byKey[key] = app
+            const app = source[i];
+            const key = root.appKey(app);
+            if (!key || app.noDisplay)
+                continue;
+            byKey[key] = app;
         }
 
         for (let i = 0; i < root.pinnedIds.length; i++) {
-            const key = root.pinnedIds[i]
+            const key = root.pinnedIds[i];
 
             if (byKey[key]) {
-                pinned.push(byKey[key])
+                pinned.push(byKey[key]);
             }
         }
 
         for (let i = 0; i < root.recentIds.length; i++) {
-            const key = root.recentIds[i]
+            const key = root.recentIds[i];
 
-            if (
-                byKey[key] &&
-                root.pinnedIds.indexOf(key) === -1 &&
-                recent.indexOf(byKey[key]) === -1
-            ) {
-                    recent.push(byKey[key])
+            if (byKey[key] && root.pinnedIds.indexOf(key) === -1 && recent.indexOf(byKey[key]) === -1) {
+                recent.push(byKey[key]);
             }
         }
 
-        root.pinnedApps = pinned
-        root.recentApps = recent
-        root.revision++
+        root.pinnedApps = pinned;
+        root.recentApps = recent;
+        root.revision++;
     }
 
     function recordLaunch(app) {
-        const key = root.appKey(app)
-        if (!key) return
-        const next = [key]
+        const key = root.appKey(app);
+        if (!key)
+            return;
+        const next = [key];
 
         for (let i = 0; i < root.recentIds.length && next.length < 24; i++) {
             if (root.recentIds[i] !== key) {
-                next.push(root.recentIds[i])
+                next.push(root.recentIds[i]);
             }
         }
 
-        root.recentIds = next
-        root.refreshApps(DesktopEntries.applications.values)
-        root.save()
+        root.recentIds = next;
+        root.refreshApps(DesktopEntries.applications.values);
+        root.save();
     }
 
     function isPinned(app) {
-        const key = root.appKey(app)
-        return (key !== "" && root.pinnedIds.indexOf(key) !== -1)
+        const key = root.appKey(app);
+        return (key !== "" && root.pinnedIds.indexOf(key) !== -1);
     }
 
     function togglePin(app) {
-        const key = root.appKey(app)
-        if (!key) return
-        const next = root.pinnedIds.slice()
-        const index = next.indexOf(key)
+        const key = root.appKey(app);
+        if (!key)
+            return;
+        const next = root.pinnedIds.slice();
+        const index = next.indexOf(key);
 
-        if (index === -1) next.push(key)
-        else next.splice(index, 1)
+        if (index === -1)
+            next.push(key);
+        else
+            next.splice(index, 1);
 
-        root.pinnedIds = next
-        root.refreshApps(DesktopEntries.applications.values)
-        root.save()
+        root.pinnedIds = next;
+        root.refreshApps(DesktopEntries.applications.values);
+        root.save();
     }
 
     function save() {
         if (!root.stateDirectoryReady) {
-            root.pendingSave = true
+            root.pendingSave = true;
             if (!stateDirectoryProc.running) {
-                stateDirectoryProc.running = true
+                stateDirectoryProc.running = true;
             }
-            return
+            return;
         }
 
         launcherState.setText(JSON.stringify({
             pinned: root.pinnedIds,
             recent: root.recentIds
-        }))
+        }));
     }
 
     function normalizeClass(value) {
-        return String(value || "").trim().toLowerCase()
+        return String(value || "").trim().toLowerCase();
     }
 
     function findExistingWindow(app) {
-        if (!app) return null
+        if (!app)
+            return null;
 
-        const startupClass = root.normalizeClass(app.startupClass)
-        const appId = root.normalizeClass(app.id)
-        const name = root.normalizeClass(app.name)
+        const startupClass = root.normalizeClass(app.startupClass);
+        const appId = root.normalizeClass(app.id);
+        const name = root.normalizeClass(app.name);
 
-        Hyprland.refreshToplevels()
+        Hyprland.refreshToplevels();
 
-        const toplevels = Hyprland.toplevels.values
+        const toplevels = Hyprland.toplevels.values;
 
         for (let i = 0; i < toplevels.length; i++) {
-            const toplevel = toplevels[i]
-            const data = toplevel.lastIpcObject || {}
-            const classes = [
-                data.initialClass,
-                data.class,
-                data.appid,
-                data.initialClassName,
-                data.xwaylandClass
-            ].filter(value => value).map(value => root.normalizeClass(value))
+            const toplevel = toplevels[i];
+            const data = toplevel.lastIpcObject || {};
+            const classes = [data.initialClass, data.class, data.appid, data.initialClassName, data.xwaylandClass].filter(value => value).map(value => root.normalizeClass(value));
 
-            if (startupClass && classes.indexOf( startupClass) !== -1) return toplevel
-            if (appId && classes.indexOf(appId) !== -1) return toplevel
-            if (name && classes.indexOf( name) !== -1) return toplevel
+            if (startupClass && classes.indexOf(startupClass) !== -1)
+                return toplevel;
+            if (appId && classes.indexOf(appId) !== -1)
+                return toplevel;
+            if (name && classes.indexOf(name) !== -1)
+                return toplevel;
         }
 
-        return null
+        return null;
     }
 
     function focusExisting(app) {
-        const toplevel = root.findExistingWindow(app)
-        if (!toplevel || !toplevel.address) return false
+        const toplevel = root.findExistingWindow(app);
+        if (!toplevel || !toplevel.address)
+            return false;
 
-        let address = String(toplevel.address)
+        let address = String(toplevel.address);
 
         if (!address.startsWith("0x")) {
-            address = "0x" + address
+            address = "0x" + address;
         }
 
-        root.pendingFocusAddress = address
-        Popups.launcherOpen = false
-        pendingFocusTimer.start()
+        root.pendingFocusAddress = address;
+        Popups.launcherOpen = false;
+        pendingFocusTimer.start();
 
-        return true
+        return true;
     }
 
     FileView {
@@ -179,31 +181,31 @@ Singleton {
 
         onLoaded: {
             try {
-                const data = JSON.parse(launcherState.text())
-                root.pinnedIds = Array.isArray(data.pinned) ? data.pinned : []
-                root.recentIds = Array.isArray(data.recent) ? data.recent : []
+                const data = JSON.parse(launcherState.text());
+                root.pinnedIds = Array.isArray(data.pinned) ? data.pinned : [];
+                root.recentIds = Array.isArray(data.recent) ? data.recent : [];
             } catch (error) {
-                console.warn("LauncherService: failed to parse launcher state:", error)
-                root.pinnedIds = []
-                root.recentIds = []
+                console.warn("LauncherService: failed to parse launcher state:", error);
+                root.pinnedIds = [];
+                root.recentIds = [];
             }
 
-            root.refreshApps(DesktopEntries.applications.values)
+            root.refreshApps(DesktopEntries.applications.values);
         }
 
-        onLoadFailed: function(error) {
-            console.warn("LauncherService: launcher state LOAD FAILED: ", root.stateFilePath, error)
-            root.pinnedIds = []
-            root.recentIds = []
-            root.refreshApps(DesktopEntries.applications.values)
+        onLoadFailed: function (error) {
+            console.warn("LauncherService: launcher state LOAD FAILED: ", root.stateFilePath, error);
+            root.pinnedIds = [];
+            root.recentIds = [];
+            root.refreshApps(DesktopEntries.applications.values);
         }
 
         onSaved: {
-            root.pendingSave = false
+            root.pendingSave = false;
         }
 
-        onSaveFailed: function(error) {
-            console.warn("Failed to save launcher state:", error)
+        onSaveFailed: function (error) {
+            console.warn("Failed to save launcher state:", error);
         }
     }
 
@@ -213,16 +215,16 @@ Singleton {
         running: true
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
-                console.warn("Launcher Service: Failed to create state directory: ", Quickshell.stateDir)
-                return
+                console.warn("Launcher Service: Failed to create state directory: ", Quickshell.stateDir);
+                return;
             }
-            root.stateDirectoryReady = true
+            root.stateDirectoryReady = true;
             if (root.pendingSave) {
-                root.pendingSave = false
+                root.pendingSave = false;
                 launcherState.setText(JSON.stringify({
                     pinned: root.pinnedIds,
                     recent: root.recentIds
-                }))
+                }));
             }
         }
     }
@@ -230,7 +232,7 @@ Singleton {
     Connections {
         target: DesktopEntries
         function onApplicationsChanged() {
-            root.refreshApps(DesktopEntries.applications.values)
+            root.refreshApps(DesktopEntries.applications.values);
         }
     }
 
@@ -242,14 +244,15 @@ Singleton {
         repeat: false
 
         onTriggered: {
-            if (!root.pendingFocusAddress) return
-            const address = root.pendingFocusAddress
-            root.pendingFocusAddress = ""
+            if (!root.pendingFocusAddress)
+                return;
+            const address = root.pendingFocusAddress;
+            root.pendingFocusAddress = "";
 
             if (Hyprland.usingLua) {
-                Hyprland.dispatch("hl.dsp.focus({ window = \"address:" + address + "\" })")
+                Hyprland.dispatch("hl.dsp.focus({ window = \"address:" + address + "\" })");
             } else {
-                Hyprland.dispatch("focuswindow address:" + address)
+                Hyprland.dispatch("focuswindow address:" + address);
             }
         }
     }

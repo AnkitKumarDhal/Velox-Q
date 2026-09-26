@@ -31,12 +31,14 @@ PanelWindow {
     property int clearAllCount: 0
 
     function clearAllWithAnimation() {
-        if (root.clearAllAnimating) return
-        if (NotificationService.notificationCount <= 0) return
-        root.clearAllCount = NotificationService.notificationCount
-        root.clearAllAnimating = true
-        clearAllTimer.interval = 460 + Math.max(0, root.clearAllCount - 1) * 35
-        clearAllTimer.start()
+        if (root.clearAllAnimating)
+            return;
+        if (NotificationService.notificationCount <= 0)
+            return;
+        root.clearAllCount = NotificationService.notificationCount;
+        root.clearAllAnimating = true;
+        clearAllTimer.interval = 460 + Math.max(0, root.clearAllCount - 1) * 35;
+        clearAllTimer.start();
     }
 
     mask: Region {
@@ -51,11 +53,11 @@ PanelWindow {
 
         function onNotificationCountChanged() {
             if (NotificationService.notificationCount === 0) {
-                emptyState.opacity = 0
-                emptyStateFadeIn.restart()
+                emptyState.opacity = 0;
+                emptyStateFadeIn.restart();
             } else {
-                emptyStateFadeIn.stop()
-                emptyState.opacity = 0
+                emptyStateFadeIn.stop();
+                emptyState.opacity = 0;
             }
         }
     }
@@ -74,8 +76,8 @@ PanelWindow {
         id: clearAllTimer
         repeat: false
         onTriggered: {
-            NotificationService.clearAll()
-            root.clearAllAnimating = false
+            NotificationService.clearAll();
+            root.clearAllAnimating = false;
         }
     }
 
@@ -99,9 +101,7 @@ PanelWindow {
             }
 
             width: 360
-            height: Math.min((root.clearAllAnimating || NotificationService.notificationCount === 0)
-                        ? 48 + notifCol.padding * 2 + emptyState.height
-                        : notifCol.implicitHeight + 48, root.implicitHeight - Theme.barHeight - 24)
+            height: Math.min((root.clearAllAnimating || NotificationService.notificationCount === 0) ? 48 + notifCol.padding * 2 + emptyState.height : notifCol.implicitHeight + 48, root.implicitHeight - Theme.barHeight - 24)
 
             Behavior on height {
                 NumberAnimation {
@@ -300,7 +300,7 @@ PanelWindow {
 
                     Component.onCompleted: {
                         if (NotificationService.notificationCount === 0)
-                            opacity = 1
+                            opacity = 1;
                     }
 
                     ColumnLayout {

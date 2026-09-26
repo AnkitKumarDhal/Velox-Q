@@ -19,9 +19,9 @@ Singleton {
     property var imageStates: ({})
 
     property var _metadata: ({
-        pinned: {},
-        usedAt: {}
-    })
+            pinned: {},
+            usedAt: {}
+        })
 
     property var _previewSearchMatches: []
     property bool searchCacheReady: false
@@ -34,103 +34,99 @@ Singleton {
     readonly property string searchCachePath: Quickshell.cachePath("clipboard/search")
 
     function itemSignature(item) {
-        return item.id
+        return item.id;
     }
 
     function isPinned(item) {
-        return !!root._metadata.pinned[itemSignature(item)]
+        return !!root._metadata.pinned[itemSignature(item)];
     }
 
     function relativeTime(timestamp) {
         if (!timestamp)
-            return "Earlier"
+            return "Earlier";
 
-        const elapsed = Math.max(0, Date.now() - timestamp)
-        const seconds = Math.floor(elapsed / 1000)
-        const minutes = Math.floor(seconds / 60)
-        const hours = Math.floor(minutes / 60)
-        const days = Math.floor(hours / 24)
+        const elapsed = Math.max(0, Date.now() - timestamp);
+        const seconds = Math.floor(elapsed / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
 
-        if (seconds < 10) return "Just now"
-        if (seconds < 60) return seconds + "s ago"
-        if (minutes < 60) return minutes + "m ago"
-        if (hours < 24) return hours + "h ago"
-        if (days < 7) return days + "d ago"
+        if (seconds < 10)
+            return "Just now";
+        if (seconds < 60)
+            return seconds + "s ago";
+        if (minutes < 60)
+            return minutes + "m ago";
+        if (hours < 24)
+            return hours + "h ago";
+        if (days < 7)
+            return days + "d ago";
 
-        return new Date(timestamp).toLocaleDateString()
+        return new Date(timestamp).toLocaleDateString();
     }
 
     function recencyLabel(item) {
-        const usedAt = root._metadata.usedAt[itemSignature(item)] || 0
+        const usedAt = root._metadata.usedAt[itemSignature(item)] || 0;
 
         if (usedAt > 0)
-            return "Used " + root.relativeTime(usedAt)
+            return "Used " + root.relativeTime(usedAt);
 
         if (item.position === 0)
-            return "Latest"
+            return "Latest";
 
         if (item.position < 5)
-            return "Recent"
+            return "Recent";
 
-        return "Earlier"
+        return "Earlier";
     }
 
     function categoryLabel(category) {
         switch (category) {
         case "text":
-            return "Text"
-
+            return "Text";
         case "images":
-            return "Images"
-
+            return "Images";
         case "link":
-            return "Links"
-
+            return "Links";
         case "code":
-            return "Code"
-
+            return "Code";
         case "pinned":
-            return "Pinned"
-
+            return "Pinned";
         default:
-            return "All"
+            return "All";
         }
     }
 
     function resultCountLabel() {
-        const count = root.filteredHistory.length
+        const count = root.filteredHistory.length;
 
         if (root.searchQuery.trim() !== "")
-            return count + " result" + (count === 1 ? "" : "s")
+            return count + " result" + (count === 1 ? "" : "s");
 
         if (root.filterCategory !== "all")
-            return count + " " + root.categoryLabel(root.filterCategory).toLowerCase()
+            return count + " " + root.categoryLabel(root.filterCategory).toLowerCase();
 
-        return count + " item" + (count === 1 ? "" : "s")
+        return count + " item" + (count === 1 ? "" : "s");
     }
 
     function parseItem(line, position) {
-        const tabIdx = line.indexOf('\t')
+        const tabIdx = line.indexOf('\t');
 
         if (tabIdx < 0)
-            return null
+            return null;
 
-        const id = line.substring(0, tabIdx).trim()
-        const preview = line.substring(tabIdx + 1)
+        const id = line.substring(0, tabIdx).trim();
+        const preview = line.substring(tabIdx + 1);
 
         if (id === "")
-            return null
+            return null;
 
-        const imageMatch = preview.match(
-            /^\[\[\s*binary data\s+(\d+(?:\.\d+)?\s+\w+)\s+(\w+)\s+(\d+)x(\d+)\s*\]\]$/i
-        )
+        const imageMatch = preview.match(/^\[\[\s*binary data\s+(\d+(?:\.\d+)?\s+\w+)\s+(\w+)\s+(\d+)x(\d+)\s*\]\]$/i);
 
         if (imageMatch) {
-            const format = imageMatch[2].toLowerCase()
-            const extension = format === "jpeg" ? "jpg" : format
-            const mimeType = format === "jpg" || format === "jpeg"
-                              ? "image/jpeg"
-                              : "image/" + format
+            const format = imageMatch[2].toLowerCase();
+            const extension = format === "jpeg" ? "jpg" : format;
+            const mimeType = format === "jpg" || format === "jpeg" ? "image/jpeg" : "image/" + format;
 
             return {
                 id: id,
@@ -144,14 +140,14 @@ Singleton {
                 height: Number(imageMatch[4]),
                 imagePath: root.imageCachePath + "/" + id + "." + extension,
                 position: position
-            }
+            };
         }
 
-        const isLink = /^(https?:\/\/|www\.)/i.test(preview.trim())
+        const isLink = /^(https?:\/\/|www\.)/i.test(preview.trim());
 
-        const isCode = /(^|\n)\s*(#include\b|import\s+|from\s+\S+\s+import\s+|const\s+|let\s+|var\s+|function\s+|class\s+|def\s+|sudo\s+|git\s+|npm\s+|pnpm\s+|yarn\s+|pacman\s+|curl\s+|wget\s+)/i.test(preview)
+        const isCode = /(^|\n)\s*(#include\b|import\s+|from\s+\S+\s+import\s+|const\s+|let\s+|var\s+|function\s+|class\s+|def\s+|sudo\s+|git\s+|npm\s+|pnpm\s+|yarn\s+|pacman\s+|curl\s+|wget\s+)/i.test(preview);
 
-        const isShebang = preview.trim().startsWith("#!")
+        const isShebang = preview.trim().startsWith("#!");
 
         return {
             id: id,
@@ -165,367 +161,327 @@ Singleton {
             height: 0,
             imagePath: "",
             position: position
-        }
+        };
     }
 
     function matchesCategory(item) {
         switch (root.filterCategory) {
         case "all":
-            return true
-
+            return true;
         case "text":
-            return item.kind === "text"
-
+            return item.kind === "text";
         case "images":
-            return item.kind === "image"
-
+            return item.kind === "image";
         case "link":
-            return item.kind === "link"
-
+            return item.kind === "link";
         case "code":
-            return item.kind === "code"
-
+            return item.kind === "code";
         case "pinned":
-            return root.isPinned(item)
-
+            return root.isPinned(item);
         default:
-            return true
+            return true;
         }
     }
 
     function refresh() {
         if (listProc.running) {
-            listProc._refreshPending = true
-            return
+            listProc._refreshPending = true;
+            return;
         }
 
-        root.loading = true
-        root.errorMessage = ""
+        root.loading = true;
+        root.errorMessage = "";
 
-        listProc._tempHist = []
-        listProc._refreshPending = false
+        listProc._tempHist = [];
+        listProc._refreshPending = false;
 
-        listProc.running = true
+        listProc.running = true;
     }
 
     function applyFilter() {
-        const query = root.searchQuery.trim().toLowerCase()
-        const result = []
+        const query = root.searchQuery.trim().toLowerCase();
+        const result = [];
 
         if (query === "") {
-            searchProc._query = ""
-            searchProc.exec(["true"])
+            searchProc._query = "";
+            searchProc.exec(["true"]);
 
             for (let i = 0; i < root.history.length; i++) {
-                const item = root.history[i]
+                const item = root.history[i];
 
                 if (root.matchesCategory(item))
-                    result.push(item)
+                    result.push(item);
             }
 
-            root.filteredHistory = result
-            return
+            root.filteredHistory = result;
+            return;
         }
 
-        const previewMatches = []
+        const previewMatches = [];
 
         for (let i = 0; i < root.history.length; i++) {
-            const item = root.history[i]
+            const item = root.history[i];
 
             if (!root.matchesCategory(item))
-                continue
-
+                continue;
             if (item.preview.toLowerCase().includes(query))
-                previewMatches.push(item)
+                previewMatches.push(item);
         }
 
-        root._previewSearchMatches = previewMatches
-        root.filteredHistory = previewMatches
+        root._previewSearchMatches = previewMatches;
+        root.filteredHistory = previewMatches;
 
-        root.startFullSearch(query)
+        root.startFullSearch(query);
     }
 
     onSearchQueryChanged: filterDebounce.restart()
 
     function setFilterCategory(category) {
         if (root.filterCategory === category) {
-            root.applyFilter()
-            return
+            root.applyFilter();
+            return;
         }
 
-        root.filterCategory = category
-        root.applyFilter()
+        root.filterCategory = category;
+        root.applyFilter();
     }
 
     function startFullSearch(query) {
         if (query === "")
-            return
-
+            return;
         if (!root.searchCacheReady) {
-            root._searchPending = true
-            root.ensureSearchCache()
-            return
+            root._searchPending = true;
+            root.ensureSearchCache();
+            return;
         }
 
-        root._searchPending = false
+        root._searchPending = false;
 
-        searchProc._query = query
-        searchProc._matches = []
+        searchProc._query = query;
+        searchProc._matches = [];
 
-        searchProc.exec([
-            "sh",
-            "-c",
-            "find \"$1\" -type f -name '*.txt' -exec grep -ilaF -- \"$2\" {} + 2>/dev/null",
-            "--",
-            root.searchCachePath,
-            query
-        ])
+        searchProc.exec(["sh", "-c", "find \"$1\" -type f -name '*.txt' -exec grep -ilaF -- \"$2\" {} + 2>/dev/null", "--", root.searchCachePath, query]);
     }
 
     function ensureSearchCache() {
         if (cacheProc.running) {
-            root._searchCachePending = true
-            return
+            root._searchCachePending = true;
+            return;
         }
 
-        cacheProc.running = true
+        cacheProc.running = true;
     }
 
     function finishSearchCache() {
-        root.searchCacheReady = true
+        root.searchCacheReady = true;
 
         if (root._searchCachePending) {
-            root._searchCachePending = false
-            root.ensureSearchCache()
-            return
+            root._searchCachePending = false;
+            root.ensureSearchCache();
+            return;
         }
 
         if (root._searchPending) {
-            root._searchPending = false
-            root.startFullSearch(root.searchQuery.trim().toLowerCase())
-            return
+            root._searchPending = false;
+            root.startFullSearch(root.searchQuery.trim().toLowerCase());
+            return;
         }
 
         if (root.searchQuery.trim() !== "")
-            root.startFullSearch(root.searchQuery.trim().toLowerCase())
+            root.startFullSearch(root.searchQuery.trim().toLowerCase());
     }
 
     function finishSearch() {
-        const query = root.searchQuery.trim().toLowerCase()
+        const query = root.searchQuery.trim().toLowerCase();
 
         if (searchProc._query !== query)
-            return
-
-        const matches = {}
+            return;
+        const matches = {};
 
         for (let i = 0; i < searchProc._matches.length; i++) {
-            const path = searchProc._matches[i]
-            const filename = path.substring(path.lastIndexOf("/") + 1)
+            const path = searchProc._matches[i];
+            const filename = path.substring(path.lastIndexOf("/") + 1);
 
             if (!filename.endsWith(".txt"))
-                continue
+                continue;
+            const id = filename.substring(0, filename.length - 4);
 
-            const id = filename.substring(0, filename.length - 4)
-
-            matches[id] = true
+            matches[id] = true;
         }
 
-        const result = []
+        const result = [];
 
         for (let i = 0; i < root.history.length; i++) {
-            const item = root.history[i]
+            const item = root.history[i];
 
             if (!root.matchesCategory(item))
-                continue
-
-            const previewMatched = root._previewSearchMatches.some(
-                (previewItem) => previewItem.id === item.id
-            )
+                continue;
+            const previewMatched = root._previewSearchMatches.some(previewItem => previewItem.id === item.id);
 
             if (matches[item.id] || previewMatched)
-                result.push(item)
+                result.push(item);
         }
 
         result.sort((a, b) => {
-            const aText = a.preview.toLowerCase()
-            const bText = b.preview.toLowerCase()
+            const aText = a.preview.toLowerCase();
+            const bText = b.preview.toLowerCase();
 
             function score(text, fullMatch) {
                 if (text === query)
-                    return 0
+                    return 0;
 
                 if (text.startsWith(query))
-                    return 1
+                    return 1;
 
-                const wordMatch = new RegExp(
-                    "(^|\\s)" + query.replace(
-                        /[.*+?^${}()|[\]\\]/g,
-                        "\\$&"
-                    ) + "(\\s|$)",
-                    "i"
-                ).test(text)
+                const wordMatch = new RegExp("(^|\\s)" + query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(\\s|$)", "i").test(text);
 
                 if (wordMatch)
-                    return 2
+                    return 2;
 
                 if (text.includes(query))
-                    return 3
+                    return 3;
 
-                return fullMatch ? 4 : 5
+                return fullMatch ? 4 : 5;
             }
 
-            const aScore = score(aText, !!matches[a.id])
-            const bScore = score(bText, !!matches[b.id])
+            const aScore = score(aText, !!matches[a.id]);
+            const bScore = score(bText, !!matches[b.id]);
 
             if (aScore !== bScore)
-                return aScore - bScore
+                return aScore - bScore;
 
-            return a.position - b.position
-        })
+            return a.position - b.position;
+        });
 
-        root.filteredHistory = result
+        root.filteredHistory = result;
     }
 
     function setImageState(id, state) {
-        const states = Object.assign({}, root.imageStates)
+        const states = Object.assign({}, root.imageStates);
 
-        states[id] = state
+        states[id] = state;
 
-        root.imageStates = states
+        root.imageStates = states;
     }
 
     function ensureImage(item) {
         if (!item || item.kind !== "image")
-            return
-
-        const state = root.imageStates[item.id] || 0
+            return;
+        const state = root.imageStates[item.id] || 0;
 
         if (state === 1 || state === 2)
-            return
-
-        root.setImageState(item.id, 1)
+            return;
+        root.setImageState(item.id, 1);
 
         imageProc._queue.push({
             id: item.id,
             path: item.imagePath
-        })
+        });
 
-        root.startNextImage()
+        root.startNextImage();
     }
 
     function startNextImage() {
         if (imageProc.running)
-            return
-
+            return;
         if (imageProc._queue.length === 0)
-            return
+            return;
+        const next = imageProc._queue.shift();
 
-        const next = imageProc._queue.shift()
-
-        imageProc._currentId = next.id
-        imageProc._currentPath = next.path
-        imageProc.running = true
+        imageProc._currentId = next.id;
+        imageProc._currentPath = next.path;
+        imageProc.running = true;
     }
 
     function copy(item) {
         if (!item || !item.id)
-            return
+            return;
+        root.errorMessage = "";
 
-        root.errorMessage = ""
+        const signature = root.itemSignature(item);
 
-        const signature = root.itemSignature(item)
+        const usedAt = Object.assign({}, root._metadata.usedAt);
 
-        const usedAt = Object.assign({}, root._metadata.usedAt)
-
-        usedAt[signature] = Date.now()
+        usedAt[signature] = Date.now();
 
         root._metadata = {
             pinned: root._metadata.pinned,
             usedAt: usedAt
-        }
+        };
 
-        root.saveMetadata()
+        root.saveMetadata();
 
-        copyProc.exec([
-            "sh",
-            "-c",
-            "printf '%s\\t\\n' \"$1\" | cliphist decode | wl-copy",
-            "--",
-            item.id
-        ])
+        copyProc.exec(["sh", "-c", "printf '%s\\t\\n' \"$1\" | cliphist decode | wl-copy", "--", item.id]);
     }
 
     function togglePin(item) {
         if (!item || !item.id)
-            return
-
-        const signature = root.itemSignature(item)
-        const pinned = Object.assign({}, root._metadata.pinned)
+            return;
+        const signature = root.itemSignature(item);
+        const pinned = Object.assign({}, root._metadata.pinned);
 
         if (pinned[signature])
-            delete pinned[signature]
+            delete pinned[signature];
         else
-            pinned[signature] = true
+            pinned[signature] = true;
 
         root._metadata = {
             pinned: pinned,
             usedAt: root._metadata.usedAt
-        }
+        };
 
-        root.saveMetadata()
-        root.applyFilter()
+        root.saveMetadata();
+        root.applyFilter();
     }
 
     function deleteItem(item) {
         if (!item || !item.id)
-            return
+            return;
+        const signature = root.itemSignature(item);
 
-        const signature = root.itemSignature(item)
+        const pinned = Object.assign({}, root._metadata.pinned);
+        const usedAt = Object.assign({}, root._metadata.usedAt);
 
-        const pinned = Object.assign({}, root._metadata.pinned)
-        const usedAt = Object.assign({}, root._metadata.usedAt)
-
-        delete pinned[signature]
-        delete usedAt[signature]
+        delete pinned[signature];
+        delete usedAt[signature];
 
         root._metadata = {
             pinned: pinned,
             usedAt: usedAt
-        }
+        };
 
-        root.saveMetadata()
+        root.saveMetadata();
 
         if (deleteProc.running) {
-            deleteProc._queue.push(item.id)
-            return
+            deleteProc._queue.push(item.id);
+            return;
         }
 
-        deleteProc._queue = []
-        deleteProc._itemId = item.id
-        deleteProc.running = true
+        deleteProc._queue = [];
+        deleteProc._itemId = item.id;
+        deleteProc.running = true;
     }
 
     function startNextDelete() {
         if (deleteProc._queue.length === 0) {
-            root.refresh()
-            return
+            root.refresh();
+            return;
         }
 
-        deleteProc._itemId = deleteProc._queue.shift()
-        deleteProc.running = true
+        deleteProc._itemId = deleteProc._queue.shift();
+        deleteProc.running = true;
     }
 
     function wipe() {
         if (wipeProc.running)
-            return
-
-        root.loading = true
-        root.errorMessage = ""
-        wipeProc.running = true
+            return;
+        root.loading = true;
+        root.errorMessage = "";
+        wipeProc.running = true;
     }
 
     function saveMetadata() {
-        metadataFile.setText(JSON.stringify(root._metadata))
+        metadataFile.setText(JSON.stringify(root._metadata));
     }
 
     FileView {
@@ -538,33 +494,33 @@ Singleton {
 
         onLoaded: {
             try {
-                const data = JSON.parse(metadataFile.text())
+                const data = JSON.parse(metadataFile.text());
 
                 root._metadata = {
                     pinned: data.pinned || {},
                     usedAt: data.usedAt || {}
-                }
+                };
             } catch (error) {
                 root._metadata = {
                     pinned: {},
                     usedAt: {}
-                }
+                };
             }
 
-            root.applyFilter()
+            root.applyFilter();
         }
 
         onLoadFailed: {
             root._metadata = {
                 pinned: {},
                 usedAt: {}
-            }
+            };
 
-            root.applyFilter()
+            root.applyFilter();
         }
 
         onSaveFailed: {
-            root.errorMessage = "Unable to save clipboard metadata."
+            root.errorMessage = "Unable to save clipboard metadata.";
         }
     }
 
@@ -587,41 +543,41 @@ Singleton {
         property bool _refreshPending: false
 
         stdout: SplitParser {
-            onRead: (line) => {
+            onRead: line => {
                 if (line.trim() !== "")
-                    listProc._tempHist.push(line)
+                    listProc._tempHist.push(line);
             }
         }
 
         stderr: StdioCollector {}
 
         onExited: (exitCode, exitStatus) => {
-            root.loading = false
+            root.loading = false;
 
             if (exitCode !== 0) {
-                root.errorMessage = "Unable to read clipboard history."
+                root.errorMessage = "Unable to read clipboard history.";
             } else {
-                const parsed = []
+                const parsed = [];
 
                 for (let i = 0; i < listProc._tempHist.length; i++) {
-                    const item = root.parseItem(listProc._tempHist[i], i)
+                    const item = root.parseItem(listProc._tempHist[i], i);
 
                     if (item)
-                        parsed.push(item)
+                        parsed.push(item);
                 }
 
-                root.history = parsed
-                root.errorMessage = ""
+                root.history = parsed;
+                root.errorMessage = "";
 
-                root.applyFilter()
-                root.ensureSearchCache()
+                root.applyFilter();
+                root.ensureSearchCache();
             }
 
-            listProc._tempHist = []
+            listProc._tempHist = [];
 
             if (listProc._refreshPending) {
-                listProc._refreshPending = false
-                root.refresh()
+                listProc._refreshPending = false;
+                root.refresh();
             }
         }
     }
@@ -629,13 +585,7 @@ Singleton {
     Process {
         id: cacheProc
 
-        command: [
-            "sh",
-            "-c",
-            "mkdir -p \"$1\" && cliphist list | while IFS=\"$(printf '\\t')\" read -r id preview; do case \"$preview\" in \"[[ binary data \"*) continue ;; esac; [ -s \"$1/$id.txt\" ] || printf '%s\\t\\n' \"$id\" | cliphist decode > \"$1/$id.txt\"; done; exit 0",
-            "--",
-            root.searchCachePath
-        ]
+        command: ["sh", "-c", "mkdir -p \"$1\" && cliphist list | while IFS=\"$(printf '\\t')\" read -r id preview; do case \"$preview\" in \"[[ binary data \"*) continue ;; esac; [ -s \"$1/$id.txt\" ] || printf '%s\\t\\n' \"$id\" | cliphist decode > \"$1/$id.txt\"; done; exit 0", "--", root.searchCachePath]
 
         running: false
 
@@ -644,12 +594,12 @@ Singleton {
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
                 if (!root.searchCacheReady)
-                    root.errorMessage = "Unable to build clipboard search cache."
+                    root.errorMessage = "Unable to build clipboard search cache.";
 
-                return
+                return;
             }
 
-            root.finishSearchCache()
+            root.finishSearchCache();
         }
     }
 
@@ -660,9 +610,9 @@ Singleton {
         property var _matches: []
 
         stdout: SplitParser {
-            onRead: (line) => {
+            onRead: line => {
                 if (line.trim() !== "")
-                    searchProc._matches.push(line.trim())
+                    searchProc._matches.push(line.trim());
             }
         }
 
@@ -670,7 +620,7 @@ Singleton {
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0 && searchProc._query !== "")
-                root.finishSearch()
+                root.finishSearch();
         }
     }
 
@@ -681,15 +631,7 @@ Singleton {
         property string _currentId: ""
         property string _currentPath: ""
 
-        command: [
-            "sh",
-            "-c",
-            "mkdir -p \"$1\" && if [ -s \"$3\" ]; then exit 0; fi; printf '%s\\t\\n' \"$2\" | cliphist decode > \"$3\"",
-            "--",
-            root.imageCachePath,
-            _currentId,
-            _currentPath
-        ]
+        command: ["sh", "-c", "mkdir -p \"$1\" && if [ -s \"$3\" ]; then exit 0; fi; printf '%s\\t\\n' \"$2\" | cliphist decode > \"$3\"", "--", root.imageCachePath, _currentId, _currentPath]
 
         running: false
 
@@ -697,16 +639,16 @@ Singleton {
 
         onExited: (exitCode, exitStatus) => {
             if (_currentId !== "") {
-                root.setImageState(_currentId, exitCode === 0 ? 2 : 3)
+                root.setImageState(_currentId, exitCode === 0 ? 2 : 3);
 
                 if (exitCode !== 0)
-                    root.errorMessage = "Unable to load an image from clipboard history."
+                    root.errorMessage = "Unable to load an image from clipboard history.";
             }
 
-            _currentId = ""
-            _currentPath = ""
+            _currentId = "";
+            _currentPath = "";
 
-            root.startNextImage()
+            root.startNextImage();
         }
     }
 
@@ -717,7 +659,7 @@ Singleton {
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0)
-                root.errorMessage = "Unable to copy clipboard item."
+                root.errorMessage = "Unable to copy clipboard item.";
         }
     }
 
@@ -727,13 +669,7 @@ Singleton {
         property string _itemId: ""
         property var _queue: []
 
-        command: [
-            "sh",
-            "-c",
-            "printf '%s\\n' \"$1\" | cliphist delete",
-            "--",
-            _itemId
-        ]
+        command: ["sh", "-c", "printf '%s\\n' \"$1\" | cliphist delete", "--", _itemId]
 
         running: false
 
@@ -741,16 +677,12 @@ Singleton {
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
-                root.errorMessage = "Unable to delete clipboard item."
+                root.errorMessage = "Unable to delete clipboard item.";
             } else {
-                cleanupProc.exec([
-                    "rm",
-                    "-f",
-                    root.searchCachePath + "/" + deleteProc._itemId + ".txt"
-                ])
+                cleanupProc.exec(["rm", "-f", root.searchCachePath + "/" + deleteProc._itemId + ".txt"]);
             }
 
-            root.startNextDelete()
+            root.startNextDelete();
         }
     }
 
@@ -764,23 +696,19 @@ Singleton {
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
-                root.loading = false
-                root.errorMessage = "Unable to clear clipboard history."
-                return
+                root.loading = false;
+                root.errorMessage = "Unable to clear clipboard history.";
+                return;
             }
 
             root._metadata = {
                 pinned: {},
                 usedAt: {}
-            }
+            };
 
-            root.saveMetadata()
-            cleanupProc.exec([
-                "rm",
-                "-rf",
-                root.searchCachePath
-            ])
-            root.refresh()
+            root.saveMetadata();
+            cleanupProc.exec(["rm", "-rf", root.searchCachePath]);
+            root.refresh();
         }
     }
 }

@@ -16,8 +16,8 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
 
     anchors {
-        top:   true
-        left:  true
+        top: true
+        left: true
         right: true
     }
 
@@ -27,9 +27,9 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     visible: slidePanel.windowVisible
 
-    property date today:         new Date()
+    property date today: new Date()
     property date displayedDate: new Date()
-    property date selectedDate:  new Date()
+    property date selectedDate: new Date()
 
     property Item selectedCell: null
     property bool selectedHighlightReady: false
@@ -42,135 +42,116 @@ PanelWindow {
     }
 
     function sameDate(first, second) {
-        return first.getFullYear() === second.getFullYear()
-                && first.getMonth() === second.getMonth()
-                && first.getDate() === second.getDate()
+        return first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
     }
 
     function isSameMonth(first, second) {
-        return first.getFullYear() === second.getFullYear()
-                && first.getMonth() === second.getMonth()
+        return first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth();
     }
 
     function monthIndex(value) {
-        return value.getFullYear() * 12 + value.getMonth()
+        return value.getFullYear() * 12 + value.getMonth();
     }
 
     function rebuildDays() {
-        root.selectedCell = null
+        root.selectedCell = null;
 
-        days.clear()
+        days.clear();
 
-        const year = root.displayedDate.getFullYear()
-        const month = root.displayedDate.getMonth()
+        const year = root.displayedDate.getFullYear();
+        const month = root.displayedDate.getMonth();
 
-        const firstDay = new Date(year, month, 1).getDay()
-        const daysInMonth = new Date(year, month + 1, 0).getDate()
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
         for (let i = 0; i < 42; i++) {
-            const dayOffset = i - firstDay
-            const cellDate = new Date(year, month, dayOffset + 1)
+            const dayOffset = i - firstDay;
+            const cellDate = new Date(year, month, dayOffset + 1);
 
             days.append({
-                day:          cellDate.getDate(),
-                month:        cellDate.getMonth(),
-                year:         cellDate.getFullYear(),
+                day: cellDate.getDate(),
+                month: cellDate.getMonth(),
+                year: cellDate.getFullYear(),
                 currentMonth: cellDate.getMonth() === month,
-                isToday:      root.sameDate(cellDate, root.today),
-                isSelected:   root.sameDate(cellDate, root.selectedDate)
-            })
+                isToday: root.sameDate(cellDate, root.today),
+                isSelected: root.sameDate(cellDate, root.selectedDate)
+            });
         }
     }
 
     function updateSelection() {
         for (let i = 0; i < days.count; i++) {
-            const item = days.get(i)
+            const item = days.get(i);
 
-            days.setProperty(
-                i,
-                "isSelected",
-                item.year === root.selectedDate.getFullYear()
-                    && item.month === root.selectedDate.getMonth()
-                    && item.day === root.selectedDate.getDate()
-            )
+            days.setProperty(i, "isSelected", item.year === root.selectedDate.getFullYear() && item.month === root.selectedDate.getMonth() && item.day === root.selectedDate.getDate());
         }
     }
 
     function setSelectedCell(cell) {
-        root.selectedCell = cell
-        root.selectedHighlightReady = true
+        root.selectedCell = cell;
+        root.selectedHighlightReady = true;
     }
 
     function selectDate(year, month, day) {
         if (monthAnimation.running)
-            return
+            return;
+        const selected = new Date(year, month, day);
 
-        const selected = new Date(year, month, day)
+        root.selectedDate = selected;
 
-        root.selectedDate = selected
-
-        const currentMonth = root.monthIndex(root.displayedDate)
-        const selectedMonth = root.monthIndex(selected)
-        const offset = selectedMonth - currentMonth
+        const currentMonth = root.monthIndex(root.displayedDate);
+        const selectedMonth = root.monthIndex(selected);
+        const offset = selectedMonth - currentMonth;
 
         if (offset !== 0) {
-            root.showMonth(offset)
-            return
+            root.showMonth(offset);
+            return;
         }
 
-        root.updateSelection()
+        root.updateSelection();
     }
 
     function showMonth(offset) {
         if (monthAnimation.running || offset === 0)
-            return
+            return;
+        root.pendingMonthOffset = offset;
+        root.monthSlideDirection = offset > 0 ? -1 : 1;
 
-        root.pendingMonthOffset = offset
-        root.monthSlideDirection = offset > 0 ? -1 : 1
-
-        monthAnimation.start()
+        monthAnimation.start();
     }
 
     function showToday(animateToToday) {
         if (animateToToday === undefined)
-            animateToToday = false
+            animateToToday = false;
 
-        const currentDate = new Date()
+        const currentDate = new Date();
 
-        root.today = currentDate
-        root.selectedDate = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            currentDate.getDate()
-        )
+        root.today = currentDate;
+        root.selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
-        const currentMonth = root.monthIndex(root.displayedDate)
-        const todayMonth = root.monthIndex(currentDate)
-        const offset = todayMonth - currentMonth
+        const currentMonth = root.monthIndex(root.displayedDate);
+        const todayMonth = root.monthIndex(currentDate);
+        const offset = todayMonth - currentMonth;
 
         if (animateToToday && offset !== 0) {
-            root.pendingMonthOffset = offset
-            root.monthSlideDirection = offset > 0 ? -1 : 1
+            root.pendingMonthOffset = offset;
+            root.monthSlideDirection = offset > 0 ? -1 : 1;
 
-            monthAnimation.start()
-            return
+            monthAnimation.start();
+            return;
         }
 
-        root.displayedDate = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            1
-        )
+        root.displayedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-        root.rebuildDays()
+        root.rebuildDays();
     }
 
     function isShowingCurrentMonth() {
-        return root.isSameMonth(root.displayedDate, root.today)
+        return root.isSameMonth(root.displayedDate, root.today);
     }
 
     function isTodaySelected() {
-        return root.sameDate(root.selectedDate, root.today)
+        return root.sameDate(root.selectedDate, root.today);
     }
 
     Component.onCompleted: root.showToday(false)
@@ -180,7 +161,7 @@ PanelWindow {
 
         function onCalendarOpenChanged() {
             if (Popups.calendarOpen)
-                root.showToday(false)
+                root.showToday(false);
         }
     }
 
@@ -190,13 +171,13 @@ PanelWindow {
         running: true
 
         onTriggered: {
-            const currentDate = new Date()
+            const currentDate = new Date();
 
             if (!root.sameDate(currentDate, root.today)) {
-                root.today = currentDate
+                root.today = currentDate;
 
                 if (root.isShowingCurrentMonth())
-                    root.rebuildDays()
+                    root.rebuildDays();
             }
         }
     }
@@ -232,19 +213,13 @@ PanelWindow {
 
         ScriptAction {
             script: {
-                root.displayedDate = new Date(
-                    root.displayedDate.getFullYear(),
-                    root.displayedDate.getMonth() + root.pendingMonthOffset,
-                    1
-                )
+                root.displayedDate = new Date(root.displayedDate.getFullYear(), root.displayedDate.getMonth() + root.pendingMonthOffset, 1);
 
-                root.rebuildDays()
+                root.rebuildDays();
 
-                monthGridTransform.x =
-                    -root.monthSlideDirection * (gridViewport.width + 24)
+                monthGridTransform.x = -root.monthSlideDirection * (gridViewport.width + 24);
 
-                monthHeaderTransform.x =
-                    -root.monthSlideDirection * 24
+                monthHeaderTransform.x = -root.monthSlideDirection * 24;
             }
         }
 
@@ -284,9 +259,9 @@ PanelWindow {
     }
 
     mask: Region {
-        x:      (root.width - card.width) / 2
-        y:      Theme.barHeight + 8
-        width:  card.width
+        x: (root.width - card.width) / 2
+        y: Theme.barHeight + 8
+        width: card.width
         height: card.height
     }
 
@@ -304,16 +279,16 @@ PanelWindow {
             id: card
 
             anchors {
-                top:             parent.top
+                top: parent.top
                 horizontalCenter: parent.horizontalCenter
-                topMargin:       Theme.barHeight + 8
+                topMargin: Theme.barHeight + 8
             }
 
-            width:  360
+            width: 360
             height: 398
 
-            radius:       Theme.popupRadius
-            color:        Colors.surfaceContainer
+            radius: Theme.popupRadius
+            color: Colors.surfaceContainer
             border.color: Colors.outlineVariant
             border.width: Theme.popupBorder
 
@@ -377,9 +352,7 @@ PanelWindow {
 
                             radius: 16
 
-                            color: prevHover.containsMouse
-                                    ? Colors.primaryContainer
-                                    : Colors.surfaceContainerHigh
+                            color: prevHover.containsMouse ? Colors.primaryContainer : Colors.surfaceContainerHigh
 
                             Behavior on color {
                                 ColorAnimation {
@@ -418,9 +391,7 @@ PanelWindow {
 
                             radius: 16
 
-                            color: nextHover.containsMouse
-                                    ? Colors.primaryContainer
-                                    : Colors.surfaceContainerHigh
+                            color: nextHover.containsMouse ? Colors.primaryContainer : Colors.surfaceContainerHigh
 
                             Behavior on color {
                                 ColorAnimation {
@@ -580,13 +551,9 @@ PanelWindow {
 
                                 opacity: modelData.currentMonth ? 1 : 0.35
 
-                                color: dayHover.containsMouse
-                                        ? Colors.surfaceContainerHigh
-                                        : "transparent"
+                                color: dayHover.containsMouse ? Colors.surfaceContainerHigh : "transparent"
 
-                                border.color: modelData.isToday
-                                        ? Colors.primary
-                                        : "transparent"
+                                border.color: modelData.isToday ? Colors.primary : "transparent"
 
                                 border.width: modelData.isToday ? 1.5 : 0
 
@@ -613,16 +580,16 @@ PanelWindow {
 
                                 Component.onCompleted: {
                                     if (isSelected)
-                                        Qt.callLater(function() {
-                                            root.setSelectedCell(dayCell)
-                                        })
+                                        Qt.callLater(function () {
+                                            root.setSelectedCell(dayCell);
+                                        });
                                 }
 
                                 onIsSelectedChanged: {
                                     if (isSelected)
-                                        Qt.callLater(function() {
-                                            root.setSelectedCell(dayCell)
-                                        })
+                                        Qt.callLater(function () {
+                                            root.setSelectedCell(dayCell);
+                                        });
                                 }
 
                                 Text {
@@ -630,9 +597,7 @@ PanelWindow {
 
                                     text: modelData.day
 
-                                    color: modelData.isSelected
-                                            ? Colors.on_PrimaryContainer
-                                            : Colors.on_Surface
+                                    color: modelData.isSelected ? Colors.on_PrimaryContainer : Colors.on_Surface
 
                                     font.pixelSize: 12
                                     font.bold: modelData.isSelected || modelData.isToday
@@ -648,11 +613,7 @@ PanelWindow {
 
                                     cursorShape: Qt.PointingHandCursor
 
-                                    onClicked: root.selectDate(
-                                        modelData.year,
-                                        modelData.month,
-                                        modelData.day
-                                    )
+                                    onClicked: root.selectDate(modelData.year, modelData.month, modelData.day)
                                 }
                             }
                         }
@@ -712,9 +673,7 @@ PanelWindow {
 
                             radius: 15
 
-                            color: todayHover.containsMouse
-                                    ? Colors.primaryContainer
-                                    : Colors.surfaceContainerHigh
+                            color: todayHover.containsMouse ? Colors.primaryContainer : Colors.surfaceContainerHigh
 
                             opacity: root.isTodaySelected() ? 0 : 1
                             scale: root.isTodaySelected() ? 0.82 : 1

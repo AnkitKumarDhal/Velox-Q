@@ -38,140 +38,159 @@ Singleton {
     property var _state: null
 
     function getIcon(): string {
-        if (full) return "󰁹 "
+        if (full)
+            return "󰁹 ";
         if (charging) {
-            if (capacity >= 95) return "󰂅 "
-            if (capacity >= 90) return "󰂋 "
-            if (capacity >= 80) return "󰂊 "
-            if (capacity >= 70) return "󰢞 "
-            if (capacity >= 60) return "󰂉 "
-            if (capacity >= 50) return "󰢝 "
-            if (capacity >= 40) return "󰂈 "
-            if (capacity >= 30) return "󰂇 "
-            if (capacity >= 20) return "󰂆 "
-            if (capacity >= 10) return "󰢜 "
-            return "󰢟 "
+            if (capacity >= 95)
+                return "󰂅 ";
+            if (capacity >= 90)
+                return "󰂋 ";
+            if (capacity >= 80)
+                return "󰂊 ";
+            if (capacity >= 70)
+                return "󰢞 ";
+            if (capacity >= 60)
+                return "󰂉 ";
+            if (capacity >= 50)
+                return "󰢝 ";
+            if (capacity >= 40)
+                return "󰂈 ";
+            if (capacity >= 30)
+                return "󰂇 ";
+            if (capacity >= 20)
+                return "󰂆 ";
+            if (capacity >= 10)
+                return "󰢜 ";
+            return "󰢟 ";
         }
-        if (capacity >= 90) return "󰁹 "
-        if (capacity >= 80) return "󰂀 "
-        if (capacity >= 60) return "󰁿 "
-        if (capacity >= 40) return "󰁼 "
-        if (capacity >= 20) return "󰁻 "
-        if (capacity >= 10) return "󰁺 "
-        return "󰂎 "
+        if (capacity >= 90)
+            return "󰁹 ";
+        if (capacity >= 80)
+            return "󰂀 ";
+        if (capacity >= 60)
+            return "󰁿 ";
+        if (capacity >= 40)
+            return "󰁼 ";
+        if (capacity >= 20)
+            return "󰁻 ";
+        if (capacity >= 10)
+            return "󰁺 ";
+        return "󰂎 ";
     }
 
     function getColor(): string {
-        if (charging || full || notCharging) return Colors.tertiary
-        if (capacity <= 25) return Colors.error
-        return Colors.primary
+        if (charging || full || notCharging)
+            return Colors.tertiary;
+        if (capacity <= 25)
+            return Colors.error;
+        return Colors.primary;
     }
 
     function formatTimeRemaining(): string {
-        if (timeRemainingMinutes <= 0) return ""
-        const h = Math.floor(timeRemainingMinutes / 60)
-        const m = timeRemainingMinutes % 60
-        if (h === 0) return m + "m"
-        return h + "h " + String(m).padStart(2, "0") + "m"
+        if (timeRemainingMinutes <= 0)
+            return "";
+        const h = Math.floor(timeRemainingMinutes / 60);
+        const m = timeRemainingMinutes % 60;
+        if (h === 0)
+            return m + "m";
+        return h + "h " + String(m).padStart(2, "0") + "m";
     }
 
     function setCpuTier(tier) {
         if (!performanceAvailable || !performanceOptions.includes(tier))
-            return
-
-        applying = true
-        _actionProc.command = [root._backendPath, "performance", "set", tier]
-        _actionProc.running = true
+            return;
+        applying = true;
+        _actionProc.command = [root._backendPath, "performance", "set", tier];
+        _actionProc.running = true;
     }
 
     function setChargeMode(mode) {
         if (!chargingAvailable || !chargingOptions.includes(mode))
-            return
-
-        applying = true
-        _actionProc.command = [root._backendPath, "charge", "set", mode]
-        _actionProc.running = true
+            return;
+        applying = true;
+        _actionProc.command = [root._backendPath, "charge", "set", mode];
+        _actionProc.running = true;
     }
 
     function setRefreshRate(hz) {
         if (!displayAvailable || !Number.isFinite(hz))
-            return
-
-        const available = displayOptions.some(rate => Math.abs(Number(rate) - hz) < 0.01)
+            return;
+        const available = displayOptions.some(rate => Math.abs(Number(rate) - hz) < 0.01);
         if (!available)
-            return
-
-        applying = true
-        _actionProc.command = [root._backendPath, "display", "set", String(Math.round(hz))]
-        _actionProc.running = true
+            return;
+        applying = true;
+        _actionProc.command = [root._backendPath, "display", "set", String(Math.round(hz))];
+        _actionProc.running = true;
     }
 
     function _applyState(data) {
         if (!data || typeof data !== "object")
-            return
+            return;
+        const previous = root._state ?? {};
+        const battery = data.battery ?? previous.battery ?? {};
+        const chargingState = data.charging ?? previous.charging ?? {};
+        const performance = data.performance ?? previous.performance ?? {};
+        const display = data.display ?? previous.display ?? {};
 
-        const previous = root._state ?? {}
-        const battery = data.battery ?? previous.battery ?? {}
-        const chargingState = data.charging ?? previous.charging ?? {}
-        const performance = data.performance ?? previous.performance ?? {}
-        const display = data.display ?? previous.display ?? {}
+        const merged = {};
+        Object.assign(merged, previous);
+        merged.battery = battery;
+        merged.charging = chargingState;
+        merged.performance = performance;
+        merged.display = display;
 
-        const merged = {}
-        Object.assign(merged, previous)
-        merged.battery = battery
-        merged.charging = chargingState
-        merged.performance = performance
-        merged.display = display
+        root._state = merged;
 
-        root._state = merged
-
-        if (data.battery && data.battery.present !== undefined) root.hasBattery = data.battery.present === true
+        if (data.battery && data.battery.present !== undefined)
+            root.hasBattery = data.battery.present === true;
         if (root.hasBattery) {
-            root.capacity = Number(battery.capacity ?? 0)
-            root.status = battery.status ?? "Unknown"
-            root.timeRemainingMinutes = Number(battery.time_remaining_minutes ?? -1)
-            root.charging = root.status === "Charging"
-            root.full = root.status === "Full"
-            root.notCharging = root.status === "Not charging"
+            root.capacity = Number(battery.capacity ?? 0);
+            root.status = battery.status ?? "Unknown";
+            root.timeRemainingMinutes = Number(battery.time_remaining_minutes ?? -1);
+            root.charging = root.status === "Charging";
+            root.full = root.status === "Full";
+            root.notCharging = root.status === "Not charging";
         }
 
-        if (data.performance) root.cpuTier = performance.current ?? root.cpuTier
-        if (data.charging) root.chargeMode = chargingState.current ?? root.chargeMode
+        if (data.performance)
+            root.cpuTier = performance.current ?? root.cpuTier;
+        if (data.charging)
+            root.chargeMode = chargingState.current ?? root.chargeMode;
         if (data.display) {
-            root.refreshRate = Number(display.current_refresh ?? root.refreshRate)
-            if (Number.isFinite(root.refreshRate)) root.refreshRate = Math.round(root.refreshRate)
+            root.refreshRate = Number(display.current_refresh ?? root.refreshRate);
+            if (Number.isFinite(root.refreshRate))
+                root.refreshRate = Math.round(root.refreshRate);
         }
 
-        root.initialized = true
+        root.initialized = true;
     }
 
     function _refresh() {
         if (_statusProc.running)
-            return
-
-        _statusProc.running = true
+            return;
+        _statusProc.running = true;
     }
 
     Connections {
         target: UPower
         function onOnBatteryChanged() {
-            root._refresh()
+            root._refresh();
         }
     }
 
     Connections {
         target: UPower.displayDevice
         function onStateChanged() {
-            root._refresh()
+            root._refresh();
         }
         function onPercentageChanged() {
-            root._refresh()
+            root._refresh();
         }
         function onTimeToEmptyChanged() {
-            root._refresh()
+            root._refresh();
         }
         function onTimeToFullChanged() {
-            root._refresh()
+            root._refresh();
         }
     }
 
@@ -183,16 +202,16 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
-                    root._applyState(JSON.parse(text))
+                    root._applyState(JSON.parse(text));
                 } catch (error) {
-                    console.warn("BatteryService: failed to parse velox-battery output:", error)
+                    console.warn("BatteryService: failed to parse velox-battery output:", error);
                 }
             }
         }
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0)
-                console.warn("BatteryService: velox-battery status failed:", exitCode)
+                console.warn("BatteryService: velox-battery status failed:", exitCode);
         }
     }
 
@@ -204,21 +223,21 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
-                    const data = JSON.parse(text)
+                    const data = JSON.parse(text);
 
                     if (data.result)
-                        root._applyState(data.result)
+                        root._applyState(data.result);
                     else
-                        root._refresh()
+                        root._refresh();
                 } catch (error) {
-                    root._refresh()
+                    root._refresh();
                 }
             }
         }
 
         onExited: {
-            root.applying = false
-            root._refresh()
+            root.applying = false;
+            root._refresh();
         }
     }
 

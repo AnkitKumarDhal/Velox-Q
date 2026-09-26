@@ -11,14 +11,15 @@ import qs.src.popups.emoji
 PanelWindow {
     id: root
 
-    //property var screen
-
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
-    anchors { bottom: true; left: true }
+    anchors {
+        bottom: true
+        left: true
+    }
 
-    implicitWidth:  390
+    implicitWidth: 390
     implicitHeight: 520
 
     WlrLayershell.layer: WlrLayer.Overlay
@@ -26,35 +27,36 @@ PanelWindow {
 
     visible: slide.windowVisible
 
-    // ── Data ──────────────────────────────────────────────────────────────
-    EmojiData { id: emojiData }
-    EmojiSearchData { id: emojiSearchData }
+    EmojiData {
+        id: emojiData
+    }
+    EmojiSearchData {
+        id: emojiSearchData
+    }
 
-    // ── State ─────────────────────────────────────────────────────────────
-    property int    activeCat:  0
+    property int activeCat: 0
     property string searchText: ""
 
     readonly property var currentEmojis: {
-        const q = searchText.trim().toLowerCase()
+        const q = searchText.trim().toLowerCase();
 
         if (!q)
-            return emojiData.categories[activeCat].emojis
+            return emojiData.categories[activeCat].emojis;
 
-        const results = []
+        const results = [];
 
         for (const cat of emojiData.categories) {
             for (const emoji of cat.emojis) {
-                const terms = emojiSearchData.terms[emoji]
+                const terms = emojiSearchData.terms[emoji];
 
                 if (terms && terms.includes(q))
-                    results.push(emoji)
+                    results.push(emoji);
             }
         }
 
-        return results
+        return results;
     }
 
-    // ── Copy ──────────────────────────────────────────────────────────────
     Process {
         id: copyProc
         property string emoji: ""
@@ -63,32 +65,31 @@ PanelWindow {
     }
 
     function copyEmoji(emoji) {
-        copyProc.emoji   = emoji
-        copyProc.running = true
-        Popups.emojiOpen = false
+        copyProc.emoji = emoji;
+        copyProc.running = true;
+        Popups.emojiOpen = false;
     }
 
-    // ── Reset on open ─────────────────────────────────────────────────────
     Connections {
         target: Popups
         function onEmojiOpenChanged() {
             if (Popups.emojiOpen) {
-                searchBar.clear()
-                root.searchText = ""
-                root.activeCat  = 0
-                emojiGrid.resetIndex()
-                emojiGrid.forceActiveFocus()
+                searchBar.clear();
+                root.searchText = "";
+                root.activeCat = 0;
+                emojiGrid.resetIndex();
+                emojiGrid.forceActiveFocus();
             }
         }
     }
 
     Component.onCompleted: {
         if (Popups.emojiOpen) {
-            searchBar.clear()
-            root.searchText = ""
-            root.activeCat = 0
-            emojiGrid.resetIndex()
-            emojiGrid.forceActiveFocus()
+            searchBar.clear();
+            root.searchText = "";
+            root.activeCat = 0;
+            emojiGrid.resetIndex();
+            emojiGrid.forceActiveFocus();
         }
     }
 
@@ -104,17 +105,17 @@ PanelWindow {
 
         Rectangle {
             anchors {
-                bottom:       parent.bottom
-                left:         parent.left
+                bottom: parent.bottom
+                left: parent.left
                 bottomMargin: 10
-                leftMargin:   10
+                leftMargin: 10
             }
 
-            width:  380
+            width: 380
             height: 440
 
             radius: Theme.popupRadius
-            color:  Colors.surfaceContainer
+            color: Colors.surfaceContainer
 
             border.color: Colors.outlineVariant
             border.width: Theme.popupBorder
@@ -122,34 +123,40 @@ PanelWindow {
             clip: true
 
             ColumnLayout {
-                anchors { fill: parent; margins: 14 }
+                anchors {
+                    fill: parent
+                    margins: 14
+                }
                 spacing: 10
 
                 EmojiSearchBar {
                     id: searchBar
                     Layout.fillWidth: true
 
-                    onTextChanged:   { root.searchText = text; emojiGrid.resetIndex() }
+                    onTextChanged: {
+                        root.searchText = text;
+                        emojiGrid.resetIndex();
+                    }
                     onEscapePressed: Popups.emojiOpen = false
                     onReturnPressed: root.copyEmoji(root.currentEmojis[0] ?? "")
-                    onDownPressed:   emojiGrid.forceActiveFocus()
-                    onUpPressed:     emojiGrid.forceActiveFocus()
+                    onDownPressed: emojiGrid.forceActiveFocus()
+                    onUpPressed: emojiGrid.forceActiveFocus()
                 }
 
                 EmojiCategoryBar {
                     id: catBar
                     Layout.fillWidth: true
 
-                    categories:   emojiData.categories
-                    activeIndex:  root.activeCat
+                    categories: emojiData.categories
+                    activeIndex: root.activeCat
                     searchActive: root.searchText.length > 0
 
-                    onCategorySelected: (idx) => {
-                        searchBar.clear()
-                        root.searchText = ""
-                        root.activeCat  = idx
-                        emojiGrid.resetIndex()
-                        emojiGrid.forceActiveFocus()
+                    onCategorySelected: idx => {
+                        searchBar.clear();
+                        root.searchText = "";
+                        root.activeCat = idx;
+                        emojiGrid.resetIndex();
+                        emojiGrid.forceActiveFocus();
                     }
                 }
 
@@ -162,16 +169,16 @@ PanelWindow {
 
                 EmojiGrid {
                     id: emojiGrid
-                    Layout.fillWidth:  true
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
 
                     emojis: root.currentEmojis
 
-                    onEmojiSelected: (emoji) => root.copyEmoji(emoji)
+                    onEmojiSelected: emoji => root.copyEmoji(emoji)
                     onEscapePressed: Popups.emojiOpen = false
-                    onTypedChar:     (ch)    => {
-                        searchBar.forceActiveFocus()
-                        searchBar.insertText(ch)
+                    onTypedChar: ch => {
+                        searchBar.forceActiveFocus();
+                        searchBar.insertText(ch);
                     }
                 }
             }

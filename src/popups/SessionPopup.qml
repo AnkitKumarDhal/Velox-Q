@@ -26,11 +26,9 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
 
     readonly property bool isFocusedScreen: {
-        const monitor = root.screen
-            ? Hyprland.monitorFor(root.screen)
-            : null
+        const monitor = root.screen ? Hyprland.monitorFor(root.screen) : null;
 
-        return monitor ? monitor.focused : false
+        return monitor ? monitor.focused : false;
     }
 
     readonly property int cardSize: 470
@@ -81,27 +79,25 @@ PanelWindow {
     property bool _visualOpen: false
 
     visible: root._shouldShow && root.isFocusedScreen
-    WlrLayershell.keyboardFocus: root._shouldShow && root.isFocusedScreen
-            ? WlrKeyboardFocus.Exclusive
-            : WlrKeyboardFocus.None
+    WlrLayershell.keyboardFocus: root._shouldShow && root.isFocusedScreen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     Connections {
         target: Popups
 
         function onSessionOpenChanged() {
             if (Popups.sessionOpen) {
-                closeDelay.stop()
+                closeDelay.stop();
 
-                root._shouldShow = true
-                root._visualOpen = false
+                root._shouldShow = true;
+                root._visualOpen = false;
 
-                root.selectedIndex = 0
+                root.selectedIndex = 0;
 
-                openVisualTimer.start()
-                focusTimer.start()
+                openVisualTimer.start();
+                focusTimer.start();
             } else {
-                root._visualOpen = false
-                closeDelay.restart()
+                root._visualOpen = false;
+                closeDelay.restart();
             }
         }
     }
@@ -113,7 +109,7 @@ PanelWindow {
         repeat: false
 
         onTriggered: {
-            root._visualOpen = true
+            root._visualOpen = true;
         }
     }
 
@@ -124,7 +120,7 @@ PanelWindow {
         repeat: false
 
         onTriggered: {
-            keyFocus.forceActiveFocus()
+            keyFocus.forceActiveFocus();
         }
     }
 
@@ -136,19 +132,19 @@ PanelWindow {
 
         onTriggered: {
             if (!Popups.sessionOpen)
-                root._shouldShow = false
+                root._shouldShow = false;
         }
     }
 
     Component.onCompleted: {
         if (Popups.sessionOpen) {
-            root._shouldShow = true
-            root._visualOpen = false
+            root._shouldShow = true;
+            root._visualOpen = false;
 
-            root.selectedIndex = 0
+            root.selectedIndex = 0;
 
-            openVisualTimer.start()
-            focusTimer.start()
+            openVisualTimer.start();
+            focusTimer.start();
         }
     }
 
@@ -158,74 +154,74 @@ PanelWindow {
         anchors.fill: parent
         focus: root._shouldShow
 
-        Keys.onEscapePressed: (event) => {
-            Popups.sessionOpen = false
-            event.accepted = true
+        Keys.onEscapePressed: event => {
+            Popups.sessionOpen = false;
+            event.accepted = true;
         }
 
-        Keys.onReturnPressed: (event) => {
-            root.activateSelected()
-            event.accepted = true
+        Keys.onReturnPressed: event => {
+            root.activateSelected();
+            event.accepted = true;
         }
 
-        Keys.onEnterPressed: (event) => {
-            root.activateSelected()
-            event.accepted = true
+        Keys.onEnterPressed: event => {
+            root.activateSelected();
+            event.accepted = true;
         }
 
-        Keys.onSpacePressed: (event) => {
-            root.activateSelected()
-            event.accepted = true
+        Keys.onSpacePressed: event => {
+            root.activateSelected();
+            event.accepted = true;
         }
 
-        Keys.onLeftPressed: (event) => {
-            root.moveSelection(-1)
-            event.accepted = true
+        Keys.onLeftPressed: event => {
+            root.moveSelection(-1);
+            event.accepted = true;
         }
 
-        Keys.onRightPressed: (event) => {
-            root.moveSelection(1)
-            event.accepted = true
+        Keys.onRightPressed: event => {
+            root.moveSelection(1);
+            event.accepted = true;
         }
 
-        Keys.onUpPressed: (event) => {
-            root.moveSelection(-2)
-            event.accepted = true
+        Keys.onUpPressed: event => {
+            root.moveSelection(-2);
+            event.accepted = true;
         }
 
-        Keys.onDownPressed: (event) => {
-            root.moveSelection(2)
-            event.accepted = true
+        Keys.onDownPressed: event => {
+            root.moveSelection(2);
+            event.accepted = true;
         }
 
-        Keys.onTabPressed: (event) => {
-            root.moveSelection(1)
-            event.accepted = true
+        Keys.onTabPressed: event => {
+            root.moveSelection(1);
+            event.accepted = true;
         }
 
-        Keys.onBacktabPressed: (event) => {
-            root.moveSelection(-1)
-            event.accepted = true
+        Keys.onBacktabPressed: event => {
+            root.moveSelection(-1);
+            event.accepted = true;
         }
     }
 
     function moveSelection(delta) {
-        const count = root.actions.length
-        root.selectedIndex = (root.selectedIndex + delta + count) % count
+        const count = root.actions.length;
+        root.selectedIndex = (root.selectedIndex + delta + count) % count;
     }
 
     function activateSelected() {
-        root.activate(root.selectedIndex)
+        root.activate(root.selectedIndex);
     }
 
     function activate(index) {
-        if (index < 0 || index >= root.actions.length) return
-
-        const action = root.actions[index]
-        if (!action || !action.key) return
-
-        SessionService.perform(action.key)
-        Popups.sessionOpen = false
+        if (index < 0 || index >= root.actions.length)
+            return;
+        const action = root.actions[index];
+        if (!action || !action.key)
+            return;
+        SessionService.perform(action.key);
+        Popups.sessionOpen = false;
     }
 
     Rectangle {
@@ -395,18 +391,10 @@ PanelWindow {
                     readonly property bool selected: root.selectedIndex === actionItem.index
                     readonly property bool destructive: actionItem.modelData.key === "poweroff"
 
-                    color: selected
-                            ? destructive
-                                ? Colors.error
-                                : Colors.primary
-                            : Colors.surfaceContainerHigh
+                    color: selected ? destructive ? Colors.error : Colors.primary : Colors.surfaceContainerHigh
 
                     border.width: selected ? 2 : 1
-                    border.color: selected
-                            ? destructive
-                                ? Colors.error
-                                : Colors.primary
-                            : Colors.outlineVariant
+                    border.color: selected ? destructive ? Colors.error : Colors.primary : Colors.outlineVariant
 
                     Behavior on color {
                         ColorAnimation {
@@ -428,11 +416,7 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: actionItem.modelData.icon
 
-                            color: button.selected
-                                    ? button.destructive
-                                        ? Colors.on_Error
-                                        : Colors.on_Primary
-                                    : Colors.on_Surface
+                            color: button.selected ? button.destructive ? Colors.on_Error : Colors.on_Primary : Colors.on_Surface
 
                             font.family: "SpaceMono Nerd Font"
                             font.pixelSize: 30
@@ -465,11 +449,7 @@ PanelWindow {
 
                     text: actionItem.modelData.label
 
-                    color: root.selectedIndex === actionItem.index
-                            ? actionItem.modelData.key === "poweroff"
-                                ? Colors.error
-                                : Colors.on_Surface
-                            : Colors.on_SurfaceVariant
+                    color: root.selectedIndex === actionItem.index ? actionItem.modelData.key === "poweroff" ? Colors.error : Colors.on_Surface : Colors.on_SurfaceVariant
 
                     font.family: Fonts.font
                     font.pixelSize: 12

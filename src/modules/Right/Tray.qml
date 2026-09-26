@@ -21,14 +21,14 @@ PillBase {
     readonly property int trayCount: SystemTray.items.values.length
 
     readonly property var collapsedItems: {
-        const all = SystemTray.items.values
-        return all.slice(0, Math.min(root.pinnedCount, all.length))
+        const all = SystemTray.items.values;
+        return all.slice(0, Math.min(root.pinnedCount, all.length));
     }
 
     readonly property var overflowItems: {
-        const all = SystemTray.items.values
+        const all = SystemTray.items.values;
 
-        return all.slice(Math.min(root.pinnedCount, all.length))
+        return all.slice(Math.min(root.pinnedCount, all.length));
     }
 
     readonly property int collapsedItemCount: root.collapsedItems.length
@@ -40,7 +40,9 @@ PillBase {
 
     visible: root.trayCount > 0
 
-    function toggleCollapsed() { root.collapsed = !root.collapsed }
+    function toggleCollapsed() {
+        root.collapsed = !root.collapsed;
+    }
 
     RowLayout {
         id: trayLayout
@@ -114,7 +116,9 @@ PillBase {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: { root.toggleCollapsed() }
+                onClicked: {
+                    root.toggleCollapsed();
+                }
             }
         }
 
@@ -153,7 +157,7 @@ PillBase {
                             repeat: false
                             onTriggered: {
                                 if (pinnedHover.containsMouse && pinnedDelegate.hasTooltip) {
-                                    pinnedTooltip.visible = true
+                                    pinnedTooltip.visible = true;
                                 }
                             }
                         }
@@ -170,14 +174,10 @@ PillBase {
                                 gravity: Edges.Bottom | Edges.Right
 
                                 onAnchoring: {
-                                    const pos = pinnedHover.QsWindow.contentItem.mapFromItem(
-                                        pinnedHover,
-                                        pinnedHover.width / 2 - pinnedTooltip.width / 2,
-                                        pinnedHover.height + 8
-                                    )
+                                    const pos = pinnedHover.QsWindow.contentItem.mapFromItem(pinnedHover, pinnedHover.width / 2 - pinnedTooltip.width / 2, pinnedHover.height + 8);
 
-                                    anchor.rect.x = pos.x
-                                    anchor.rect.y = pos.y
+                                    anchor.rect.x = pos.x;
+                                    anchor.rect.y = pos.y;
                                 }
                             }
 
@@ -298,36 +298,36 @@ PillBase {
 
                             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-                            onClicked: (mouse) => {
+                            onClicked: mouse => {
                                 if (mouse.button === Qt.LeftButton) {
                                     if (modelData.onlyMenu && modelData.hasMenu) {
-                                        root.openTrayMenu(modelData, pinnedDelegate)
+                                        root.openTrayMenu(modelData, pinnedDelegate);
                                     } else {
-                                        modelData.activate()
+                                        modelData.activate();
                                     }
                                 } else if (mouse.button === Qt.MiddleButton) {
-                                    modelData.secondaryActivate()
+                                    modelData.secondaryActivate();
                                 } else if (mouse.button === Qt.RightButton) {
-                                    root.openTrayMenu(modelData, pinnedDelegate)
+                                    root.openTrayMenu(modelData, pinnedDelegate);
                                 }
                             }
 
-                            onWheel: (wheel) => {
-                                const horizontal = Math.abs(wheel.angleDelta.x) > Math.abs(wheel.angleDelta.y)
-                                const delta = horizontal ? wheel.angleDelta.x : wheel.angleDelta.y
+                            onWheel: wheel => {
+                                const horizontal = Math.abs(wheel.angleDelta.x) > Math.abs(wheel.angleDelta.y);
+                                const delta = horizontal ? wheel.angleDelta.x : wheel.angleDelta.y;
 
-                                modelData.scroll(delta > 0 ? 1 : -1, horizontal)
+                                modelData.scroll(delta > 0 ? 1 : -1, horizontal);
                             }
 
                             onEntered: pinnedTooltipTimer.restart()
                             onExited: {
-                                pinnedTooltipTimer.stop()
-                                pinnedTooltip.visible = false
+                                pinnedTooltipTimer.stop();
+                                pinnedTooltip.visible = false;
                             }
 
                             onCanceled: {
-                                pinnedTooltipTimer.stop()
-                                pinnedTooltip.visible = false
+                                pinnedTooltipTimer.stop();
+                                pinnedTooltip.visible = false;
                             }
                         }
                     }
@@ -381,7 +381,7 @@ PillBase {
 
                                 onTriggered: {
                                     if (overflowHover.containsMouse && overflowDelegate.hasTooltip) {
-                                        overflowTooltip.visible = true
+                                        overflowTooltip.visible = true;
                                     }
                                 }
                             }
@@ -397,14 +397,10 @@ PillBase {
                                     gravity: Edges.Bottom | Edges.Right
 
                                     onAnchoring: {
-                                        const pos = overflowHover.QsWindow.contentItem.mapFromItem(
-                                            overflowHover,
-                                            overflowHover.width / 2 - overflowTooltip.width / 2,
-                                            overflowHover.height + 8
-                                        )
+                                        const pos = overflowHover.QsWindow.contentItem.mapFromItem(overflowHover, overflowHover.width / 2 - overflowTooltip.width / 2, overflowHover.height + 8);
 
-                                        anchor.rect.x = pos.x
-                                        anchor.rect.y = pos.y
+                                        anchor.rect.x = pos.x;
+                                        anchor.rect.y = pos.y;
                                     }
                                 }
                                 implicitWidth: Math.min(280, Math.max(120, overflowTooltipText.implicitWidth + 20))
@@ -537,36 +533,36 @@ PillBase {
                                 cursorShape: Qt.PointingHandCursor
                                 acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-                                onClicked: (mouse) => {
+                                onClicked: mouse => {
                                     if (mouse.button === Qt.LeftButton) {
                                         if (modelData.onlyMenu && modelData.hasMenu) {
-                                            root.openTrayMenu(modelData, overflowDelegate)
+                                            root.openTrayMenu(modelData, overflowDelegate);
                                         } else {
-                                            modelData.activate()
+                                            modelData.activate();
                                         }
                                     } else if (mouse.button === Qt.MiddleButton) {
-                                        modelData.secondaryActivate()
+                                        modelData.secondaryActivate();
                                     } else if (mouse.button === Qt.RightButton) {
-                                        root.openTrayMenu(modelData, overflowDelegate)
+                                        root.openTrayMenu(modelData, overflowDelegate);
                                     }
                                 }
 
-                                onWheel: (wheel) => {
-                                    const horizontal = Math.abs(wheel.angleDelta.x) > Math.abs(wheel.angleDelta.y)
-                                    const delta = horizontal ? wheel.angleDelta.x : wheel.angleDelta.y
-                                    modelData.scroll(delta > 0 ? 1 : -1, horizontal)
+                                onWheel: wheel => {
+                                    const horizontal = Math.abs(wheel.angleDelta.x) > Math.abs(wheel.angleDelta.y);
+                                    const delta = horizontal ? wheel.angleDelta.x : wheel.angleDelta.y;
+                                    modelData.scroll(delta > 0 ? 1 : -1, horizontal);
                                 }
 
                                 onEntered: overflowTooltipTimer.restart()
 
                                 onExited: {
-                                    overflowTooltipTimer.stop()
-                                    overflowTooltip.visible = false
+                                    overflowTooltipTimer.stop();
+                                    overflowTooltip.visible = false;
                                 }
 
                                 onCanceled: {
-                                    overflowTooltipTimer.stop()
-                                    overflowTooltip.visible = false
+                                    overflowTooltipTimer.stop();
+                                    overflowTooltip.visible = false;
                                 }
                             }
                         }
@@ -582,10 +578,11 @@ PillBase {
     }
 
     function openTrayMenu(item, delegate) {
-        if (!item || !item.hasMenu) return
-        if (!root.window) return
-
-        const p = root.window.contentItem.mapFromItem(delegate, delegate.width / 2, delegate.height)
-        trayMenu.open(item.menu, p.x, p.y, item.title || "Tray")
+        if (!item || !item.hasMenu)
+            return;
+        if (!root.window)
+            return;
+        const p = root.window.contentItem.mapFromItem(delegate, delegate.width / 2, delegate.height);
+        trayMenu.open(item.menu, p.x, p.y, item.title || "Tray");
     }
 }

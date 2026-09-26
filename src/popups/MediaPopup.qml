@@ -42,8 +42,8 @@ PanelWindow {
     property int trackChangeToken: 0
 
     onPlayerChanged: {
-        _position = 0
-        trackChangeToken++
+        _position = 0;
+        trackChangeToken++;
     }
 
     Timer {
@@ -51,8 +51,10 @@ PanelWindow {
         repeat: true
         running: win.player !== null && win.isPlaying && !win._seeking && win.player.positionSupported
         onTriggered: {
-            if (!win.player) return
-            if (!win._seeking) win._position = win.player.position
+            if (!win.player)
+                return;
+            if (!win._seeking)
+                win._position = win.player.position;
         }
     }
 
@@ -60,13 +62,14 @@ PanelWindow {
         target: win.player ?? null
 
         function onTrackChanged() {
-            win._position = 0
+            win._position = 0;
         }
         function onPostTrackChanged() {
-            win.trackChangeToken++
+            win.trackChangeToken++;
         }
         function onPositionChanged() {
-            if (!win._seeking) win._position = win.player?.position ?? 0
+            if (!win._seeking)
+                win._position = win.player?.position ?? 0;
         }
     }
 
@@ -76,7 +79,9 @@ PanelWindow {
         anchors.fill: parent
         open: Popups.mediaOpen
         edge: "top"
-        onCloseRequested: { Popups.mediaOpen = false }
+        onCloseRequested: {
+            Popups.mediaOpen = false;
+        }
 
         Rectangle {
             id: mediaCard
@@ -154,7 +159,9 @@ PanelWindow {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 18
 
-                        Item { Layout.fillWidth: true }
+                        Item {
+                            Layout.fillWidth: true
+                        }
 
                         Rectangle {
                             width: 7
@@ -198,18 +205,18 @@ PanelWindow {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 24
 
-                        onSeekStarted: (pos) => {
-                            win._seeking = true
-                            win._position = pos
+                        onSeekStarted: pos => {
+                            win._seeking = true;
+                            win._position = pos;
                         }
-                        onSeekMoved: (pos) => {
-                            win._position = pos
+                        onSeekMoved: pos => {
+                            win._position = pos;
                         }
-                        onSeekReleased: (pos) => {
+                        onSeekReleased: pos => {
                             if (win.player && win.player.canSeek) {
-                                win.player.position = pos
+                                win.player.position = pos;
                             }
-                            win._seeking = false
+                            win._seeking = false;
                         }
                     }
 

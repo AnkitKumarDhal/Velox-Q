@@ -14,13 +14,12 @@ Item {
 
     readonly property bool supportsPsk: {
         switch (root.network.security) {
-            case WifiSecurityType.WpaPsk:
-            case WifiSecurityType.Wpa2Psk:
-            case WifiSecurityType.Sae:
-                return true;
-
-            default:
-                return false;
+        case WifiSecurityType.WpaPsk:
+        case WifiSecurityType.Wpa2Psk:
+        case WifiSecurityType.Sae:
+            return true;
+        default:
+            return false;
         }
     }
 
@@ -30,16 +29,7 @@ Item {
         anchors.fill: parent
         radius: 10
 
-        color: rootHover.containsMouse
-                ? Colors.surfaceContainerHighest
-                : root.network.connected
-                    ? Qt.rgba(
-                        Colors.primaryContainer.r,
-                        Colors.primaryContainer.g,
-                        Colors.primaryContainer.b,
-                        0.28
-                    )
-                    : "transparent"
+        color: rootHover.containsMouse ? Colors.surfaceContainerHighest : root.network.connected ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28) : "transparent"
 
         Behavior on color {
             ColorAnimation {
@@ -76,22 +66,24 @@ Item {
 
         Text {
             text: {
-                if (!root.network.connected && root.network.state === ConnectionState.Connecting) return "󱑤"
+                if (!root.network.connected && root.network.state === ConnectionState.Connecting)
+                    return "󱑤";
 
                 const signal = root.network.signalStrength ?? 0;
 
-                if (signal < 0.25) return "󰤟";
-                if (signal < 0.50) return "󰤢";
-                if (signal < 0.75) return "󰤥";
+                if (signal < 0.25)
+                    return "󰤟";
+                if (signal < 0.50)
+                    return "󰤢";
+                if (signal < 0.75)
+                    return "󰤥";
                 return "󰤨";
             }
 
             font.family: Fonts.fontM
             font.pixelSize: 16
 
-            color: root.network.connected
-                    ? Colors.primary
-                    : Colors.on_SurfaceVariant
+            color: root.network.connected ? Colors.primary : Colors.on_SurfaceVariant
         }
 
         Text {
@@ -105,9 +97,7 @@ Item {
             font.pixelSize: 12
             font.bold: root.network.connected
 
-            color: root.network.connected
-                    ? Colors.on_Surface
-                    : Colors.on_SurfaceVariant
+            color: root.network.connected ? Colors.on_Surface : Colors.on_SurfaceVariant
         }
 
         // Security indicator
@@ -129,9 +119,7 @@ Item {
             height: 22
             radius: 11
 
-            color: root.network.connected
-                    ? Colors.primary
-                    : Colors.surfaceContainerHighest
+            color: root.network.connected ? Colors.primary : Colors.surfaceContainerHighest
 
             Text {
                 id: stateLabel
@@ -143,9 +131,7 @@ Item {
                 font.pixelSize: 9
                 font.bold: true
 
-                color: root.network.connected
-                        ? Colors.on_Primary
-                        : Colors.on_SurfaceVariant
+                color: root.network.connected ? Colors.on_Primary : Colors.on_SurfaceVariant
             }
         }
     }

@@ -26,11 +26,7 @@ PillBase {
     }
 
     Text {
-        text: root.showDate
-            ? Qt.formatDateTime(sysClock.date, root.dateFormat)
-            : Qt.formatDateTime(sysClock.date, root.use24Hour
-                ? (root.showSeconds ? "HH:mm:ss" : "HH:mm")
-                : (root.showSeconds ? "hh:mm:ss AP" : "hh:mm AP"))
+        text: root.showDate ? Qt.formatDateTime(sysClock.date, root.dateFormat) : Qt.formatDateTime(sysClock.date, root.use24Hour ? (root.showSeconds ? "HH:mm:ss" : "HH:mm") : (root.showSeconds ? "hh:mm:ss AP" : "hh:mm AP"))
         color: Colors.primary
         font.pointSize: 11
         font.bold: true
@@ -46,7 +42,7 @@ PillBase {
 
         onTriggered: {
             if (root.hoverArea.containsMouse) {
-                clockTooltip.visible = true
+                clockTooltip.visible = true;
             }
         }
     }
@@ -62,14 +58,10 @@ PillBase {
             gravity: Edges.Bottom | Edges.Right
 
             onAnchoring: {
-                const pos = root.hoverArea.QsWindow.contentItem.mapFromItem(
-                    root.hoverArea,
-                    root.hoverArea.width / 2 - clockTooltip.width / 2,
-                    root.hoverArea.height + 8,
-                )
+                const pos = root.hoverArea.QsWindow.contentItem.mapFromItem(root.hoverArea, root.hoverArea.width / 2 - clockTooltip.width / 2, root.hoverArea.height + 8);
 
-                anchor.rect.x = pos.x
-                anchor.rect.y = pos.y
+                anchor.rect.x = pos.x;
+                anchor.rect.y = pos.y;
             }
         }
 
@@ -93,8 +85,7 @@ PillBase {
                 anchors.fill: parent
                 anchors.margins: 10
 
-                text: Qt.formatDateTime(tooltipClock.date, "dddd, MMMM d, yyyy") + "\n"
-                    + Qt.formatDateTime(tooltipClock.date, root.use24Hour ? "HH:mm:ss" : "hh:mm:ss AP")
+                text: Qt.formatDateTime(tooltipClock.date, "dddd, MMMM d, yyyy") + "\n" + Qt.formatDateTime(tooltipClock.date, root.use24Hour ? "HH:mm:ss" : "hh:mm:ss AP")
 
                 color: Colors.on_Surface
 
@@ -111,20 +102,20 @@ PillBase {
         target: root.hoverArea
 
         function onEntered() {
-            tooltipTimer.restart()
+            tooltipTimer.restart();
         }
 
         function onExited() {
-            tooltipTimer.stop()
-            clockTooltip.visible = false
+            tooltipTimer.stop();
+            clockTooltip.visible = false;
         }
 
         function onCanceled() {
-            tooltipTimer.stop()
-            clockTooltip.visible = false
+            tooltipTimer.stop();
+            clockTooltip.visible = false;
         }
     }
 
-    onClicked:      root.showDate = !root.showDate
+    onClicked: root.showDate = !root.showDate
     onRightClicked: Popups.calendarOpen = !Popups.calendarOpen
 }

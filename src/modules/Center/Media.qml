@@ -23,7 +23,10 @@ Item {
     property int controlSpacing: 6
 
     Behavior on implicitWidth {
-        NumberAnimation { duration: Theme.hoverFadeDuration; easing.type: Easing.OutCubic }
+        NumberAnimation {
+            duration: Theme.hoverFadeDuration
+            easing.type: Easing.OutCubic
+        }
     }
 
     HoverHandler {
@@ -48,15 +51,15 @@ Item {
         onClicked: Popups.mediaOpen = !Popups.mediaOpen
         onRightClicked: {
             if (root.player?.canTogglePlaying)
-                root.player.togglePlaying()
+                root.player.togglePlaying();
         }
 
-        onScrolled: (wheel) => {
-            if (!root.player?.volumeSupported) return
-
-            const delta = wheel.angleDelta.y / 120
-            const step = 0.05
-            root.player.volume = Math.max(0, Math.min(1, root.player.volume + delta * step))
+        onScrolled: wheel => {
+            if (!root.player?.volumeSupported)
+                return;
+            const delta = wheel.angleDelta.y / 120;
+            const step = 0.05;
+            root.player.volume = Math.max(0, Math.min(1, root.player.volume + delta * step));
         }
 
         backgroundData: [
@@ -103,7 +106,9 @@ Item {
                         }
 
                         Behavior on opacity {
-                            NumberAnimation { duration: Theme.hoverFadeDuration }
+                            NumberAnimation {
+                                duration: Theme.hoverFadeDuration
+                            }
                         }
                     }
                 }
@@ -117,9 +122,9 @@ Item {
 
                     onTriggered: {
                         for (let i = 0; i < visualizerBars.count; i++) {
-                            const bar = visualizerBars.itemAt(i)
+                            const bar = visualizerBars.itemAt(i);
                             if (bar)
-                                bar.targetHeight = 2 + Math.random() * (visualizerLayer.height * 0.65)
+                                bar.targetHeight = 2 + Math.random() * (visualizerLayer.height * 0.65);
                         }
                     }
                 }
@@ -129,14 +134,13 @@ Item {
 
                     function onIsPlayingChanged() {
                         for (let i = 0; i < visualizerBars.count; i++) {
-                            const bar = visualizerBars.itemAt(i)
+                            const bar = visualizerBars.itemAt(i);
                             if (!bar)
-                                continue
-
+                                continue;
                             if (root.isPlaying)
-                                bar.targetHeight = 2 + Math.random() * (visualizerLayer.height * 0.65)
+                                bar.targetHeight = 2 + Math.random() * (visualizerLayer.height * 0.65);
                             else
-                                bar.targetHeight = 2
+                                bar.targetHeight = 2;
                         }
                     }
                 }
@@ -167,7 +171,9 @@ Item {
                     fillMode: Image.PreserveAspectCrop
                     smooth: true
                     layer.enabled: true
-                    layer.effect: OpacityMask { maskSource: artMask }
+                    layer.effect: OpacityMask {
+                        maskSource: artMask
+                    }
                 }
 
                 Timer {
@@ -210,9 +216,23 @@ Item {
         scale: root.player?.canGoPrevious && mediaHover.hovered ? 1 : 0.7
         z: 2
 
-        Behavior on opacity { NumberAnimation { duration: Theme.hoverFadeDuration; easing.type: Easing.OutCubic } }
-        Behavior on scale { NumberAnimation { duration: Theme.hoverFadeDuration; easing.type: Easing.OutCubic } }
-        Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Theme.hoverFadeDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.hoverFadeDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.hoverFadeDuration
+            }
+        }
 
         Rectangle {
             anchors.fill: parent
@@ -220,7 +240,11 @@ Item {
             color: Colors.primary
             opacity: previousMouse.containsMouse ? Theme.hoverOpacity : 0
 
-            Behavior on opacity { NumberAnimation { duration: Theme.hoverFadeDuration } }
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.hoverFadeDuration
+                }
+            }
         }
 
         Text {
@@ -241,7 +265,7 @@ Item {
 
             onClicked: {
                 if (root.player?.canGoPrevious)
-                    root.player.previous()
+                    root.player.previous();
             }
         }
     }
@@ -259,9 +283,23 @@ Item {
         scale: root.player?.canGoNext && mediaHover.hovered ? 1 : 0.7
         z: 2
 
-        Behavior on opacity { NumberAnimation { duration: Theme.hoverFadeDuration; easing.type: Easing.OutCubic } }
-        Behavior on scale { NumberAnimation { duration: Theme.hoverFadeDuration; easing.type: Easing.OutCubic } }
-        Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Theme.hoverFadeDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.hoverFadeDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.hoverFadeDuration
+            }
+        }
 
         Rectangle {
             anchors.fill: parent
@@ -269,7 +307,11 @@ Item {
             color: Colors.primary
             opacity: nextMouse.containsMouse ? Theme.hoverOpacity : 0
 
-            Behavior on opacity { NumberAnimation { duration: Theme.hoverFadeDuration } }
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.hoverFadeDuration
+                }
+            }
         }
 
         Text {
@@ -290,7 +332,7 @@ Item {
 
             onClicked: {
                 if (root.player?.canGoNext)
-                    root.player.next()
+                    root.player.next();
             }
         }
     }

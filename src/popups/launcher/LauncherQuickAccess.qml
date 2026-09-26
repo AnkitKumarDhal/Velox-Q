@@ -12,8 +12,8 @@ Item {
 
     signal launched(var app)
 
-    readonly property int slotW:    48
-    readonly property int slotGap:  4
+    readonly property int slotW: 48
+    readonly property int slotGap: 4
     readonly property int maxSlots: 8
 
     readonly property int totalAvailable: Math.min(root.maxSlots, Math.max(1, Math.floor((width - 32) / (root.slotW + root.slotGap))))
@@ -55,12 +55,12 @@ Item {
                     Image {
                         id: pinIcon
                         anchors.centerIn: parent
-                        width:  32
+                        width: 32
                         height: 32
                         source: Quickshell.iconPath(root.pinnedApps[index].icon || "", true)
                         fillMode: Image.PreserveAspectFit
-                        smooth:       true
-                        mipmap:       true
+                        smooth: true
+                        mipmap: true
                         asynchronous: true
                         visible: status === Image.Ready
                     }
@@ -71,8 +71,8 @@ Item {
                         text: (root.pinnedApps[index].name || "?").charAt(0).toUpperCase()
                         color: Colors.on_SurfaceVariant
                         font.pixelSize: 15
-                        font.bold:       true
-                        font.family:     Fonts.fontM
+                        font.bold: true
+                        font.family: Fonts.fontM
                     }
 
                     MouseArea {
@@ -82,12 +82,12 @@ Item {
                         cursorShape: Qt.PointingHandCursor
                         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                        onClicked: (mouse) => {
-                            const app = root.pinnedApps[index]
+                        onClicked: mouse => {
+                            const app = root.pinnedApps[index];
                             if (mouse.button === Qt.RightButton) {
-                                LauncherService.togglePin(app)
+                                LauncherService.togglePin(app);
                             } else {
-                                root.launched(app)
+                                root.launched(app);
                             }
                         }
                     }
@@ -129,12 +129,12 @@ Item {
                     Image {
                         id: recentIcon
                         anchors.centerIn: parent
-                        width:  32
+                        width: 32
                         height: 32
                         source: Quickshell.iconPath(root.recentApps[index].icon || "", true)
                         fillMode: Image.PreserveAspectFit
-                        smooth:       true
-                        mipmap:       true
+                        smooth: true
+                        mipmap: true
                         asynchronous: true
                         visible: status === Image.Ready
                     }
@@ -145,8 +145,8 @@ Item {
                         text: (root.recentApps[index].name || "?").charAt(0).toUpperCase()
                         color: Colors.on_SurfaceVariant
                         font.pixelSize: 15
-                        font.bold:       true
-                        font.family:     Fonts.fontM
+                        font.bold: true
+                        font.family: Fonts.fontM
                     }
 
                     MouseArea {
@@ -156,12 +156,12 @@ Item {
                         cursorShape: Qt.PointingHandCursor
                         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                        onClicked: (mouse) => {
-                            const app = root.recentApps[index]
+                        onClicked: mouse => {
+                            const app = root.recentApps[index];
                             if (mouse.button === Qt.RightButton) {
-                                LauncherService.togglePin(app)
+                                LauncherService.togglePin(app);
                             } else {
-                                root.launched(app)
+                                root.launched(app);
                             }
                         }
                     }
@@ -169,6 +169,8 @@ Item {
             }
         }
 
-        Item { Layout.fillWidth: true }
+        Item {
+            Layout.fillWidth: true
+        }
     }
 }

@@ -12,22 +12,26 @@ Singleton {
 
     readonly property var currentlyPlaying: {
         for (let i = 0; i < players.length; i++) {
-            if (players[i].playbackState === MprisPlaybackState.Playing) return players[i]
+            if (players[i].playbackState === MprisPlaybackState.Playing)
+                return players[i];
         }
 
-        return null
+        return null;
     }
 
     readonly property var activePlayer: {
-        if (players.length === 0) return null
-        if (currentlyPlaying) return currentlyPlaying
+        if (players.length === 0)
+            return null;
+        if (currentlyPlaying)
+            return currentlyPlaying;
         if (_lastActive) {
             for (let i = 0; i < players.length; i++) {
-                if (players[i] === _lastActive) return _lastActive
+                if (players[i] === _lastActive)
+                    return _lastActive;
             }
         }
 
-        return players[0]
+        return players[0];
     }
 
     readonly property bool hasPlayer: activePlayer !== null
@@ -37,6 +41,6 @@ Singleton {
 
     onCurrentlyPlayingChanged: {
         if (currentlyPlaying)
-            _lastActive = currentlyPlaying
+            _lastActive = currentlyPlaying;
     }
 }

@@ -14,10 +14,10 @@ Item {
 
     onOpenChanged: {
         if (root.open) {
-            unloadTimer.stop()
-            root._keepLoaded = true
+            unloadTimer.stop();
+            root._keepLoaded = true;
         } else {
-            unloadTimer.restart()
+            unloadTimer.restart();
         }
     }
 
@@ -29,7 +29,7 @@ Item {
 
         onTriggered: {
             if (!root.open) {
-                root._keepLoaded = false
+                root._keepLoaded = false;
             }
         }
     }

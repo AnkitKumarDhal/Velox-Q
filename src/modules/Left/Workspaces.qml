@@ -30,19 +30,21 @@ PillBase {
 
     property int activeWorkspaceId: {
         if (root.monitor && root.monitor.activeWorkspace) {
-            const id = root.monitor.activeWorkspace.id
-            if (id >= 1 && id <= root.maximumWorkspaces) return id
+            const id = root.monitor.activeWorkspace.id;
+            if (id >= 1 && id <= root.maximumWorkspaces)
+                return id;
         }
 
         for (let i = 0; i < root._cachedWorkspaces.length; i++) {
-            const ws = root._cachedWorkspaces[i]
+            const ws = root._cachedWorkspaces[i];
 
             if (ws.id >= 1 && ws.id <= root.maximumWorkspaces && ws.active) {
-                if (!root.monitor || ws.monitor === root.monitor) return ws.id
+                if (!root.monitor || ws.monitor === root.monitor)
+                    return ws.id;
             }
         }
 
-        return 1
+        return 1;
     }
 
     property var activeWorkspace: root.workspaceFor(root.activeWorkspaceId)
@@ -52,166 +54,175 @@ PillBase {
     property bool activeMonitorFocused: root.monitor ? root.monitor.focused : true
 
     property int dotCount: {
-        let highest = root.minimumWorkspaces
+        let highest = root.minimumWorkspaces;
 
-        if (root.activeWorkspaceId > highest) highest = root.activeWorkspaceId
+        if (root.activeWorkspaceId > highest)
+            highest = root.activeWorkspaceId;
 
-        let wss = root._cachedWorkspaces
-        let currentMonitor = root.monitor
+        let wss = root._cachedWorkspaces;
+        let currentMonitor = root.monitor;
 
         for (let i = 0; i < wss.length; i++) {
-            const ws = wss[i]
+            const ws = wss[i];
 
-            if (ws.id < 1 || ws.id > root.maximumWorkspaces) continue
-            if (currentMonitor && ws.monitor !== currentMonitor) continue
-
-            if (ws.id > highest) highest = ws.id
+            if (ws.id < 1 || ws.id > root.maximumWorkspaces)
+                continue;
+            if (currentMonitor && ws.monitor !== currentMonitor)
+                continue;
+            if (ws.id > highest)
+                highest = ws.id;
         }
 
-        return Math.min(highest, root.maximumWorkspaces)
+        return Math.min(highest, root.maximumWorkspaces);
     }
 
     function workspaceFor(id) {
-        let wss = root._cachedWorkspaces
-        let currentMonitor = root.monitor
+        let wss = root._cachedWorkspaces;
+        let currentMonitor = root.monitor;
 
         for (let i = 0; i < wss.length; i++) {
-            const ws = wss[i]
+            const ws = wss[i];
 
-            if (ws.id !== id) continue
-            if (currentMonitor && ws.monitor !== currentMonitor) continue
-
-            return ws
+            if (ws.id !== id)
+                continue;
+            if (currentMonitor && ws.monitor !== currentMonitor)
+                continue;
+            return ws;
         }
 
-        return null
+        return null;
     }
 
     function remoteWorkspaceFor(id) {
-        let wss = root._cachedWorkspaces
-        let currentMonitor = root.monitor
+        let wss = root._cachedWorkspaces;
+        let currentMonitor = root.monitor;
 
         for (let i = 0; i < wss.length; i++) {
-            const ws = wss[i]
+            const ws = wss[i];
 
-            if (ws.id !== id) continue
-            if (currentMonitor && ws.monitor === currentMonitor) continue
-
-            return ws
+            if (ws.id !== id)
+                continue;
+            if (currentMonitor && ws.monitor === currentMonitor)
+                continue;
+            return ws;
         }
 
-        return null
+        return null;
     }
 
     function windowCount(ws) {
-        if (!ws || !ws.toplevels) return 0
-        return ws.toplevels.values.length
+        if (!ws || !ws.toplevels)
+            return 0;
+        return ws.toplevels.values.length;
     }
 
     function windowTitles(ws) {
-        let result = []
+        let result = [];
 
-        if (!ws || !ws.toplevels) return result
+        if (!ws || !ws.toplevels)
+            return result;
 
-        const windows = ws.toplevels.values
-        const limit = Math.min(windows.length, 5)
+        const windows = ws.toplevels.values;
+        const limit = Math.min(windows.length, 5);
 
         for (let i = 0; i < limit; i++) {
-            const title = windows[i].title || "Untitled"
-            const marker = windows[i].activated ? "• " : "  "
-            result.push(marker + title)
+            const title = windows[i].title || "Untitled";
+            const marker = windows[i].activated ? "• " : "  ";
+            result.push(marker + title);
         }
 
         if (windows.length > 5) {
-            result.push("  … +" + (windows.length - 5) + " more")
+            result.push("  … +" + (windows.length - 5) + " more");
         }
 
-        return result
+        return result;
     }
 
     function workspaceTooltip(id) {
-        const ws = root.workspaceFor(id) || root.remoteWorkspaceFor(id)
+        const ws = root.workspaceFor(id) || root.remoteWorkspaceFor(id);
 
         if (!ws) {
-            return "Workspace " + id + "\nEmpty"
+            return "Workspace " + id + "\nEmpty";
         }
 
-        const count = root.windowCount(ws)
-        const plural = count === 1 ? "window" : "windows"
+        const count = root.windowCount(ws);
+        const plural = count === 1 ? "window" : "windows";
 
-        let text = "Workspace " + id + "\n"
-        text += count + " " + plural
+        let text = "Workspace " + id + "\n";
+        text += count + " " + plural;
 
-        const titles = root.windowTitles(ws)
+        const titles = root.windowTitles(ws);
 
         for (let i = 0; i < titles.length; i++) {
-            text += "\n" + titles[i]
+            text += "\n" + titles[i];
         }
 
-        return text
+        return text;
     }
 
     function indexAt(x) {
         for (let i = 0; i < root.dotCount; i++) {
-            const item = workspaceRepeater.itemAt(i)
+            const item = workspaceRepeater.itemAt(i);
 
-            if (!item) continue
-
+            if (!item)
+                continue;
             if (x >= item.x && x <= item.x + item.width) {
-                return i
+                return i;
             }
         }
 
-        return -1
+        return -1;
     }
 
     function activateIndex(index) {
-        if (index < 0 || index >= root.dotCount) return
-
-        const wsId = index + 1
-        const ws = root.workspaceFor(wsId)
+        if (index < 0 || index >= root.dotCount)
+            return;
+        const wsId = index + 1;
+        const ws = root.workspaceFor(wsId);
 
         if (ws) {
-            ws.activate()
+            ws.activate();
         } else {
-            Hyprland.dispatch("workspace " + wsId)
+            Hyprland.dispatch("workspace " + wsId);
         }
     }
 
     function switchRelative(direction) {
-        if (root.dotCount < 1) return
+        if (root.dotCount < 1)
+            return;
+        let next = root.activeWorkspaceId + direction;
 
-        let next = root.activeWorkspaceId + direction
+        if (next < 1)
+            next = root.dotCount;
+        if (next > root.dotCount)
+            next = 1;
 
-        if (next < 1) next = root.dotCount
-        if (next > root.dotCount) next = 1
-
-        root.activateIndex(next - 1)
+        root.activateIndex(next - 1);
     }
 
     function updateHover(x) {
-        const index = root.indexAt(x)
+        const index = root.indexAt(x);
 
-        if (index === root.hoveredIndex) return
-
-        root.hoveredIndex = index
-        root.hoveredItem = index >= 0 ? workspaceRepeater.itemAt(index) : null
+        if (index === root.hoveredIndex)
+            return;
+        root.hoveredIndex = index;
+        root.hoveredItem = index >= 0 ? workspaceRepeater.itemAt(index) : null;
 
         if (index >= 0) {
-            previewTimer.restart()
+            previewTimer.restart();
         } else {
-            previewTimer.stop()
-            root.previewVisible = false
-            root.hoveredItem = null
+            previewTimer.stop();
+            root.previewVisible = false;
+            root.hoveredItem = null;
         }
     }
 
     onDotCountChanged: {
         if (root.hoveredIndex >= root.dotCount) {
-            root.hoveredIndex = -1
-            root.hoveredItem = null
-            root.previewVisible = false
-            previewTimer.stop()
+            root.hoveredIndex = -1;
+            root.hoveredItem = null;
+            root.previewVisible = false;
+            previewTimer.stop();
         }
     }
 
@@ -223,8 +234,8 @@ PillBase {
 
         onTriggered: {
             if (root.hoveredIndex >= 0 && root.hoveredItem) {
-                root.previewVisible = true
-                workspaceTooltip.anchor.updateAnchor()
+                root.previewVisible = true;
+                workspaceTooltip.anchor.updateAnchor();
             }
         }
     }
@@ -266,24 +277,12 @@ PillBase {
                     height: root.pillHeight
                     radius: root.pillHeight / 2
 
-                    color: isRemote
-                        ? "transparent"
-                        : isActive
-                            ? Colors.primary
-                            : Colors.outline
+                    color: isRemote ? "transparent" : isActive ? Colors.primary : Colors.outline
 
-                    opacity: isRemote
-                        ? 0.25
-                        : isActive
-                            ? (root.activeMonitorFocused ? 1.0 : 0.65)
-                            : isOccupied
-                                ? 0.65
-                                : 0.3
+                    opacity: isRemote ? 0.25 : isActive ? (root.activeMonitorFocused ? 1.0 : 0.65) : isOccupied ? 0.65 : 0.3
 
                     border.width: isRemote ? 1 : isFullscreen ? 1 : 0
-                    border.color: isRemote
-                        ? Colors.outline
-                        : Colors.primary
+                    border.color: isRemote ? Colors.outline : Colors.primary
 
                     Behavior on width {
                         NumberAnimation {
@@ -368,28 +367,26 @@ PillBase {
             onPositionChanged: root.updateHover(mouseX)
 
             onExited: {
-                root.hoveredIndex = -1
-                root.hoveredItem = null
-                root.previewVisible = false
-                previewTimer.stop()
+                root.hoveredIndex = -1;
+                root.hoveredItem = null;
+                root.previewVisible = false;
+                previewTimer.stop();
             }
 
-            onClicked: (mouse) => {
-                const index = root.indexAt(mouse.x)
+            onClicked: mouse => {
+                const index = root.indexAt(mouse.x);
 
-                if (index < 0 || index >= root.dotCount) return
-
-                root.activateIndex(index)
+                if (index < 0 || index >= root.dotCount)
+                    return;
+                root.activateIndex(index);
             }
 
-            onWheel: (wheel) => {
-                const delta = wheel.angleDelta.y !== 0
-                    ? wheel.angleDelta.y
-                    : wheel.pixelDelta.y
+            onWheel: wheel => {
+                const delta = wheel.angleDelta.y !== 0 ? wheel.angleDelta.y : wheel.pixelDelta.y;
 
-                if (delta === 0) return
-
-                root.switchRelative(delta > 0 ? -1 : 1)
+                if (delta === 0)
+                    return;
+                root.switchRelative(delta > 0 ? -1 : 1);
             }
         }
     }
@@ -405,33 +402,17 @@ PillBase {
             gravity: Edges.Bottom | Edges.Right
 
             onAnchoring: {
-                if (!root.hoveredItem) return
+                if (!root.hoveredItem)
+                    return;
+                const pos = root.QsWindow.contentItem.mapFromItem(root.hoveredItem, root.hoveredItem.width / 2 - workspaceTooltip.width / 2, root.height + 8);
 
-                const pos = root.QsWindow.contentItem.mapFromItem(
-                    root.hoveredItem,
-                    root.hoveredItem.width / 2 - workspaceTooltip.width / 2,
-                    root.height + 8
-                )
+                anchor.rect.x = Math.max(8, Math.min(pos.x, root.QsWindow.window.width - workspaceTooltip.width - 8));
 
-                anchor.rect.x = Math.max(
-                    8,
-                    Math.min(
-                        pos.x,
-                        root.QsWindow.window.width - workspaceTooltip.width - 8
-                    )
-                )
-
-                anchor.rect.y = pos.y
+                anchor.rect.y = pos.y;
             }
         }
 
-        implicitWidth: Math.min(
-            300,
-            Math.max(
-                150,
-                workspaceTooltipText.implicitWidth + 20
-            )
-        )
+        implicitWidth: Math.min(300, Math.max(150, workspaceTooltipText.implicitWidth + 20))
 
         implicitHeight: workspaceTooltipText.implicitHeight + 20
 
@@ -452,9 +433,7 @@ PillBase {
                 anchors.fill: parent
                 anchors.margins: 10
 
-                text: root.hoveredIndex >= 0
-                    ? root.workspaceTooltip(root.hoveredIndex + 1)
-                    : ""
+                text: root.hoveredIndex >= 0 ? root.workspaceTooltip(root.hoveredIndex + 1) : ""
 
                 color: Colors.on_Surface
 

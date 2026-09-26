@@ -46,7 +46,11 @@ ColumnLayout {
             radius: 14
             enabled: NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning
             color: NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
-            Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.hoverFadeDuration
+                }
+            }
 
             Text {
                 id: scanLabel
@@ -58,7 +62,9 @@ ColumnLayout {
                 color: NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
             }
 
-            HoverHandler { id: btScanHover }
+            HoverHandler {
+                id: btScanHover
+            }
 
             MouseArea {
                 anchors.fill: parent
@@ -98,87 +104,87 @@ ColumnLayout {
 
             Repeater {
                 model: btConnectedModel
-                delegate:
-                    Rectangle {
-                        required property var modelData
-                        Layout.fillWidth: true
-                        implicitHeight: 52
-                        radius: 10
-                        color: connectedHover.hovered
-                                ? Colors.surfaceContainerHighest
-                                : Qt.rgba(
-                                    Colors.primaryContainer.r,
-                                    Colors.primaryContainer.g,
-                                    Colors.primaryContainer.b,
-                                    0.28
-                                )
+                delegate: Rectangle {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    implicitHeight: 52
+                    radius: 10
+                    color: connectedHover.hovered ? Colors.surfaceContainerHighest : Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28)
 
-                        Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
-                        HoverHandler { id: connectedHover }
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Theme.hoverFadeDuration
+                        }
+                    }
+                    HoverHandler {
+                        id: connectedHover
+                    }
 
-                        RowLayout {
-                            anchors {
-                                fill: parent
-                                leftMargin: 12
-                                rightMargin: 10
-                            }
-                            spacing: 9
+                    RowLayout {
+                        anchors {
+                            fill: parent
+                            leftMargin: 12
+                            rightMargin: 10
+                        }
+                        spacing: 9
+
+                        Text {
+                            text: modelData.icon.includes("headphones") ? "󰋋" : modelData.icon.includes("keyboard") ? "󰌌" : modelData.icon.includes("mouse") ? "󰍽" : "󰂯"
+                            font.family: Fonts.fontM
+                            font.pixelSize: 17
+                            color: Colors.primary
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 1
 
                             Text {
-                                text: modelData.icon.includes("headphones") ? "󰋋" : modelData.icon.includes("keyboard") ? "󰌌" : modelData.icon.includes("mouse") ? "󰍽" : "󰂯"
-                                font.family: Fonts.fontM
-                                font.pixelSize: 17
-                                color: Colors.primary
-                            }
-
-                            ColumnLayout {
+                                text: modelData.name
+                                font.family: Fonts.font
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: Colors.on_Surface
+                                elide: Text.ElideRight
                                 Layout.fillWidth: true
-                                spacing: 1
-
-                                Text {
-                                    text: modelData.name
-                                    font.family: Fonts.font
-                                    font.pixelSize: 11
-                                    font.bold: true
-                                    color: Colors.on_Surface
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
-                                }
-
-                                Text {
-                                    text: modelData.batteryAvailable ? Math.round(modelData.battery * 100) + "%" : "Connected"
-                                    font.family: Fonts.font
-                                    font.pixelSize: 9
-                                    color: Colors.on_SurfaceVariant
-                                }
                             }
 
-                            Rectangle {
-                                width: disconnectLabel.implicitWidth + 18
-                                height: 24
-                                radius: 12
-                                color: disconnectHover.hovered ? Colors.primary : Colors.primary
+                            Text {
+                                text: modelData.batteryAvailable ? Math.round(modelData.battery * 100) + "%" : "Connected"
+                                font.family: Fonts.font
+                                font.pixelSize: 9
+                                color: Colors.on_SurfaceVariant
+                            }
+                        }
 
-                                Text {
-                                    id: disconnectLabel
-                                    anchors.centerIn: parent
-                                    text: "Disconnect"
-                                    font.family: Fonts.font
-                                    font.pixelSize: 9
-                                    font.bold: true
-                                    color: Colors.on_Primary
-                                }
+                        Rectangle {
+                            width: disconnectLabel.implicitWidth + 18
+                            height: 24
+                            radius: 12
+                            color: disconnectHover.hovered ? Colors.primary : Colors.primary
 
-                                HoverHandler { id: disconnectHover }
+                            Text {
+                                id: disconnectLabel
+                                anchors.centerIn: parent
+                                text: "Disconnect"
+                                font.family: Fonts.font
+                                font.pixelSize: 9
+                                font.bold: true
+                                color: Colors.on_Primary
+                            }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: NetworkService.bluetooth.disconnect(modelData.address)
-                                }
+                            HoverHandler {
+                                id: disconnectHover
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: NetworkService.bluetooth.disconnect(modelData.address)
                             }
                         }
                     }
+                }
             }
 
             Text {
@@ -193,92 +199,109 @@ ColumnLayout {
 
             Repeater {
                 model: btPairedModel
-                delegate:
-                    Rectangle {
-                        required property var modelData
-                        Layout.fillWidth: true
-                        implicitHeight: 46
-                        radius: 10
-                        color: pairedHover.hovered ? Colors.surfaceContainerHighest : "transparent"
+                delegate: Rectangle {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    implicitHeight: 46
+                    radius: 10
+                    color: pairedHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
-                        Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
-                        HoverHandler { id: pairedHover }
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Theme.hoverFadeDuration
+                        }
+                    }
+                    HoverHandler {
+                        id: pairedHover
+                    }
 
-                        RowLayout {
-                            anchors {
-                                fill: parent
-                                leftMargin: 12
-                                rightMargin: 10
+                    RowLayout {
+                        anchors {
+                            fill: parent
+                            leftMargin: 12
+                            rightMargin: 10
+                        }
+                        spacing: 9
+
+                        Text {
+                            text: "󰂯"
+                            font.family: Fonts.fontM
+                            font.pixelSize: 16
+                            color: Colors.on_SurfaceVariant
+                        }
+
+                        Text {
+                            text: modelData.name
+                            font.family: Fonts.font
+                            font.pixelSize: 11
+                            color: Colors.on_SurfaceVariant
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                        }
+
+                        Rectangle {
+                            width: connectLabel.implicitWidth + 18
+                            height: 24
+                            radius: 12
+                            enabled: !NetworkService.bluetooth.isConnecting(modelData.address)
+                            color: NetworkService.bluetooth.isConnecting(modelData.address) ? Colors.surfaceContainerHighest : pairedConnectHover.hovered ? Colors.primary : Colors.primaryContainer
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Theme.hoverFadeDuration
+                                }
                             }
-                            spacing: 9
+                            HoverHandler {
+                                id: pairedConnectHover
+                            }
 
                             Text {
-                                text: "󰂯"
-                                font.family: Fonts.fontM
-                                font.pixelSize: 16
-                                color: Colors.on_SurfaceVariant
-                            }
-
-                            Text {
-                                text: modelData.name
+                                id: connectLabel
+                                anchors.centerIn: parent
+                                text: NetworkService.bluetooth.isConnecting(modelData.address) ? "Connecting..." : "Connect"
                                 font.family: Fonts.font
-                                font.pixelSize: 11
-                                color: Colors.on_SurfaceVariant
-                                elide: Text.ElideRight
-                                Layout.fillWidth: true
+                                font.pixelSize: 9
+                                font.bold: true
+                                color: NetworkService.bluetooth.isConnecting(modelData.address) ? Colors.on_SurfaceVariant : pairedConnectHover.hovered ? Colors.on_Primary : Colors.on_PrimaryContainer
                             }
 
-                            Rectangle {
-                                width: connectLabel.implicitWidth + 18
-                                height: 24
-                                radius: 12
-                                enabled: !NetworkService.bluetooth.isConnecting(modelData.address)
-                                color: NetworkService.bluetooth.isConnecting(modelData.address) ? Colors.surfaceContainerHighest : pairedConnectHover.hovered ? Colors.primary : Colors.primaryContainer
-                                Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
-                                HoverHandler { id: pairedConnectHover }
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: NetworkService.bluetooth.connect(modelData.address)
+                            }
+                        }
 
-                                Text {
-                                    id: connectLabel
-                                    anchors.centerIn: parent
-                                    text: NetworkService.bluetooth.isConnecting(modelData.address) ? "Connecting..." : "Connect"
-                                    font.family: Fonts.font
-                                    font.pixelSize: 9
-                                    font.bold: true
-                                    color: NetworkService.bluetooth.isConnecting(modelData.address) ? Colors.on_SurfaceVariant : pairedConnectHover.hovered ? Colors.on_Primary : Colors.on_PrimaryContainer
-                                }
+                        Rectangle {
+                            width: 26
+                            height: 26
+                            radius: 13
+                            color: removeHover.hovered ? Colors.errorContainer : "transparent"
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: NetworkService.bluetooth.connect(modelData.address)
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Theme.hoverFadeDuration
                                 }
                             }
+                            HoverHandler {
+                                id: removeHover
+                            }
 
-                            Rectangle {
-                                width: 26
-                                height: 26
-                                radius: 13
-                                color: removeHover.hovered ? Colors.errorContainer : "transparent"
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰆴"
+                                font.family: Fonts.fontM
+                                font.pixelSize: 13
+                                color: removeHover.hovered ? Colors.on_ErrorContainer : Colors.outline
+                            }
 
-                                Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
-                                HoverHandler { id: removeHover }
-
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: "󰆴"
-                                    font.family: Fonts.fontM
-                                    font.pixelSize: 13
-                                    color: removeHover.hovered ? Colors.on_ErrorContainer : Colors.outline
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: NetworkService.bluetooth.remove(modelData.address)
-                                }
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: NetworkService.bluetooth.remove(modelData.address)
                             }
                         }
                     }
+                }
             }
 
             Text {
@@ -293,88 +316,90 @@ ColumnLayout {
 
             Repeater {
                 model: btAvailableModel
-                delegate:
-                    Rectangle {
-                        required property var modelData
-                        Layout.fillWidth: true
-                        implicitHeight: 46
-                        radius: 10
-                        color: availableHover.hovered ? Colors.surfaceContainerHighest : "transparent"
+                delegate: Rectangle {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    implicitHeight: 46
+                    radius: 10
+                    color: availableHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
-                        Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
-                        HoverHandler { id: availableHover }
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Theme.hoverFadeDuration
+                        }
+                    }
+                    HoverHandler {
+                        id: availableHover
+                    }
 
-                        RowLayout {
-                            anchors {
-                                fill: parent
-                                leftMargin: 12
-                                rightMargin: 10
-                            }
+                    RowLayout {
+                        anchors {
+                            fill: parent
+                            leftMargin: 12
+                            rightMargin: 10
+                        }
 
-                            spacing: 9
+                        spacing: 9
 
-                            Text {
-                                text: "󰂯"
-                                font.family: Fonts.fontM
-                                font.pixelSize: 16
-                                color: Colors.on_SurfaceVariant
-                            }
+                        Text {
+                            text: "󰂯"
+                            font.family: Fonts.fontM
+                            font.pixelSize: 16
+                            color: Colors.on_SurfaceVariant
+                        }
 
-                            Text {
-                                text: modelData.name
-                                font.family: Fonts.font
-                                font.pixelSize: 11
-                                color: Colors.on_SurfaceVariant
-                                elide: Text.ElideRight
-                                Layout.fillWidth: true
-                            }
+                        Text {
+                            text: modelData.name
+                            font.family: Fonts.font
+                            font.pixelSize: 11
+                            color: Colors.on_SurfaceVariant
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                        }
 
-                            Rectangle {
-                                width: pairLabel.implicitWidth + 18
-                                height: 24
-                                radius: 12
-                                color: NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
+                        Rectangle {
+                            width: pairLabel.implicitWidth + 18
+                            height: 24
+                            radius: 12
+                            color: NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
 
-                                Behavior on color { ColorAnimation { duration: Theme.hoverFadeDuration } }
-                                HoverHandler { id: availablePairHover }
-
-                                Text {
-                                    id: pairLabel
-                                    anchors.centerIn: parent
-                                    text: NetworkService.bluetooth.isPairing(modelData.address) ? "Cancel" : "Pair"
-                                    font.family: Fonts.font
-                                    font.pixelSize: 9
-                                    font.bold: true
-                                    color: NetworkService.bluetooth.isPairing(modelData.address)
-                                            ? availablePairHover.hovered
-                                                ? Colors.on_ErrorContainer
-                                                : Colors.surfaceContainerHighest
-                                            : availablePairHover.hovered
-                                                ? Colors.on_PrimaryContainer
-                                                : Colors.on_Primary
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Theme.hoverFadeDuration
                                 }
+                            }
+                            HoverHandler {
+                                id: availablePairHover
+                            }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: {
-                                        if (NetworkService.bluetooth.isPairing(modelData.address)) {
-                                            NetworkService.bluetooth.cancelPair(modelData.address)
-                                        } else {
-                                            NetworkService.bluetooth.pair(modelData.address)
-                                        }
+                            Text {
+                                id: pairLabel
+                                anchors.centerIn: parent
+                                text: NetworkService.bluetooth.isPairing(modelData.address) ? "Cancel" : "Pair"
+                                font.family: Fonts.font
+                                font.pixelSize: 9
+                                font.bold: true
+                                color: NetworkService.bluetooth.isPairing(modelData.address) ? availablePairHover.hovered ? Colors.on_ErrorContainer : Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.on_PrimaryContainer : Colors.on_Primary
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (NetworkService.bluetooth.isPairing(modelData.address)) {
+                                        NetworkService.bluetooth.cancelPair(modelData.address);
+                                    } else {
+                                        NetworkService.bluetooth.pair(modelData.address);
                                     }
                                 }
                             }
                         }
                     }
+                }
             }
 
             Text {
-                visible: NetworkService.bluetooth.enabled &&
-                    btConnectedModel.values.length === 0 &&
-                    btPairedModel.values.length === 0 &&
-                    btAvailableModel.values.length === 0
+                visible: NetworkService.bluetooth.enabled && btConnectedModel.values.length === 0 && btPairedModel.values.length === 0 && btAvailableModel.values.length === 0
                 Layout.alignment: Qt.AlignHCenter
                 text: "No Bluetooth devices"
                 font.family: Fonts.font
@@ -385,19 +410,9 @@ ColumnLayout {
             }
 
             Text {
-                visible: NetworkService.bluetooth.available && !NetworkService.bluetooth.operational && (
-                        NetworkService.bluetooth.enabling ||
-                        NetworkService.bluetooth.disabling ||
-                        NetworkService.bluetooth.blocked ||
-                        NetworkService.bluetooth.state === BluetoothAdapterState.Disabled)
+                visible: NetworkService.bluetooth.available && !NetworkService.bluetooth.operational && (NetworkService.bluetooth.enabling || NetworkService.bluetooth.disabling || NetworkService.bluetooth.blocked || NetworkService.bluetooth.state === BluetoothAdapterState.Disabled)
                 Layout.alignment: Qt.AlignHCenter
-                text: NetworkService.bluetooth.enabling
-                        ? "Bluetooth is starting…"
-                        : NetworkService.bluetooth.disabling
-                            ? "Bluetooth is turning off…"
-                            : NetworkService.bluetooth.blocked
-                                ? "Bluetooth is blocked"
-                                : "Bluetooth is disabled"
+                text: NetworkService.bluetooth.enabling ? "Bluetooth is starting…" : NetworkService.bluetooth.disabling ? "Bluetooth is turning off…" : NetworkService.bluetooth.blocked ? "Bluetooth is blocked" : "Bluetooth is disabled"
                 font.family: Fonts.font
                 font.pixelSize: 10
                 color: Colors.outline

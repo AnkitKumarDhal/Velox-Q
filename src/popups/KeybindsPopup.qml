@@ -15,11 +15,9 @@ PanelWindow {
     required property var screen
     screen: root.screen
     readonly property bool isFocusedScreen: {
-        const monitor = root.screen
-            ? Hyprland.monitorFor(root.screen)
-            : null
+        const monitor = root.screen ? Hyprland.monitorFor(root.screen) : null;
 
-        return monitor ? monitor.focused : false
+        return monitor ? monitor.focused : false;
     }
 
     visible: slidePanel.windowVisible && root.isFocusedScreen
@@ -72,12 +70,12 @@ PanelWindow {
 
             onWindowVisibleChanged: {
                 if (windowVisible)
-                    forceActiveFocus()
+                    forceActiveFocus();
             }
 
-            Keys.onEscapePressed: (event) => {
-                Popups.keybindsOpen = false
-                event.accepted = true
+            Keys.onEscapePressed: event => {
+                Popups.keybindsOpen = false;
+                event.accepted = true;
             }
 
             Rectangle {
@@ -334,7 +332,7 @@ PanelWindow {
 
         function onKeybindsOpenChanged() {
             if (Popups.keybindsOpen)
-                KeybindsService.refresh()
+                KeybindsService.refresh();
         }
     }
 }

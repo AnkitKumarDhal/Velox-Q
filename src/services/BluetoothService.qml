@@ -28,22 +28,32 @@ Singleton {
     readonly property bool operational: root.enabled || root.connectedDeviceCount > 0
 
     readonly property string stateText: {
-        if (!root.available) return "Unavailable";
-        if (root.connectedDeviceCount > 0) return root.connectedDeviceCount + " conn.";
-        if (root.enabling) return "Enabling";
-        if (root.disabling) return "Disabling";
-        if (root.blocked) return "Blocked";
-        if (root.state === BluetoothAdapterState.Disabled) return "Disabled";
-        if (root.state === BluetoothAdapterState.Enabled) return "Ready";
+        if (!root.available)
+            return "Unavailable";
+        if (root.connectedDeviceCount > 0)
+            return root.connectedDeviceCount + " conn.";
+        if (root.enabling)
+            return "Enabling";
+        if (root.disabling)
+            return "Disabling";
+        if (root.blocked)
+            return "Blocked";
+        if (root.state === BluetoothAdapterState.Disabled)
+            return "Disabled";
+        if (root.state === BluetoothAdapterState.Enabled)
+            return "Ready";
         return "Unavailable";
     }
 
     function reconcilePowerState() {
-        if (!root.adapter) return;
-        if (root.connectedDeviceCount <= 0) return;
-        if (root.adapter.enabled) return;
+        if (!root.adapter)
+            return;
+        if (root.connectedDeviceCount <= 0)
+            return;
+        if (root.adapter.enabled)
+            return;
 
-        root.adapter.enabled = true
+        root.adapter.enabled = true;
     }
 
     onConnectedDeviceCountChanged: root.reconcilePowerState()
@@ -59,47 +69,55 @@ Singleton {
     }
 
     function scan() {
-        if (!root.adapter || !root.enabled) return;
+        if (!root.adapter || !root.enabled)
+            return;
         root.adapter.discovering = true;
     }
 
     function stopScan() {
-        if (!root.adapter) return;
+        if (!root.adapter)
+            return;
         root.adapter.discovering = false;
     }
 
     function pair(address) {
         const device = root.devices.find(item => item.address === address);
-        if (!device || !root.enabled || root.isPairing(address)) return;
+        if (!device || !root.enabled || root.isPairing(address))
+            return;
         device.pair();
     }
 
     function cancelPair(address) {
         const device = root.devices.find(item => item.address === address);
-        if (!device || !device.pairing) return;
+        if (!device || !device.pairing)
+            return;
         device.cancelPair();
     }
 
     function connect(address) {
         const device = root.devices.find(item => item.address === address);
-        if (!device || !root.enabled || root.isConnecting(address)) return;
+        if (!device || !root.enabled || root.isConnecting(address))
+            return;
         device.connect();
     }
 
     function disconnect(address) {
         const device = root.devices.find(item => item.address === address);
-        if (!device) return;
+        if (!device)
+            return;
         device.disconnect();
     }
 
     function remove(address) {
         const device = root.devices.find(item => item.address === address);
-        if (!device) return;
+        if (!device)
+            return;
         device.forget();
     }
 
     function setEnabled(value) {
-        if (!root.adapter) return;
+        if (!root.adapter)
+            return;
         if (value) {
             root.adapter.enabled = true;
             return;

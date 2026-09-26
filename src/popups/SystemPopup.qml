@@ -11,12 +11,12 @@ import qs.src.popups.system
 PanelWindow {
     id: root
 
-    color:         "transparent"
+    color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
     anchors {
-        top:   true
-        left:  true
+        top: true
+        left: true
         right: true
     }
 
@@ -26,9 +26,9 @@ PanelWindow {
     visible: slidePanel.windowVisible
 
     mask: Region {
-        x:      sysCard.x
-        y:      Theme.barHeight + 8
-        width:  sysCard.width
+        x: sysCard.x
+        y: Theme.barHeight + 8
+        width: sysCard.width
         height: sysCard.height
     }
 
@@ -42,29 +42,29 @@ PanelWindow {
 
         on_EffectiveOpenChanged: {
             if (_effectiveOpen)
-                DiskStats.refresh()
+                DiskStats.refresh();
         }
 
         Rectangle {
             id: sysCard
             anchors {
-                top:         parent.top
-                topMargin:   Theme.barHeight + 8
+                top: parent.top
+                topMargin: Theme.barHeight + 8
             }
-            x:            Popups.systemAnchorX - width / 2
-            width:        400
-            height:       cardCol.implicitHeight + 24
-            radius:       Theme.popupRadius
-            color:        Colors.surfaceContainer
+            x: Popups.systemAnchorX - width / 2
+            width: 400
+            height: cardCol.implicitHeight + 24
+            radius: Theme.popupRadius
+            color: Colors.surfaceContainer
             border.color: Colors.outlineVariant
             border.width: Theme.popupBorder
-            clip:         true
+            clip: true
 
             ColumnLayout {
                 id: cardCol
                 anchors {
-                    top:   parent.top
-                    left:  parent.left
+                    top: parent.top
+                    left: parent.left
                     right: parent.right
                     margins: 16
                 }
@@ -76,20 +76,20 @@ PanelWindow {
                     spacing: 0
 
                     Text {
-                        text:           "System"
+                        text: "System"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pixelSize: 16
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          Colors.on_Surface
+                        color: Colors.on_Surface
                     }
                 }
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height:  1
-                    color:   Colors.outlineVariant
+                    height: 1
+                    color: Colors.outlineVariant
                     opacity: 0.5
                 }
 
@@ -99,34 +99,30 @@ PanelWindow {
                     spacing: 8
 
                     MetricCard {
-                        label:    ""
-                        value:    Math.round(SystemStats.cpuUsage * 100) + "%"
-                        detail:   SystemStats.cpuFrequencyGhz > 0
-                                  ? SystemStats.cpuFrequencyGhz.toFixed(1) + " GHz"
-                                  : SystemStats.cpuCores.length + " cores"
+                        label: ""
+                        value: Math.round(SystemStats.cpuUsage * 100) + "%"
+                        detail: SystemStats.cpuFrequencyGhz > 0 ? SystemStats.cpuFrequencyGhz.toFixed(1) + " GHz" : SystemStats.cpuCores.length + " cores"
                         progress: SystemStats.cpuUsage
-                        accent:   Colors.primary
+                        accent: Colors.primary
                         Layout.fillWidth: true
                     }
 
                     MetricCard {
-                        label:    ""
-                        value:    Math.round(SystemStats.memUsage * 100) + "%"
-                        detail:   SystemStats.memUsedGb.toFixed(1) + " / " + SystemStats.memTotalGb.toFixed(1) + " GB"
+                        label: ""
+                        value: Math.round(SystemStats.memUsage * 100) + "%"
+                        detail: SystemStats.memUsedGb.toFixed(1) + " / " + SystemStats.memTotalGb.toFixed(1) + " GB"
                         progress: SystemStats.memUsage
-                        accent:   Colors.secondary
+                        accent: Colors.secondary
                         Layout.fillWidth: true
                     }
 
                     MetricCard {
-                        visible:  SystemStats.hasGpu
-                        label:    "󰢮"
-                        value:    Math.round(SystemStats.gpuUsage * 100) + "%"
-                        detail:   SystemStats.gpuVramTotalGb > 0
-                                  ? SystemStats.gpuVramUsedGb.toFixed(1) + " / " + SystemStats.gpuVramTotalGb.toFixed(1) + " GB VRAM"
-                                  : SystemStats.gpuName
+                        visible: SystemStats.hasGpu
+                        label: "󰢮"
+                        value: Math.round(SystemStats.gpuUsage * 100) + "%"
+                        detail: SystemStats.gpuVramTotalGb > 0 ? SystemStats.gpuVramUsedGb.toFixed(1) + " / " + SystemStats.gpuVramTotalGb.toFixed(1) + " GB VRAM" : SystemStats.gpuName
                         progress: SystemStats.gpuUsage
-                        accent:   Colors.tertiary
+                        accent: Colors.tertiary
                         Layout.fillWidth: true
                     }
                 }
@@ -141,27 +137,25 @@ PanelWindow {
                         Layout.fillWidth: true
 
                         Text {
-                            text:           " CPU cores"
+                            text: " CPU cores"
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pointSize: 10
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.on_SurfaceVariant
+                            color: Colors.on_SurfaceVariant
 
                             Layout.fillWidth: true
                         }
 
                         Text {
-                            text:           SystemStats.cpuFrequencyGhz > 0
-                                          ? SystemStats.cpuFrequencyGhz.toFixed(1) + " GHz"
-                                          : ""
+                            text: SystemStats.cpuFrequencyGhz > 0 ? SystemStats.cpuFrequencyGhz.toFixed(1) + " GHz" : ""
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pixelSize: 11
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.on_Surface
+                            color: Colors.on_Surface
                         }
                     }
 
@@ -175,37 +169,33 @@ PanelWindow {
                             delegate: Rectangle {
                                 required property var modelData
 
-                                width:  34
+                                width: 34
                                 height: 18
                                 radius: 5
-                                color:  Colors.surfaceContainerHighest
+                                color: Colors.surfaceContainerHighest
 
                                 Rectangle {
                                     anchors {
-                                        left:   parent.left
+                                        left: parent.left
                                         bottom: parent.bottom
                                     }
-                                    width:  parent.width * modelData.usage
+                                    width: parent.width * modelData.usage
                                     height: parent.height
                                     radius: parent.radius
-                                    color:  modelData.usage >= 0.9
-                                                ? Colors.error
-                                                : modelData.usage >= 0.7
-                                                    ? Colors.tertiary
-                                                    : Colors.primary
+                                    color: modelData.usage >= 0.9 ? Colors.error : modelData.usage >= 0.7 ? Colors.tertiary : Colors.primary
                                 }
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text:             Math.round(modelData.usage * 100) + "%"
+                                    text: Math.round(modelData.usage * 100) + "%"
 
-                                    font.family:      Fonts.font
-                                    font.pixelSize:   10
-                                    font.bold:        true
+                                    font.family: Fonts.font
+                                    font.pixelSize: 10
+                                    font.bold: true
 
-                                    color:            Colors.on_Surface
+                                    color: Colors.on_Surface
 
-                                    z:                2
+                                    z: 2
                                 }
                             }
                         }
@@ -218,34 +208,32 @@ PanelWindow {
                     spacing: 12
 
                     Text {
-                        text:           "Available " + SystemStats.memAvailableGb.toFixed(1) + " GB"
+                        text: "Available " + SystemStats.memAvailableGb.toFixed(1) + " GB"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pixelSize: 10
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          Colors.on_SurfaceVariant
+                        color: Colors.on_SurfaceVariant
 
                         Layout.fillWidth: true
                     }
 
                     Text {
-                        text:           "Swap " + SystemStats.swapUsedGb.toFixed(1) + " / " + SystemStats.swapTotalGb.toFixed(1) + " GB"
+                        text: "Swap " + SystemStats.swapUsedGb.toFixed(1) + " / " + SystemStats.swapTotalGb.toFixed(1) + " GB"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pixelSize: 10
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          SystemStats.swapUsage >= 0.9
-                                        ? Colors.error
-                                        : Colors.on_SurfaceVariant
+                        color: SystemStats.swapUsage >= 0.9 ? Colors.error : Colors.on_SurfaceVariant
                     }
                 }
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height:  1
-                    color:   Colors.outlineVariant
+                    height: 1
+                    color: Colors.outlineVariant
                     opacity: 0.5
                 }
 
@@ -258,29 +246,25 @@ PanelWindow {
                         Layout.fillWidth: true
 
                         Text {
-                            text:           "󰤥 Network"
+                            text: "󰤥 Network"
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pointSize: 10
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.on_SurfaceVariant
+                            color: Colors.on_SurfaceVariant
 
                             Layout.fillWidth: true
                         }
 
                         Text {
-                            text:           SystemStats.activeInterface !== ""
-                                          ? SystemStats.activeInterface
-                                          : "Offline"
+                            text: SystemStats.activeInterface !== "" ? SystemStats.activeInterface : "Offline"
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pixelSize: 11
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          SystemStats.activeInterface !== ""
-                                          ? Colors.primary
-                                          : Colors.outline
+                            color: SystemStats.activeInterface !== "" ? Colors.primary : Colors.outline
                         }
                     }
 
@@ -292,64 +276,64 @@ PanelWindow {
                         }
 
                         Text {
-                            text:           "↑ " + SystemStats.formatBytes(SystemStats.netUpRate)
+                            text: "↑ " + SystemStats.formatBytes(SystemStats.netUpRate)
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pixelSize: 11
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.tertiary
+                            color: Colors.tertiary
                         }
 
                         Text {
-                            text:           "↓ " + SystemStats.formatBytes(SystemStats.netDownRate)
+                            text: "↓ " + SystemStats.formatBytes(SystemStats.netDownRate)
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pixelSize: 11
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.primary
+                            color: Colors.primary
                         }
                     }
 
                     NetworkGraph {
                         Layout.fillWidth: true
-                        height:           68
-                        upHistory:        SystemStats.netUpHistory
-                        downHistory:      SystemStats.netDownHistory
+                        height: 68
+                        upHistory: SystemStats.netUpHistory
+                        downHistory: SystemStats.netDownHistory
                     }
 
                     RowLayout {
                         Layout.fillWidth: true
 
                         Text {
-                            text:           "↑ Upload"
+                            text: "↑ Upload"
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pixelSize: 10
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.tertiary
+                            color: Colors.tertiary
 
                             Layout.fillWidth: true
                         }
 
                         Text {
-                            text:           "↓ Download"
+                            text: "↓ Download"
 
-                            font.family:    Fonts.font
+                            font.family: Fonts.font
                             font.pixelSize: 10
-                            font.bold:      true
+                            font.bold: true
 
-                            color:          Colors.primary
+                            color: Colors.primary
                         }
                     }
                 }
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height:  1
-                    color:   Colors.outlineVariant
+                    height: 1
+                    color: Colors.outlineVariant
                     opacity: 0.5
                 }
 
@@ -359,13 +343,13 @@ PanelWindow {
                     spacing: 8
 
                     Text {
-                        text:           " Storage"
+                        text: " Storage"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pointSize: 10
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          Colors.on_SurfaceVariant
+                        color: Colors.on_SurfaceVariant
                     }
 
                     Repeater {
@@ -375,31 +359,31 @@ PanelWindow {
                             required property var modelData
                             Layout.fillWidth: true
 
-                            device:      modelData.name
-                            mountPoint:  modelData.mountPoint
-                            fsType:      modelData.fsType
-                            usedBytes:   modelData.used
-                            totalBytes:  modelData.size
-                            percentage:  modelData.percentage
+                            device: modelData.name
+                            mountPoint: modelData.mountPoint
+                            fsType: modelData.fsType
+                            usedBytes: modelData.used
+                            totalBytes: modelData.size
+                            percentage: modelData.percentage
                         }
                     }
 
                     Text {
-                        visible:        SystemStats.diskPartitions.length === 0
-                        text:           "No disk usage data available"
+                        visible: SystemStats.diskPartitions.length === 0
+                        text: "No disk usage data available"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pixelSize: 10
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          Colors.outline
+                        color: Colors.outline
                     }
                 }
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height:  1
-                    color:   Colors.outlineVariant
+                    height: 1
+                    color: Colors.outlineVariant
                     opacity: 0.5
                 }
 
@@ -408,30 +392,26 @@ PanelWindow {
                     Layout.fillWidth: true
 
                     Text {
-                        text:           "󰔏 Thermals"
+                        text: "󰔏 Thermals"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pointSize: 10
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          Colors.on_SurfaceVariant
+                        color: Colors.on_SurfaceVariant
 
                         Layout.fillWidth: true
                     }
 
                     Text {
-                        visible:        SystemStats.temperature > 0
-                        text:           SystemStats.temperature + " °C"
+                        visible: SystemStats.temperature > 0
+                        text: SystemStats.temperature + " °C"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pixelSize: 11
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          SystemStats.temperature >= 80
-                                       ? Colors.error
-                                       : SystemStats.temperature >= 60
-                                           ? Colors.tertiary
-                                           : Colors.on_Surface
+                        color: SystemStats.temperature >= 80 ? Colors.error : SystemStats.temperature >= 60 ? Colors.tertiary : Colors.on_Surface
 
                         Behavior on color {
                             ColorAnimation {
@@ -463,44 +443,40 @@ PanelWindow {
                                 anchors.rightMargin: 8
 
                                 Text {
-                                    text:           modelData.name
+                                    text: modelData.name
 
-                                    font.family:    Fonts.font
+                                    font.family: Fonts.font
                                     font.pixelSize: 10
-                                    font.bold:      true
+                                    font.bold: true
 
-                                    color:          Colors.on_SurfaceVariant
+                                    color: Colors.on_SurfaceVariant
 
-                                    elide:          Text.ElideRight
+                                    elide: Text.ElideRight
                                     Layout.fillWidth: true
                                 }
 
                                 Text {
-                                    text:           modelData.value + " °C"
+                                    text: modelData.value + " °C"
 
-                                    font.family:    Fonts.font
+                                    font.family: Fonts.font
                                     font.pixelSize: 10
-                                    font.bold:      true
+                                    font.bold: true
 
-                                    color:          modelData.value >= 80
-                                                   ? Colors.error
-                                                   : modelData.value >= 60
-                                                       ? Colors.tertiary
-                                                       : Colors.on_Surface
+                                    color: modelData.value >= 80 ? Colors.error : modelData.value >= 60 ? Colors.tertiary : Colors.on_Surface
                                 }
                             }
                         }
                     }
 
                     Text {
-                        visible:        SystemStats.displayTemperatures.length === 0
-                        text:           "No thermal sensors available"
+                        visible: SystemStats.displayTemperatures.length === 0
+                        text: "No thermal sensors available"
 
-                        font.family:    Fonts.font
+                        font.family: Fonts.font
                         font.pixelSize: 10
-                        font.bold:      true
+                        font.bold: true
 
-                        color:          Colors.outline
+                        color: Colors.outline
                     }
                 }
             }

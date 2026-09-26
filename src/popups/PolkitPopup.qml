@@ -15,8 +15,8 @@ PanelWindow {
     screen: root.screen
 
     readonly property bool focusedScreen: {
-        const monitor = Hyprland.monitorFor(root.screen)
-        return monitor ? monitor.focused : false
+        const monitor = Hyprland.monitorFor(root.screen);
+        return monitor ? monitor.focused : false;
     }
 
     property string responseText: ""
@@ -61,7 +61,6 @@ PanelWindow {
 
             border.width: 1
             border.color: Colors.outlineVariant
-
 
             ColumnLayout {
                 id: popupContent
@@ -165,14 +164,14 @@ PanelWindow {
                     selectedTextColor: Colors.on_Primary
                     placeholderTextColor: Colors.on_SurfaceVariant
 
-                    Keys.onReturnPressed: (event) => {
-                        root.submit()
-                        event.accepted = true
+                    Keys.onReturnPressed: event => {
+                        root.submit();
+                        event.accepted = true;
                     }
 
-                    Keys.onEscapePressed: (event) => {
-                        PolkitService.cancel()
-                        event.accepted = true
+                    Keys.onEscapePressed: event => {
+                        PolkitService.cancel();
+                        event.accepted = true;
                     }
                 }
 
@@ -269,17 +268,17 @@ PanelWindow {
 
         function onResponseRequiredChanged() {
             if (PolkitService.responseRequired) {
-                responseField.clear()
-                root.responseText = ""
-                responseField.forceActiveFocus()
+                responseField.clear();
+                root.responseText = "";
+                responseField.forceActiveFocus();
             }
         }
 
         function onFailedChanged() {
             if (PolkitService.failed) {
-                responseField.clear()
-                root.responseText = ""
-                responseField.forceActiveFocus()
+                responseField.clear();
+                root.responseText = "";
+                responseField.forceActiveFocus();
             }
         }
     }
@@ -289,15 +288,16 @@ PanelWindow {
 
         function onWindowVisibleChanged() {
             if (!slidePanel.windowVisible) {
-                responseField.clear()
-                root.responseText = ""
-                PolkitService.clearPresentation()
+                responseField.clear();
+                root.responseText = "";
+                PolkitService.clearPresentation();
             }
         }
     }
 
     function submit() {
-        if (!PolkitService.responseRequired) return
-        PolkitService.submit(responseField.text)
+        if (!PolkitService.responseRequired)
+            return;
+        PolkitService.submit(responseField.text);
     }
 }

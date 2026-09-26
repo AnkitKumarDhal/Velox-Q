@@ -41,7 +41,7 @@ PanelWindow {
         id: focusGrab
         windows: [root]
         onCleared: {
-            root.close()
+            root.close();
         }
     }
 
@@ -59,9 +59,9 @@ PanelWindow {
         interval: 30
         onTriggered: {
             if (root.menuOpen) {
-                focusGrab.active = true
-                menuCard.resetKeyboard()
-                menuCard.forceActiveFocus()
+                focusGrab.active = true;
+                menuCard.resetKeyboard();
+                menuCard.forceActiveFocus();
             }
         }
     }
@@ -70,9 +70,9 @@ PanelWindow {
         id: closeTimer
         interval: Theme.animDuration
         onTriggered: {
-            root.closing = false
-            root.menuHandle = null
-            root.itemTitle = ""
+            root.closing = false;
+            root.menuHandle = null;
+            root.itemTitle = "";
         }
     }
 
@@ -80,41 +80,43 @@ PanelWindow {
         id: menuReadyTimer
         interval: 0
         onTriggered: {
-            if (!root.menuOpen) return
-            menuCard.resetKeyboard()
-            menuCard.forceActiveFocus()
+            if (!root.menuOpen)
+                return;
+            menuCard.resetKeyboard();
+            menuCard.forceActiveFocus();
         }
     }
 
     function open(handle, x, y, title) {
-        if (!handle) return
-        closeTimer.stop()
+        if (!handle)
+            return;
+        closeTimer.stop();
 
-        menuHandle = handle
-        itemTitle = title || "Tray"
+        menuHandle = handle;
+        itemTitle = title || "Tray";
 
-        menuX = x
-        menuY = y + 4
+        menuX = x;
+        menuY = y + 4;
 
-        closing = false
-        menuOpen = true
+        closing = false;
+        menuOpen = true;
 
-        focusTimer.restart()
-        menuReadyTimer.restart()
+        focusTimer.restart();
+        menuReadyTimer.restart();
     }
 
     function close() {
-        if (!menuOpen && !closing) return
+        if (!menuOpen && !closing)
+            return;
+        focusTimer.stop();
+        menuReadyTimer.stop();
 
-        focusTimer.stop()
-        menuReadyTimer.stop()
+        menuOpen = false;
+        closing = true;
 
-        menuOpen = false
-        closing = true
+        focusGrab.active = false;
 
-        focusGrab.active = false
-
-        closeTimer.restart()
+        closeTimer.restart();
     }
 
     Item {
@@ -166,9 +168,9 @@ PanelWindow {
         property: "x"
 
         value: {
-            const openLeft = root.menuX > root.width / 2
-            const preferredX = openLeft ? root.menuX - root.menuWidth + 12 : root.menuX - 12
-            return Math.max(root.screenMargin, Math.min(preferredX, root.width - root.menuWidth - root.screenMargin))
+            const openLeft = root.menuX > root.width / 2;
+            const preferredX = openLeft ? root.menuX - root.menuWidth + 12 : root.menuX - 12;
+            return Math.max(root.screenMargin, Math.min(preferredX, root.width - root.menuWidth - root.screenMargin));
         }
     }
 
@@ -177,12 +179,12 @@ PanelWindow {
         property: "y"
 
         value: {
-            const belowY = root.menuY
-            const aboveY = root.menuY - menuContainer.height - 8
-            const fitsBelow = belowY + menuContainer.height <= root.height - root.screenMargin
-            const preferredY = fitsBelow ? belowY : aboveY
+            const belowY = root.menuY;
+            const aboveY = root.menuY - menuContainer.height - 8;
+            const fitsBelow = belowY + menuContainer.height <= root.height - root.screenMargin;
+            const preferredY = fitsBelow ? belowY : aboveY;
 
-            return Math.max(root.screenMargin, Math.min(preferredY, root.height - menuContainer.height - root.screenMargin))
+            return Math.max(root.screenMargin, Math.min(preferredY, root.height - menuContainer.height - root.screenMargin));
         }
     }
 }

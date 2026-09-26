@@ -9,17 +9,13 @@ Item {
     required property string deviceName
     required property bool isDefault
     required property string icon
-    signal selected()
+    signal selected
     implicitHeight: 48
 
     Rectangle {
         anchors.fill: parent
         radius: 10
-        color: rowHov.containsMouse
-            ? Colors.surfaceContainerHighest
-            : (root.isDefault
-                ? Colors.primaryContainer
-                : Colors.surfaceContainerHigh)
+        color: rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Colors.primaryContainer : Colors.surfaceContainerHigh)
 
         border.width: root.isDefault ? 1 : 0
         border.color: Colors.primary
@@ -98,7 +94,8 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                if (!root.isDefault) root.selected()
+                if (!root.isDefault)
+                    root.selected();
             }
         }
     }

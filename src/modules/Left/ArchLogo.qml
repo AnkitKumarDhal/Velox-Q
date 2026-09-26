@@ -17,6 +17,6 @@ PillBase {
         verticalAlignment: Text.AlignVCenter
     }
 
-// Temporarily hijack the Arch logo click
-onClicked: Popups.sessionOpen = !Popups.sessionOpen
+    // Temporarily hijack the Arch logo click
+    onClicked: Popups.sessionOpen = !Popups.sessionOpen
 }

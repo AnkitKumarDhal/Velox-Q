@@ -10,8 +10,8 @@ Item {
     property var appData: null
     property int selectedAction: 0
 
-    signal closeRequested()
-    signal finished()
+    signal closeRequested
+    signal finished
 
     readonly property bool hasExistingWindow: root.appData ? LauncherService.findExistingWindow(root.appData) !== null : false
     readonly property var desktopActions: root.appData && root.appData.actions ? root.appData.actions : []
@@ -19,65 +19,68 @@ Item {
     readonly property int actionCount: (root.hasExistingWindow ? 1 : 0) + root.desktopActionCount + 1
 
     function getDesktopAction(index) {
-        const action = root.desktopActions[index]
-        return action ? action : null
+        const action = root.desktopActions[index];
+        return action ? action : null;
     }
 
     function actionLabel(index) {
-        let offset = 0
+        let offset = 0;
 
         if (root.hasExistingWindow) {
-            if (index === 0) return "Focus existing window"
-            offset = 1
+            if (index === 0)
+                return "Focus existing window";
+            offset = 1;
         }
 
         if (index >= offset && index < offset + root.desktopActionCount) {
-            const action = root.getDesktopAction(index - offset)
-            return action && action.name ? action.name : "Action"
+            const action = root.getDesktopAction(index - offset);
+            return action && action.name ? action.name : "Action";
         }
 
-        return LauncherService.isPinned(root.appData) ? "Unpin application" : "Pin application"
+        return LauncherService.isPinned(root.appData) ? "Unpin application" : "Pin application";
     }
 
     function actionIcon(index) {
-        let offset = 0
+        let offset = 0;
 
         if (root.hasExistingWindow) {
-            if (index === 0) return "󰖯"
-            offset = 1
+            if (index === 0)
+                return "󰖯";
+            offset = 1;
         }
 
         if (index >= offset && index < offset + root.desktopActionCount) {
-            const action = root.getDesktopAction(index - offset)
+            const action = root.getDesktopAction(index - offset);
             if (action && action.icon) {
-                return action.icon
+                return action.icon;
             }
-            return ""
+            return "";
         }
-        return LauncherService.isPinned(root.appData) ? "󰌐" : "󰐕"
+        return LauncherService.isPinned(root.appData) ? "󰌐" : "󰐕";
     }
 
     function executeAction(index) {
-        let offset = 0
+        let offset = 0;
 
         if (root.hasExistingWindow) {
             if (index === 0) {
-                LauncherService.focusExisting(root.appData)
-                root.finished()
-                return
+                LauncherService.focusExisting(root.appData);
+                root.finished();
+                return;
             }
-            offset = 1
+            offset = 1;
         }
 
         if (index >= offset && index < offset + root.desktopActionCount) {
-            const action = root.getDesktopAction(index - offset)
-            if (action) action.execute()
-            root.finished()
-            return
+            const action = root.getDesktopAction(index - offset);
+            if (action)
+                action.execute();
+            root.finished();
+            return;
         }
 
-        LauncherService.togglePin(root.appData)
-        root.finished()
+        LauncherService.togglePin(root.appData);
+        root.finished();
     }
 
     visible: root.appData !== null
@@ -85,7 +88,7 @@ Item {
 
     onSelectedActionChanged: {
         if (root.selectedAction < 0 || root.selectedAction >= root.actionCount) {
-            root.selectedAction = 0
+            root.selectedAction = 0;
         }
     }
 
@@ -111,7 +114,7 @@ Item {
             color: Colors.on_Surface
 
             font.pixelSize: 13
-            font.family:     Fonts.fontM
+            font.family: Fonts.fontM
 
             elide: Text.ElideRight
         }
@@ -129,11 +132,7 @@ Item {
                     anchors.fill: parent
                     radius: 10
 
-                    color: index === root.selectedAction
-                            ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18)
-                            : actionMouse.containsMouse
-                                ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08)
-                                : "transparent"
+                    color: index === root.selectedAction ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : actionMouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08) : "transparent"
 
                     Behavior on color {
                         ColorAnimation {
@@ -183,9 +182,10 @@ Item {
                             height: 20
 
                             source: {
-                                const icon = root.actionIcon(index)
-                                if (!icon || icon === "󰖯" || icon === "󰌐" || icon === "󰐕") return ""
-                                return Quickshell.iconPath(icon, true)
+                                const icon = root.actionIcon(index);
+                                if (!icon || icon === "󰖯" || icon === "󰌐" || icon === "󰐕")
+                                    return "";
+                                return Quickshell.iconPath(icon, true);
                             }
 
                             fillMode: Image.PreserveAspectFit
@@ -201,7 +201,7 @@ Item {
                             text: root.actionIcon(index)
                             color: index === root.selectedAction ? Colors.primary : Colors.on_SurfaceVariant
                             font.pixelSize: 17
-                            font.family:     Fonts.font
+                            font.family: Fonts.font
                         }
                     }
 
@@ -228,37 +228,35 @@ Item {
         }
     }
 
-    Keys.onEscapePressed: (event) => {
-        root.closeRequested()
-        event.accepted = true
+    Keys.onEscapePressed: event => {
+        root.closeRequested();
+        event.accepted = true;
     }
 
-    Keys.onPressed: (event) => {
+    Keys.onPressed: event => {
         switch (event.key) {
-            case Qt.Key_Left:
-                root.closeRequested()
-                event.accepted = true
-                break
-
-            case Qt.Key_Up:
-                root.selectedAction = (root.selectedAction - 1 + root.actionCount) % root.actionCount
-                event.accepted = true
-                break
-
-            case Qt.Key_Down:
-                root.selectedAction = (root.selectedAction + 1) % root.actionCount
-                event.accepted = true
-                break
+        case Qt.Key_Left:
+            root.closeRequested();
+            event.accepted = true;
+            break;
+        case Qt.Key_Up:
+            root.selectedAction = (root.selectedAction - 1 + root.actionCount) % root.actionCount;
+            event.accepted = true;
+            break;
+        case Qt.Key_Down:
+            root.selectedAction = (root.selectedAction + 1) % root.actionCount;
+            event.accepted = true;
+            break;
         }
     }
 
-    Keys.onReturnPressed: (event) => {
-        root.executeAction(root.selectedAction)
-        event.accepted = true
+    Keys.onReturnPressed: event => {
+        root.executeAction(root.selectedAction);
+        event.accepted = true;
     }
 
-    Keys.onEnterPressed: (event) => {
-        root.executeAction(root.selectedAction)
-        event.accepted = true
+    Keys.onEnterPressed: event => {
+        root.executeAction(root.selectedAction);
+        event.accepted = true;
     }
 }

@@ -57,10 +57,14 @@ PanelWindow {
     }
 
     readonly property string currentTabKey: {
-        if (Popups.networkTab === 0 && root.hasWifi) return "wifi";
-        if (Popups.networkTab === 1 && root.hasBluetooth) return "bluetooth";
-        if (root.hasWifi) return "wifi";
-        if (root.hasBluetooth) return "bluetooth";
+        if (Popups.networkTab === 0 && root.hasWifi)
+            return "wifi";
+        if (Popups.networkTab === 1 && root.hasBluetooth)
+            return "bluetooth";
+        if (root.hasWifi)
+            return "wifi";
+        if (root.hasBluetooth)
+            return "bluetooth";
         return "";
     }
 
@@ -68,22 +72,26 @@ PanelWindow {
 
     function ensureValidTab() {
         if (root.hasWifi && root.hasBluetooth) {
-            if (Popups.networkTab !== 0 && Popups.networkTab !== 1) Popups.networkTab = 0;
+            if (Popups.networkTab !== 0 && Popups.networkTab !== 1)
+                Popups.networkTab = 0;
             return;
         }
         if (root.hasWifi) {
-            if (Popups.networkTab !== 0) Popups.networkTab = 0;
+            if (Popups.networkTab !== 0)
+                Popups.networkTab = 0;
             return;
         }
         if (root.hasBluetooth) {
-            if (Popups.networkTab !== 1) Popups.networkTab = 1;
+            if (Popups.networkTab !== 1)
+                Popups.networkTab = 1;
             return;
         }
         Popups.networkTab = 0;
     }
 
     onVisibleChanged: {
-        if (!visible) root.selectedNetwork = null;
+        if (!visible)
+            root.selectedNetwork = null;
     }
 
     onHasWifiChanged: root.ensureValidTab()
@@ -94,14 +102,16 @@ PanelWindow {
     Connections {
         target: Popups
         function onNetworkOpenChanged() {
-            if (Popups.networkOpen) root.ensureValidTab();
+            if (Popups.networkOpen)
+                root.ensureValidTab();
         }
     }
 
     Connections {
         target: root.selectedNetwork
         function onConnectedChanged() {
-            if (root.selectedNetwork?.connected) root.selectedNetwork = null;
+            if (root.selectedNetwork?.connected)
+                root.selectedNetwork = null;
         }
     }
 
@@ -111,13 +121,12 @@ PanelWindow {
         value: Popups.networkOpen
     }
 
-    mask:
-        Region {
-            x: connectivityCard.x
-            y: Theme.barHeight + 8
-            width: connectivityCard.width
-            height: connectivityCard.height
-        }
+    mask: Region {
+        x: connectivityCard.x
+        y: Theme.barHeight + 8
+        width: connectivityCard.width
+        height: connectivityCard.height
+    }
 
     PopupSlide {
         id: slide
@@ -170,12 +179,14 @@ PanelWindow {
                     Layout.fillWidth: true
                     activeTab: root.currentTabKey
                     onWifiClicked: {
-                        if (!root.hasWifi) return;
+                        if (!root.hasWifi)
+                            return;
                         root.tabDirection = root.currentTabKey === "bluetooth" ? -1 : 1;
                         Popups.networkTab = 0;
                     }
                     onBluetoothClicked: {
-                        if (!root.hasBluetooth) return;
+                        if (!root.hasBluetooth)
+                            return;
                         root.tabDirection = root.currentTabKey === "wifi" ? 1 : -1;
                         Popups.networkTab = 1;
                     }
@@ -196,8 +207,10 @@ PanelWindow {
                     Layout.fillWidth: true
 
                     implicitHeight: {
-                        if (root.currentTabKey === "wifi") return wifiTab.implicitHeight;
-                        if (root.currentTabKey === "bluetooth") return bluetoothTab.implicitHeight;
+                        if (root.currentTabKey === "wifi")
+                            return wifiTab.implicitHeight;
+                        if (root.currentTabKey === "bluetooth")
+                            return bluetoothTab.implicitHeight;
                         return 0;
                     }
 
@@ -236,7 +249,7 @@ PanelWindow {
                         WifiTab {
                             Layout.fillWidth: true
                             selectedNetwork: root.selectedNetwork
-                            onNetworkSelected: (network) => {
+                            onNetworkSelected: network => {
                                 root.selectedNetwork = network;
                             }
                         }
@@ -272,7 +285,9 @@ PanelWindow {
                             }
                         }
 
-                        BluetoothTab { Layout.fillWidth: true }
+                        BluetoothTab {
+                            Layout.fillWidth: true
+                        }
                     }
                 }
             }

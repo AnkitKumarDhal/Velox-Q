@@ -56,9 +56,7 @@ Rectangle {
                     width: 22
                     height: 22
 
-                    source: root.notification && root.notification.appIcon
-                        ? "image://icon/" + root.notification.appIcon
-                        : ""
+                    source: root.notification && root.notification.appIcon ? "image://icon/" + root.notification.appIcon : ""
 
                     visible: status === Image.Ready
 
@@ -92,9 +90,7 @@ Rectangle {
                     Layout.fillWidth: true
 
                     Text {
-                        text: root.notification
-                            ? root.notification.appName
-                            : ""
+                        text: root.notification ? root.notification.appName : ""
 
                         color: Colors.on_SurfaceVariant
 
@@ -108,9 +104,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: root.notification
-                            ? NotificationService.formatTimestamp(root.notification)
-                            : ""
+                        text: root.notification ? NotificationService.formatTimestamp(root.notification) : ""
 
                         color: Colors.outline
 
@@ -122,9 +116,7 @@ Rectangle {
                 }
 
                 Text {
-                    text: root.notification
-                        ? root.notification.summary
-                        : ""
+                    text: root.notification ? root.notification.summary : ""
 
                     color: Colors.on_Surface
 
@@ -140,9 +132,7 @@ Rectangle {
 
                 Text {
                     visible: !!root.notification && root.notification.body !== ""
-                    text: root.notification
-                        ? root.notification.body
-                        : ""
+                    text: root.notification ? root.notification.body : ""
 
                     color: Colors.on_SurfaceVariant
 
@@ -168,9 +158,7 @@ Rectangle {
 
                 radius: 10
 
-                color: dismissArea.containsMouse
-                    ? Qt.rgba(1, 1, 1, 0.12)
-                    : "transparent"
+                color: dismissArea.containsMouse ? Qt.rgba(1, 1, 1, 0.12) : "transparent"
 
                 z: 2
 
@@ -201,9 +189,7 @@ Rectangle {
         Flow {
             id: actionFlow
 
-            visible: !!root.notification &&
-                     root.notification.actions &&
-                     root.notification.actions.length > 0
+            visible: !!root.notification && root.notification.actions && root.notification.actions.length > 0
 
             Layout.fillWidth: true
             Layout.topMargin: 6
@@ -211,27 +197,20 @@ Rectangle {
             spacing: 6
 
             Repeater {
-                model: root.notification
-                    ? root.notification.actions
-                    : []
+                model: root.notification ? root.notification.actions : []
 
                 delegate: Rectangle {
                     id: actionButton
 
                     required property var modelData
 
-                    width: Math.min(
-                        actionText.implicitWidth + 24,
-                        root.width - 24
-                    )
+                    width: Math.min(actionText.implicitWidth + 24, root.width - 24)
 
                     height: 30
 
                     radius: 14
 
-                    color: actionMouse.containsMouse
-                        ? Colors.primaryContainer
-                        : Colors.surfaceContainer
+                    color: actionMouse.containsMouse ? Colors.primaryContainer : Colors.surfaceContainer
 
                     border.color: Colors.outlineVariant
                     border.width: 1
@@ -248,13 +227,9 @@ Rectangle {
                         leftPadding: 12
                         rightPadding: 12
 
-                        text: actionButton.modelData
-                            ? actionButton.modelData.text
-                            : ""
+                        text: actionButton.modelData ? actionButton.modelData.text : ""
 
-                        color: actionMouse.containsMouse
-                            ? Colors.on_PrimaryContainer
-                            : Colors.on_SurfaceVariant
+                        color: actionMouse.containsMouse ? Colors.on_PrimaryContainer : Colors.on_SurfaceVariant
 
                         font.pixelSize: 10
                         font.family: Fonts.font
@@ -274,7 +249,7 @@ Rectangle {
 
                         onClicked: {
                             if (actionButton.modelData)
-                                actionButton.modelData.invoke()
+                                actionButton.modelData.invoke();
                         }
                     }
 

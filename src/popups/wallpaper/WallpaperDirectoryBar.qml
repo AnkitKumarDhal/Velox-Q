@@ -8,7 +8,7 @@ Item {
 
     signal directoryAccepted(string directory)
     signal rescanRequested(string directory)
-    signal escapeRequested()
+    signal escapeRequested
 
     property string directory: "~/wallpapers"
 
@@ -19,50 +19,48 @@ Item {
         spacing: 8
 
         Text {
-            text:           "󰉋"
-            color:          Colors.on_SurfaceVariant
+            text: "󰉋"
+            color: Colors.on_SurfaceVariant
             font.pixelSize: 14
-            font.family:    Fonts.fontM
+            font.family: Fonts.fontM
         }
 
         TextField {
             id: dirField
 
             Layout.fillWidth: true
-            height:           32
+            height: 32
 
-            text:             root.directory
+            text: root.directory
 
-            font.family:      Fonts.font
-            font.pixelSize:   12
+            font.family: Fonts.font
+            font.pixelSize: 12
 
-            color:            Colors.on_Surface
+            color: Colors.on_Surface
             placeholderTextColor: Colors.outline
-            placeholderText:  "Wallpaper directory…"
+            placeholderText: "Wallpaper directory…"
 
             onTextChanged: {
                 if (!dirField.activeFocus && root.directory !== text) {
-                    root.directory = text
+                    root.directory = text;
                 }
             }
 
             Keys.onReturnPressed: {
-                root.directory = text
-                root.directoryAccepted(text)
+                root.directory = text;
+                root.directoryAccepted(text);
             }
 
             Keys.onEscapePressed: {
-                root.escapeRequested()
+                root.escapeRequested();
             }
 
             background: Rectangle {
-                radius:       8
-                color:        Colors.surfaceContainerHigh
+                radius: 8
+                color: Colors.surfaceContainerHigh
                 border.width: 1
 
-                border.color: dirField.activeFocus
-                                  ? Colors.primary
-                                  : Colors.outline
+                border.color: dirField.activeFocus ? Colors.primary : Colors.outline
 
                 Behavior on border.color {
                     ColorAnimation {
@@ -74,17 +72,11 @@ Item {
 
         // Rescan button
         Rectangle {
-            width:  32
+            width: 32
             height: 32
             radius: 8
 
-            color: rescanHov.containsMouse
-                        ? Qt.rgba(
-                              Colors.primary.r,
-                              Colors.primary.g,
-                              Colors.primary.b,
-                              0.15)
-                        : "transparent"
+            color: rescanHov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.15) : "transparent"
 
             Behavior on color {
                 ColorAnimation {
@@ -95,27 +87,25 @@ Item {
             Text {
                 anchors.centerIn: parent
 
-                text:             "󰑐"
+                text: "󰑐"
 
-                font.family:      Fonts.fontM
-                font.pixelSize:   16
+                font.family: Fonts.fontM
+                font.pixelSize: 16
 
-                color:            rescanHov.containsMouse
-                                  ? Colors.primary
-                                  : Colors.on_SurfaceVariant
+                color: rescanHov.containsMouse ? Colors.primary : Colors.on_SurfaceVariant
             }
 
             MouseArea {
-                id:           rescanHov
+                id: rescanHov
 
                 anchors.fill: parent
 
                 hoverEnabled: true
-                cursorShape:  Qt.PointingHandCursor
+                cursorShape: Qt.PointingHandCursor
 
                 onClicked: {
-                    root.directory = dirField.text
-                    root.rescanRequested(dirField.text)
+                    root.directory = dirField.text;
+                    root.rescanRequested(dirField.text);
                 }
             }
         }
@@ -123,7 +113,7 @@ Item {
 
     function updateDirectory(value) {
         if (dirField.text !== value) {
-            dirField.text = value
+            dirField.text = value;
         }
     }
 }

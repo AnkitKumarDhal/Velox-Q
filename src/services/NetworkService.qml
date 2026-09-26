@@ -12,18 +12,21 @@ Singleton {
         const devices = Networking.devices.values;
 
         for (let i = 0; i < devices.length; i++) {
-            if (devices[i].type === DeviceType.Wifi) return devices[i];
+            if (devices[i].type === DeviceType.Wifi)
+                return devices[i];
         }
 
         return null;
     }
 
     readonly property var activeNetwork: {
-        if (!root.wifiDevice) return null;
+        if (!root.wifiDevice)
+            return null;
         const networks = root.wifiDevice.networks.values;
 
         for (let i = 0; i < networks.length; i++) {
-            if (networks[i].connected) return networks[i];
+            if (networks[i].connected)
+                return networks[i];
         }
 
         return null;
@@ -42,7 +45,8 @@ Singleton {
     readonly property bool wifiScanning: root.wifiDevice?.scannerEnabled ?? false
 
     function _updateScanner() {
-        if (root.wifiDevice) root.wifiDevice.scannerEnabled = root.scannerActive;
+        if (root.wifiDevice)
+            root.wifiDevice.scannerEnabled = root.scannerActive;
     }
 
     function scanWifi() {
@@ -52,11 +56,11 @@ Singleton {
 
         root.wifiDevice.scannerEnabled = false;
 
-        Qt.callLater(function() {
+        Qt.callLater(function () {
             if (root.wifiDevice && root.scannerActive && root.wifiEnabled) {
                 root.wifiDevice.scannerEnabled = true;
             }
-        })
+        });
     }
 
     onScannerActiveChanged: root._updateScanner()

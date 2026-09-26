@@ -8,7 +8,7 @@ Singleton {
 
     // CPU
     readonly property real cpuUsage: CpuStats.usage
-    readonly property var  cpuCores: CpuStats.cores
+    readonly property var cpuCores: CpuStats.cores
     readonly property real cpuFrequencyGhz: CpuStats.frequencyGhz
 
     // Memory
@@ -44,9 +44,12 @@ Singleton {
     readonly property int temperature: ThermalStats.primaryTemperature
 
     function formatBytes(bytes) {
-        if (bytes >= 1e9) return (bytes / 1e9).toFixed(1) + " GB/s"
-        if (bytes >= 1e6) return (bytes / 1e6).toFixed(1) + " MB/s"
-        if (bytes >= 1e3) return (bytes / 1e3).toFixed(1) + " KB/s"
-        return bytes.toFixed(0) + " B/s"
+        if (bytes >= 1e9)
+            return (bytes / 1e9).toFixed(1) + " GB/s";
+        if (bytes >= 1e6)
+            return (bytes / 1e6).toFixed(1) + " MB/s";
+        if (bytes >= 1e3)
+            return (bytes / 1e3).toFixed(1) + " KB/s";
+        return bytes.toFixed(0) + " B/s";
     }
 }

@@ -16,7 +16,7 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
 
     anchors {
-        top:  true
+        top: true
         left: true
         right: true
     }
@@ -29,11 +29,12 @@ PanelWindow {
     property string expandedCard: ""
 
     function toggleCard(card) {
-        root.expandedCard = root.expandedCard === card ? "" : card
+        root.expandedCard = root.expandedCard === card ? "" : card;
     }
 
     onVisibleChanged: {
-        if (!visible) root.expandedCard = ""
+        if (!visible)
+            root.expandedCard = "";
     }
 
     mask: Region {

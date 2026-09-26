@@ -9,8 +9,8 @@ RowLayout {
 
     property string activeTab: ""
 
-    signal wifiClicked()
-    signal bluetoothClicked()
+    signal wifiClicked
+    signal bluetoothClicked
 
     Layout.fillWidth: true
     spacing: 8
@@ -49,12 +49,17 @@ RowLayout {
 
             Text {
                 text: {
-                    if (!NetworkService.wifiEnabled) return "󰤭";
-                    if (!NetworkService.wifiConnected) return "󰤭";
+                    if (!NetworkService.wifiEnabled)
+                        return "󰤭";
+                    if (!NetworkService.wifiConnected)
+                        return "󰤭";
                     const s = NetworkService.signalStrength;
-                    if (s < 0.25) return "󰤟";
-                    if (s < 0.50) return "󰤢";
-                    if (s < 0.75) return "󰤥";
+                    if (s < 0.25)
+                        return "󰤟";
+                    if (s < 0.50)
+                        return "󰤢";
+                    if (s < 0.75)
+                        return "󰤥";
                     return "󰤨";
                 }
                 font.family: Fonts.fontM
@@ -75,11 +80,7 @@ RowLayout {
                 }
 
                 Text {
-                    text: !NetworkService.wifiEnabled
-                            ? "Disabled"
-                            : NetworkService.wifiConnected
-                                ? (NetworkService.ssid || "Connected")
-                                : "Not connected"
+                    text: !NetworkService.wifiEnabled ? "Disabled" : NetworkService.wifiConnected ? (NetworkService.ssid || "Connected") : "Not connected"
                     font.family: Fonts.font
                     font.pixelSize: 11
                     font.bold: true
@@ -169,11 +170,7 @@ RowLayout {
                 text: NetworkService.bluetooth.effectiveEnabled ? "󰂯" : "󰂲"
                 font.family: Fonts.fontM
                 font.pixelSize: 20
-                color: NetworkService.bluetooth.connectedDeviceCount > 0
-                        ? Colors.on_PrimaryContainer
-                        : NetworkService.bluetooth.effectiveEnabled
-                            ? Colors.primary
-                            : Colors.outline
+                color: NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.on_PrimaryContainer : NetworkService.bluetooth.effectiveEnabled ? Colors.primary : Colors.outline
             }
 
             ColumnLayout {

@@ -19,16 +19,16 @@ Item {
     Component.onCompleted: initialized = true
 
     onArtUrlChanged: {
-        if (!root.initialized) return
+        if (!root.initialized)
+            return;
+        previousArt = currentImage.source;
+        previousImage.source = previousArt;
+        previousImage.opacity = previousArt !== "" ? 1 : 0;
 
-        previousArt = currentImage.source
-        previousImage.source = previousArt
-        previousImage.opacity = previousArt !== "" ? 1 : 0
+        currentImage.opacity = 0;
+        currentImage.x = root.width * 0.08;
 
-        currentImage.opacity = 0
-        currentImage.x = root.width * 0.08
-
-        artworkReadyTimer.restart()
+        artworkReadyTimer.restart();
     }
 
     Timer {
@@ -39,8 +39,8 @@ Item {
 
         onTriggered: {
             if (currentImage.status === Image.Ready) {
-                stop()
-                artworkTransition.restart()
+                stop();
+                artworkTransition.restart();
             }
         }
     }
@@ -81,13 +81,13 @@ Item {
         }
 
         onFinished: {
-            previousArt = ""
-            previousImage.source = ""
-            previousImage.opacity = 0
-            previousImage.x = 0
+            previousArt = "";
+            previousImage.source = "";
+            previousImage.opacity = 0;
+            previousImage.x = 0;
 
-            currentImage.x = 0
-            currentImage.opacity = root.hasArt ? 1 : 0
+            currentImage.x = 0;
+            currentImage.opacity = root.hasArt ? 1 : 0;
         }
     }
 
@@ -115,7 +115,9 @@ Item {
         asynchronous: true
         smooth: true
         layer.enabled: true
-        layer.effect: OpacityMask { maskSource: currentMask }
+        layer.effect: OpacityMask {
+            maskSource: currentMask
+        }
         opacity: root.hasArt ? 1 : 0
 
         x: 0
@@ -132,7 +134,9 @@ Item {
         asynchronous: true
         smooth: true
         layer.enabled: true
-        layer.effect: OpacityMask { maskSource: previousMask }
+        layer.effect: OpacityMask {
+            maskSource: previousMask
+        }
         opacity: 0
 
         x: 0

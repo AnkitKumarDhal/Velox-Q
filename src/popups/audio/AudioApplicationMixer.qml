@@ -13,16 +13,18 @@ ColumnLayout {
 
     function isApplicationStream(node) {
         if (!node || node.audio === null || !node.isStream) {
-            return false
+            return false;
         }
 
-        const properties = node.properties ?? {}
-        const applicationName = String(properties["application.name"] ?? "").toLowerCase()
-        const nodeName = String(node.name ?? "").toLowerCase()
+        const properties = node.properties ?? {};
+        const applicationName = String(properties["application.name"] ?? "").toLowerCase();
+        const nodeName = String(node.name ?? "").toLowerCase();
 
-        if (applicationName.includes("speech dispatcher")) return false
-        if (nodeName.startsWith("speech-dispatcher-")) return false
-        return root.inputMode ? !node.isSink : node.isSink
+        if (applicationName.includes("speech dispatcher"))
+            return false;
+        if (nodeName.startsWith("speech-dispatcher-"))
+            return false;
+        return root.inputMode ? !node.isSink : node.isSink;
     }
 
     readonly property var streams: ScriptModel {

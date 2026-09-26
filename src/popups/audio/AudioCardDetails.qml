@@ -18,7 +18,7 @@ Item {
 
     onModeChanged: {
         if (root.mode !== "") {
-            root.activeMode = root.mode
+            root.activeMode = root.mode;
         }
     }
 
@@ -35,20 +35,20 @@ Item {
     function deviceName() {
         if (root.isOutput) {
             if (VolumeService.sink)
-                return VolumeService.sink.description || VolumeService.sink.name || "Unknown"
-            return Pipewire.ready ? "No output device" : "Waiting for PipeWire"
+                return VolumeService.sink.description || VolumeService.sink.name || "Unknown";
+            return Pipewire.ready ? "No output device" : "Waiting for PipeWire";
         }
         if (VolumeService.source)
-            return VolumeService.source.description || VolumeService.source.name || "Unknown"
-        return Pipewire.ready ? "No input device" : "Waiting for PipeWire"
+            return VolumeService.source.description || VolumeService.source.name || "Unknown";
+        return Pipewire.ready ? "No input device" : "Waiting for PipeWire";
     }
 
     function selectOutput(node) {
-        Pipewire.preferredDefaultAudioSink = node
+        Pipewire.preferredDefaultAudioSink = node;
     }
 
     function selectInput(node) {
-        Pipewire.preferredDefaultAudioSource = node
+        Pipewire.preferredDefaultAudioSource = node;
     }
 
     ColumnLayout {
@@ -82,8 +82,9 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: {
-                        if (root.isOutput) return VolumeService.muted ? "󰝟" : "󰕾"
-                        return VolumeService.inputMuted ? "󰍭" : "󰍬"
+                        if (root.isOutput)
+                            return VolumeService.muted ? "󰝟" : "󰕾";
+                        return VolumeService.inputMuted ? "󰍭" : "󰍬";
                     }
                     color: parent.muted ? Colors.on_ErrorContainer : Colors.primary
                     font.family: Fonts.font
@@ -95,8 +96,10 @@ Item {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        if (root.isOutput) VolumeService.toggleMute()
-                        else VolumeService.toggleInputMute()
+                        if (root.isOutput)
+                            VolumeService.toggleMute();
+                        else
+                            VolumeService.toggleInputMute();
                     }
                 }
             }
@@ -105,11 +108,13 @@ Item {
                 Layout.fillWidth: true
                 value: root.isOutput ? VolumeService.volume : VolumeService.inputVolume
                 muted: root.isOutput ? VolumeService.muted : VolumeService.inputMuted
-                onMoved: (value) => {
+                onMoved: value => {
                     if (root.isOutput) {
-                        if (VolumeService.audio) VolumeService.audio.volume = value
+                        if (VolumeService.audio)
+                            VolumeService.audio.volume = value;
                     } else {
-                        if (VolumeService.inputAudio) VolumeService.inputAudio.volume = value
+                        if (VolumeService.inputAudio)
+                            VolumeService.inputAudio.volume = value;
                     }
                 }
             }
@@ -208,11 +213,11 @@ Item {
             clip: true
 
             onExpandedChanged: {
-                selector.animatedHeight = expanded ? selectorContent.implicitHeight : 0
+                selector.animatedHeight = expanded ? selectorContent.implicitHeight : 0;
             }
 
             Component.onCompleted: {
-                selector.animatedHeight = expanded ? selectorContent.implicitHeight : 0
+                selector.animatedHeight = expanded ? selectorContent.implicitHeight : 0;
             }
 
             Behavior on animatedHeight {
@@ -242,9 +247,11 @@ Item {
                         isDefault: root.isOutput ? (VolumeService.sink && VolumeService.sink.id === modelData.id) : (VolumeService.source && VolumeService.source.id === modelData.id)
                         icon: root.isOutput ? "󰓃" : "󰍬"
                         onSelected: {
-                            if (root.isOutput) root.selectOutput(modelData)
-                            else root.selectInput(modelData)
-                            selector.expanded = false
+                            if (root.isOutput)
+                                root.selectOutput(modelData);
+                            else
+                                root.selectInput(modelData);
+                            selector.expanded = false;
                         }
                     }
                 }

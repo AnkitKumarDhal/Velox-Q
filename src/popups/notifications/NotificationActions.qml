@@ -29,7 +29,7 @@ Item {
             delegate: Rectangle {
                 required property var modelData
 
-                width: Math.min( actionText.implicitWidth + 24, 150)
+                width: Math.min(actionText.implicitWidth + 24, 150)
                 height: 28
 
                 color: actionHover.hovered ? Colors.primaryContainer : "transparent"
@@ -81,7 +81,10 @@ Item {
 
                 TapHandler {
                     acceptedButtons: Qt.LeftButton
-                    onTapped: { if (modelData) modelData.invoke() }
+                    onTapped: {
+                        if (modelData)
+                            modelData.invoke();
+                    }
                 }
             }
         }

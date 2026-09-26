@@ -7,7 +7,7 @@ Item {
 
     height: 34
 
-    property var categories:  []
+    property var categories: []
     property int activeIndex: 0
     property bool searchActive: false
 
@@ -35,14 +35,16 @@ Item {
 
             color: {
                 if (!root.searchActive && root.activeIndex === index)
-                    return Colors.primaryContainer
+                    return Colors.primaryContainer;
                 if (hov.containsMouse)
-                    return Colors.surfaceContainerHigh
-                return "transparent"
+                    return Colors.surfaceContainerHigh;
+                return "transparent";
             }
 
             Behavior on color {
-                ColorAnimation { duration: Theme.hoverFadeDuration }
+                ColorAnimation {
+                    duration: Theme.hoverFadeDuration
+                }
             }
 
             Text {

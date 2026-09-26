@@ -5,24 +5,22 @@ import qs.src.theme
 Item {
     id: root
 
-    property var    filteredApps:  []
-    property int    selectedIndex: 0
-    property string searchText:    ""
+    property var filteredApps: []
+    property int selectedIndex: 0
+    property string searchText: ""
 
     signal launched(int index)
     signal selectionChanged(int index)
 
     function positionAt(idx) {
-        listView.positionViewAtIndex(idx, ListView.Contain)
+        listView.positionViewAtIndex(idx, ListView.Contain);
     }
 
-    readonly property int itemH:    54
-    readonly property int emptyH:   72
+    readonly property int itemH: 54
+    readonly property int emptyH: 72
     readonly property int maxListH: 416
 
-    height: root.filteredApps.length > 0
-            ? Math.min(root.filteredApps.length * root.itemH, root.maxListH)
-            : root.emptyH
+    height: root.filteredApps.length > 0 ? Math.min(root.filteredApps.length * root.itemH, root.maxListH) : root.emptyH
 
     Item {
         anchors {
@@ -37,10 +35,10 @@ Item {
         Text {
             anchors.centerIn: parent
             text: root.searchText === "" ? "Loading applications…" : "No results for " + root.searchText
-            color:          Colors.on_SurfaceVariant
+            color: Colors.on_SurfaceVariant
             font.pixelSize: 13
-            font.family:    Fonts.font
-            opacity:        0.6
+            font.family: Fonts.font
+            opacity: 0.6
         }
     }
 
@@ -54,15 +52,13 @@ Item {
         keyNavigationEnabled: false
 
         ScrollBar.vertical: ScrollBar {
-            policy: listView.contentHeight > listView.height
-                    ? ScrollBar.AlwaysOn
-                    : ScrollBar.AlwaysOff
+            policy: listView.contentHeight > listView.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
 
             contentItem: Rectangle {
-                implicitWidth:  3
+                implicitWidth: 3
                 implicitHeight: 40
-                radius:         1.5
-                color:          Qt.rgba(1, 1, 1, 0.25)
+                radius: 1.5
+                color: Qt.rgba(1, 1, 1, 0.25)
             }
 
             background: Item {}
@@ -72,7 +68,7 @@ Item {
             required property var modelData
             required property int index
             width: listView.width - (listView.contentHeight > listView.height ? 10 : 0)
-            appData:    modelData
+            appData: modelData
             isSelected: index === root.selectedIndex
             onActivated: root.launched(index)
             onHovered: root.selectionChanged(index)

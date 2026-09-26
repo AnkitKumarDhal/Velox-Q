@@ -14,8 +14,7 @@ FocusScope {
     property int rowHeight: 38
     property int separatorHeight: 10
     property int outerPadding: 8
-    property int headerHeight:
-        menuTitle.length > 0 ? 24 : 0
+    property int headerHeight: menuTitle.length > 0 ? 24 : 0
 
     readonly property int maxMenuHeight: Math.max(120, Math.min(560, hostHeight - 16))
     property int hostWidth: width
@@ -28,8 +27,8 @@ FocusScope {
     property int pendingSubmenuIndex: -1
 
     property int currentIndex: -1
-    signal triggered()
-    signal pointerEntered()
+    signal triggered
+    signal pointerEntered
 
     readonly property int contentHeight: calculateContentHeight()
     readonly property int bodyHeight: Math.max(48, Math.min(contentHeight, maxMenuHeight - outerPadding * 2 - headerHeight))
@@ -44,161 +43,177 @@ FocusScope {
     focus: true
 
     function calculateContentHeight() {
-        if (!menuHandle) return 0
-        const entries = menuOpener.children.values
+        if (!menuHandle)
+            return 0;
+        const entries = menuOpener.children.values;
 
-        let total = 0
+        let total = 0;
 
         for (let i = 0; i < entries.length; ++i) {
-            total += entries[i].isSeparator ? separatorHeight : rowHeight
-            if (i < entries.length - 1) total += 2
+            total += entries[i].isSeparator ? separatorHeight : rowHeight;
+            if (i < entries.length - 1)
+                total += 2;
         }
 
-        return total
+        return total;
     }
 
     function isSelectable(index) {
-        const entries = menuOpener.children.values
-        if (index < 0 || index >= entries.length) return false
-        const entry = entries[index]
-        return !entry.isSeparator && entry.enabled !== false
+        const entries = menuOpener.children.values;
+        if (index < 0 || index >= entries.length)
+            return false;
+        const entry = entries[index];
+        return !entry.isSeparator && entry.enabled !== false;
     }
 
     function firstSelectableIndex() {
-        const entries = menuOpener.children.values
+        const entries = menuOpener.children.values;
         for (let i = 0; i < entries.length; ++i) {
-            if (isSelectable(i)) return i
+            if (isSelectable(i))
+                return i;
         }
-        return -1
+        return -1;
     }
 
     function lastSelectableIndex() {
-        const entries = menuOpener.children.values
+        const entries = menuOpener.children.values;
         for (let i = entries.length - 1; i >= 0; --i) {
-            if (isSelectable(i)) return i
+            if (isSelectable(i))
+                return i;
         }
-        return -1
+        return -1;
     }
 
     function nextSelectableIndex(index, direction) {
-        const entries = menuOpener.children.values
-        if (entries.length === 0) return -1
-        let i = index
+        const entries = menuOpener.children.values;
+        if (entries.length === 0)
+            return -1;
+        let i = index;
 
         for (let step = 0; step < entries.length; ++step) {
-            i += direction
-            if (i < 0) i = entries.length - 1
-            if (i >= entries.length) i = 0
-            if (isSelectable(i)) return i
+            i += direction;
+            if (i < 0)
+                i = entries.length - 1;
+            if (i >= entries.length)
+                i = 0;
+            if (isSelectable(i))
+                return i;
         }
 
-        return -1
+        return -1;
     }
 
     function resetKeyboard() {
-        currentIndex = firstSelectableIndex()
-        ensureCurrentIndexVisible()
+        currentIndex = firstSelectableIndex();
+        ensureCurrentIndexVisible();
     }
 
     function selectNext() {
         if (currentIndex < 0) {
-            currentIndex = firstSelectableIndex()
+            currentIndex = firstSelectableIndex();
         } else {
-            currentIndex = nextSelectableIndex(currentIndex, 1)
+            currentIndex = nextSelectableIndex(currentIndex, 1);
         }
-        ensureCurrentIndexVisible()
+        ensureCurrentIndexVisible();
     }
 
     function selectPrevious() {
         if (currentIndex < 0) {
-            currentIndex = lastSelectableIndex()
+            currentIndex = lastSelectableIndex();
         } else {
-            currentIndex = nextSelectableIndex(currentIndex, -1)
+            currentIndex = nextSelectableIndex(currentIndex, -1);
         }
-        ensureCurrentIndexVisible()
+        ensureCurrentIndexVisible();
     }
 
     function activateCurrent() {
-        const entries = menuOpener.children.values
-        if (!isSelectable(currentIndex)) return
-        const entry = entries[currentIndex]
+        const entries = menuOpener.children.values;
+        if (!isSelectable(currentIndex))
+            return;
+        const entry = entries[currentIndex];
         if (entry.hasChildren) {
-            openSubmenu(currentIndex, true)
+            openSubmenu(currentIndex, true);
         } else {
-            entry.triggered()
-            root.triggered()
+            entry.triggered();
+            root.triggered();
         }
     }
 
     function openSubmenu(index, keyboardOpen) {
-        const entries = menuOpener.children.values
+        const entries = menuOpener.children.values;
 
         if (index < 0 || index >= entries.length) {
-            return
+            return;
         }
 
-        const entry = entries[index]
+        const entry = entries[index];
 
         if (!entry.hasChildren || entry.enabled === false) {
-            return
+            return;
         }
 
-        submenuHandle = entry
-        submenuY = menuColumn.y + menuColumn.spacing * index + menuItemPosition(index)
-        submenuOpen = true
+        submenuHandle = entry;
+        submenuY = menuColumn.y + menuColumn.spacing * index + menuItemPosition(index);
+        submenuOpen = true;
 
-        if (keyboardOpen) submenuFocusTimer.restart()
+        if (keyboardOpen)
+            submenuFocusTimer.restart();
     }
 
     function menuItemPosition(index) {
-        let position = 0
-        const entries = menuOpener.children.values
+        let position = 0;
+        const entries = menuOpener.children.values;
 
         for (let i = 0; i < index; ++i) {
-            position += entries[i].isSeparator ? separatorHeight : rowHeight
-            if (i < entries.length - 1) position += 2
+            position += entries[i].isSeparator ? separatorHeight : rowHeight;
+            if (i < entries.length - 1)
+                position += 2;
         }
 
-        return position
+        return position;
     }
 
     function closeSubmenu() {
-        submenuCloseTimer.stop()
-        submenuOpen = false
-        submenuHandle = null
+        submenuCloseTimer.stop();
+        submenuOpen = false;
+        submenuHandle = null;
     }
 
     function closeSubmenuSoon(delay) {
-        submenuCloseTimer.interval = delay !== undefined ? delay : 320
-        submenuCloseTimer.restart()
+        submenuCloseTimer.interval = delay !== undefined ? delay : 320;
+        submenuCloseTimer.restart();
     }
 
     function cancelSubmenuClose() {
-        submenuCloseTimer.stop()
+        submenuCloseTimer.stop();
     }
 
     function ensureCurrentIndexVisible() {
-        if (currentIndex < 0) return
-
-        const entryY = menuColumn.y - contentFlick.contentY + menuItemPosition(currentIndex)
-        const entryBottom = entryY + rowHeight
+        if (currentIndex < 0)
+            return;
+        const entryY = menuColumn.y - contentFlick.contentY + menuItemPosition(currentIndex);
+        const entryBottom = entryY + rowHeight;
         if (entryY < contentFlick.contentY) {
-            contentFlick.contentY = menuItemPosition(currentIndex)
+            contentFlick.contentY = menuItemPosition(currentIndex);
         } else if (entryBottom > contentFlick.contentY + contentFlick.height) {
-            contentFlick.contentY = menuItemPosition(currentIndex) + rowHeight - contentFlick.height
+            contentFlick.contentY = menuItemPosition(currentIndex) + rowHeight - contentFlick.height;
         }
     }
 
     QsMenuOpener {
         id: menuOpener
         menu: root.menuHandle
-        onChildrenChanged: { root.resetKeyboard() }
+        onChildrenChanged: {
+            root.resetKeyboard();
+        }
     }
 
     Timer {
         id: submenuCloseTimer
         interval: 320
-        onTriggered: { root.closeSubmenu() }
+        onTriggered: {
+            root.closeSubmenu();
+        }
     }
 
     Timer {
@@ -206,8 +221,8 @@ FocusScope {
         interval: 0
         onTriggered: {
             if (submenuLoader.item && root.submenuOpen) {
-                submenuLoader.item.resetKeyboard()
-                submenuLoader.item.forceActiveFocus()
+                submenuLoader.item.resetKeyboard();
+                submenuLoader.item.forceActiveFocus();
             }
         }
     }
@@ -254,7 +269,8 @@ FocusScope {
         flickDeceleration: 1800
 
         onContentYChanged: {
-            if (contentHeight <= height) contentY = 0
+            if (contentHeight <= height)
+                contentY = 0;
         }
 
         Column {
@@ -274,9 +290,9 @@ FocusScope {
                     readonly property bool enabledItem: modelData.enabled !== false
                     readonly property string buttonTypeName: {
                         if (isSeparator || modelData.buttonType === undefined) {
-                            return "None"
+                            return "None";
                         }
-                        return QsMenuButtonType.toString(modelData.buttonType)
+                        return QsMenuButtonType.toString(modelData.buttonType);
                     }
 
                     readonly property bool hasButton: buttonTypeName !== "None"
@@ -411,21 +427,21 @@ FocusScope {
                         cursorShape: Qt.PointingHandCursor
                         acceptedButtons: Qt.LeftButton
                         onEntered: {
-                            root.pointerEntered()
-                            root.currentIndex = menuItem.index
+                            root.pointerEntered();
+                            root.currentIndex = menuItem.index;
                             if (menuItem.hasChildren) {
-                                root.openSubmenu(menuItem.index, false)
+                                root.openSubmenu(menuItem.index, false);
                             } else {
-                                root.closeSubmenuSoon(120)
+                                root.closeSubmenuSoon(120);
                             }
                         }
 
                         onClicked: {
                             if (menuItem.hasChildren) {
-                                root.openSubmenu(menuItem.index, false)
+                                root.openSubmenu(menuItem.index, false);
                             } else {
-                                menuItem.modelData.triggered()
-                                root.triggered()
+                                menuItem.modelData.triggered();
+                                root.triggered();
                             }
                         }
                     }
@@ -453,14 +469,15 @@ FocusScope {
         width: root.menuWidth
         height: item ? item.height : 0
         x: {
-            const openRight = root.hostX + root.width + root.menuWidth <= root.hostWidth
-            return openRight ? root.width - 2 : -root.menuWidth + 2
+            const openRight = root.hostX + root.width + root.menuWidth <= root.hostWidth;
+            return openRight ? root.width - 2 : -root.menuWidth + 2;
         }
 
         y: {
-            if (!item) return root.submenuY - root.y
-            const preferredY = root.submenuY - root.y
-            return Math.max(8, Math.min(preferredY, root.hostHeight - item.height - 8))
+            if (!item)
+                return root.submenuY - root.y;
+            const preferredY = root.submenuY - root.y;
+            return Math.max(8, Math.min(preferredY, root.hostHeight - item.height - 8));
         }
 
         Binding {
@@ -513,66 +530,61 @@ FocusScope {
         }
 
         onLoaded: {
-            if (!item) return
-            item.triggered.connect(root.triggered)
-            item.pointerEntered.connect(root.cancelSubmenuClose)
-            if (root.submenuOpen) item.resetKeyboard()
+            if (!item)
+                return;
+            item.triggered.connect(root.triggered);
+            item.pointerEntered.connect(root.cancelSubmenuClose);
+            if (root.submenuOpen)
+                item.resetKeyboard();
         }
     }
 
-    Keys.onPressed: (event) => {
+    Keys.onPressed: event => {
         switch (event.key) {
-            case Qt.Key_Down:
-                root.selectNext()
-                event.accepted = true
-                break
-
-            case Qt.Key_Up:
-                root.selectPrevious()
-                event.accepted = true
-                break
-
-            case Qt.Key_Home:
-                root.currentIndex = root.firstSelectableIndex()
-                root.ensureCurrentIndexVisible()
-                event.accepted = true
-                break
-
-            case Qt.Key_End:
-                root.currentIndex = root.lastSelectableIndex()
-                root.ensureCurrentIndexVisible()
-                event.accepted = true
-                break
-
-            case Qt.Key_Right:
-                if (root.currentIndex >= 0) {
-                    const entries = menuOpener.children.values
-                    if (entries[root.currentIndex] && entries[root.currentIndex].hasChildren) {
-                        root.openSubmenu(root.currentIndex, true)
-                    }
+        case Qt.Key_Down:
+            root.selectNext();
+            event.accepted = true;
+            break;
+        case Qt.Key_Up:
+            root.selectPrevious();
+            event.accepted = true;
+            break;
+        case Qt.Key_Home:
+            root.currentIndex = root.firstSelectableIndex();
+            root.ensureCurrentIndexVisible();
+            event.accepted = true;
+            break;
+        case Qt.Key_End:
+            root.currentIndex = root.lastSelectableIndex();
+            root.ensureCurrentIndexVisible();
+            event.accepted = true;
+            break;
+        case Qt.Key_Right:
+            if (root.currentIndex >= 0) {
+                const entries = menuOpener.children.values;
+                if (entries[root.currentIndex] && entries[root.currentIndex].hasChildren) {
+                    root.openSubmenu(root.currentIndex, true);
                 }
-                event.accepted = true
-                break
-
-            case Qt.Key_Left:
-                if (root.parentLevel) {
-                    root.parentLevel.closeSubmenu()
-                    root.parentLevel.forceActiveFocus()
-                }
-                event.accepted = true
-                break
-
-            case Qt.Key_Return:
-            case Qt.Key_Enter:
-            case Qt.Key_Space:
-                root.activateCurrent()
-                event.accepted = true
-                break
-
-            case Qt.Key_Escape:
-                root.triggered()
-                event.accepted = true
-                break
+            }
+            event.accepted = true;
+            break;
+        case Qt.Key_Left:
+            if (root.parentLevel) {
+                root.parentLevel.closeSubmenu();
+                root.parentLevel.forceActiveFocus();
+            }
+            event.accepted = true;
+            break;
+        case Qt.Key_Return:
+        case Qt.Key_Enter:
+        case Qt.Key_Space:
+            root.activateCurrent();
+            event.accepted = true;
+            break;
+        case Qt.Key_Escape:
+            root.triggered();
+            event.accepted = true;
+            break;
         }
     }
 
