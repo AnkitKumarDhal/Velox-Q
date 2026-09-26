@@ -28,12 +28,14 @@ PanelWindow {
     visible: slidePanel.windowVisible
 
     property bool clearAllAnimating: false
+    property int clearAllCount: 0
 
     function clearAllWithAnimation() {
         if (root.clearAllAnimating) return
         if (NotificationService.notificationCount <= 0) return
+        root.clearAllCount = NotificationService.notificationCount
         root.clearAllAnimating = true
-        clearAllTimer.interval = 460 + Math.max(0, NotificationService.notificationCount - 1) * 35
+        clearAllTimer.interval = 460 + Math.max(0, root.clearAllCount - 1) * 35
         clearAllTimer.start()
     }
 
@@ -42,6 +44,30 @@ PanelWindow {
         y: panelCard.y
         width: panelCard.width
         height: panelCard.height
+    }
+
+    Connections {
+        target: NotificationService
+
+        function onNotificationCountChanged() {
+            if (NotificationService.notificationCount === 0) {
+                emptyState.opacity = 0
+                emptyStateFadeIn.restart()
+            } else {
+                emptyStateFadeIn.stop()
+                emptyState.opacity = 0
+            }
+        }
+    }
+
+    NumberAnimation {
+        id: emptyStateFadeIn
+        target: emptyState
+        property: "opacity"
+        from: 0
+        to: 1
+        duration: 220
+        easing.type: Easing.OutCubic
     }
 
     Timer {
@@ -73,7 +99,9 @@ PanelWindow {
             }
 
             width: 360
-            height: Math.max(root.clearAllAnimating ? 48 + notifCol.padding * 2 + emptyState.height : 0, Math.min(notifCol.implicitHeight + 48, root.implicitHeight - Theme.barHeight - 24))
+            height: Math.min((root.clearAllAnimating || NotificationService.notificationCount === 0)
+                        ? 48 + notifCol.padding * 2 + emptyState.height
+                        : notifCol.implicitHeight + 48, root.implicitHeight - Theme.barHeight - 24)
 
             Behavior on height {
                 NumberAnimation {
@@ -167,6 +195,7 @@ PanelWindow {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
+                            enabled: !root.clearAllAnimating
                             onClicked: root.clearAllWithAnimation()
                         }
                     }
@@ -209,43 +238,6 @@ PanelWindow {
                     spacing: 4
                     padding: 8
 
-                    Item {
-                        visible: NotificationService.notificationCount === 0
-
-                        opacity: visible ? 1 : 0
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: 180
-                                easing.type: Easing.OutCubic
-                            }
-                        }
-
-                        width: parent.width - 16
-                        height: 80
-
-                        ColumnLayout {
-                            anchors.centerIn: parent
-                            spacing: 6
-
-                            Text {
-                                Layout.alignment: Qt.AlignHCenter
-                                text: "󰂚"
-                                font.pixelSize: 28
-                                font.family: Fonts.font
-                                color: Colors.outline
-                            }
-
-                            Text {
-                                Layout.alignment: Qt.AlignHCenter
-                                text: "No notifications"
-                                font.pixelSize: 12
-                                font.family: Fonts.font
-                                color: Colors.outline
-                                textFormat: Text.PlainText
-                            }
-                        }
-                    }
-
                     Repeater {
                         model: NotificationService.notificationsModel
                         delegate: Item {
@@ -265,7 +257,7 @@ PanelWindow {
                             SequentialAnimation {
                                 running: root.clearAllAnimating
                                 PauseAnimation {
-                                    duration: (NotificationService.notificationCount - 1 - delegateRoot.index) * 35
+                                    duration: Math.max(0, root.clearAllCount - 1 - delegateRoot.index) * 35
                                 }
                                 ParallelAnimation {
                                     NumberAnimation {
@@ -293,6 +285,43 @@ PanelWindow {
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+
+                Item {
+                    id: emptyState
+                    x: 8
+                    y: 8
+                    width: parent.width - 16
+                    height: 80
+                    visible: root.clearAllAnimating || NotificationService.notificationCount === 0
+                    opacity: 0
+
+                    Component.onCompleted: {
+                        if (NotificationService.notificationCount === 0)
+                            opacity = 1
+                    }
+
+                    ColumnLayout {
+                        anchors.centerIn: parent
+                        spacing: 6
+
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: "󰂚"
+                            font.pixelSize: 28
+                            font.family: Fonts.font
+                            color: Colors.outline
+                        }
+
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: "No notifications"
+                            font.pixelSize: 12
+                            font.family: Fonts.font
+                            color: Colors.outline
+                            textFormat: Text.PlainText
                         }
                     }
                 }
