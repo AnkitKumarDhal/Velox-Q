@@ -12,14 +12,15 @@ Singleton {
     property bool setting: false
     property int _pendingBrightness: -1
 
+    property bool _hardwareAvailable: false
+    property bool _backendAvailable: false
+    property string _backendError: ""
+
     property IntegrationCapability capability: IntegrationCapability {
-        hardwareAvailable: root.available
+        hardwareAvailable: root._hardwareAvailable
         backendAvailable: root._backendAvailable
         errorMessage: root._backendError
     }
-
-    property bool _backendAvailable: false
-    property string _backendError: ""
 
     Timer {
         id: refreshTimer
@@ -29,8 +30,31 @@ Singleton {
         onTriggered: root.refresh()
     }
 
+    Timer {
+        id: hardwareTimer
+        interval: 5000
+        repeat: true
+        running: true
+        onTriggered: root.refreshHardware()
+    }
+
+    Process {
+        id: hardwareProbe
+
+        command: ["sh", "-c", "for path in /sys/class/backlight/*; do " + "[ -e \"$path\" ] && exit 0; " + "done; " + "exit 1"]
+        running: false
+
+        onExited: (exitCode, exitStatus) => {
+            root._hardwareAvailable = exitCode === 0;
+
+            if (!root._hardwareAvailable)
+                root.available = false;
+        }
+    }
+
     Process {
         id: readProcess
+
         command: ["brightnessctl", "-m", "-c", "backlight"]
 
         stdout: StdioCollector {
@@ -40,7 +64,6 @@ Singleton {
         stderr: StdioCollector {
             onStreamFinished: {
                 const error = this.text.trim();
-
                 if (error.length > 0)
                     root._backendError = error;
             }
@@ -50,10 +73,8 @@ Singleton {
             if (exitCode !== 0) {
                 root._backendAvailable = false;
                 root.available = false;
-
                 if (root._backendError === "")
                     root._backendError = "brightnessctl backlight probe failed";
-
                 return;
             }
 
@@ -69,18 +90,31 @@ Singleton {
             root.setting = true;
         }
 
-        onExited: {
+        onExited: (exitCode, exitStatus) => {
             root.setting = false;
+
+            if (exitCode !== 0) {
+                root._backendAvailable = false;
+                root._backendError = "brightnessctl failed to set brightness";
+            } else {
+                root._backendAvailable = true;
+                root._backendError = "";
+            }
 
             if (root._pendingBrightness >= 0) {
                 const nextValue = root._pendingBrightness;
-
                 root._pendingBrightness = -1;
                 root._startSetBrightness(nextValue);
             } else {
                 root.refresh();
             }
         }
+    }
+
+    function refreshHardware() {
+        if (hardwareProbe.running)
+            return;
+        hardwareProbe.running = true;
     }
 
     function refresh() {
@@ -124,7 +158,7 @@ Singleton {
     }
 
     function setBrightness(percent) {
-        if (!root.available)
+        if (!root.capability.operational)
             return;
         const value = Math.max(1, Math.min(100, Math.round(Number(percent))));
         root.brightness = value;
@@ -138,5 +172,8 @@ Singleton {
         root._startSetBrightness(value);
     }
 
-    Component.onCompleted: root.refresh()
+    Component.onCompleted: {
+        root.refreshHardware();
+        root.refresh();
+    }
 }

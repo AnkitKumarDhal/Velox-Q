@@ -269,7 +269,7 @@ PanelWindow {
 
                     Text {
                         text: "󰃠  Brightness"
-                        color: Colors.on_SurfaceVariant
+                        color: BrightnessService.capability.backendFailure ? Colors.error : Colors.on_SurfaceVariant
                         font.pixelSize: 11
                         font.bold: true
                         font.family: Fonts.fontM
@@ -280,7 +280,7 @@ PanelWindow {
                     }
 
                     Text {
-                        visible: BrightnessService.available
+                        visible: BrightnessService.capability.operational
                         text: BrightnessService.brightness + "%"
                         color: Colors.on_Surface
                         font.pixelSize: 11
@@ -293,7 +293,7 @@ PanelWindow {
                     id: brightnessSlider
                     Layout.fillWidth: true
                     height: 28
-                    visible: BrightnessService.available
+                    visible: BrightnessService.capability.operational
                     property int dragValue: BrightnessService.brightness
                     readonly property int visualValue: dragArea.pressed ? dragValue : BrightnessService.brightness
 
@@ -336,36 +336,48 @@ PanelWindow {
 
                         anchors.fill: parent
                         hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
+                        cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        enabled: BrightnessService.capability.operational
 
                         function valueFromX(x) {
                             return Math.max(1, Math.min(100, Math.round((x / width) * 100)));
                         }
 
                         onPressed: mouse => {
+                            if (!BrightnessService.capability.operational)
+                                return;
                             brightnessSlider.dragValue = valueFromX(mouse.x);
                             BrightnessService.setBrightness(brightnessSlider.dragValue);
                         }
 
                         onPositionChanged: mouse => {
-                            if (!pressed)
+                            if (!pressed || !BrightnessService.capability.operational)
                                 return;
                             brightnessSlider.dragValue = valueFromX(mouse.x);
                             BrightnessService.setBrightness(brightnessSlider.dragValue);
                         }
 
                         onReleased: {
+                            if (!BrightnessService.capability.operational)
+                                return;
                             BrightnessService.setBrightness(brightnessSlider.dragValue);
                         }
                     }
                 }
 
                 Text {
-                    visible: !BrightnessService.available
-                    text: "Brightness control is unavailable"
-                    color: Colors.outline
+                    visible: BrightnessService.capability.backendFailure || !BrightnessService.capability.hardwareAvailable
+                    text: {
+                        if (BrightnessService.capability.backendFailure)
+                            return BrightnessService.capability.errorMessage || "Brightness backend unavailable";
+                        return "Brightness hardware unavailable";
+                    }
+
+                    color: BrightnessService.capability.backendFailure ? Colors.error : Colors.outline
                     font.pixelSize: 10
                     font.family: Fonts.font
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
                 }
             }
         }

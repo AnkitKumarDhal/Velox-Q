@@ -66,13 +66,19 @@ PillBase {
     }
 
     Text {
-        visible: BrightnessService.available
-        text: "󰃠 " + BrightnessService.brightness + "%"
-        color: Colors.primary
+        visible: BrightnessService.capability.hardwareAvailable
+        text: BrightnessService.capability.operational ? "󰃠 " + BrightnessService.brightness + "%" : "󰃠 —"
+        color: BrightnessService.capability.backendFailure ? Colors.error : Colors.primary
         font.pointSize: 11
         font.bold: true
         font.family: Fonts.fontM
         verticalAlignment: Text.AlignVCenter
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 150
+            }
+        }
     }
 
     onClicked: {
