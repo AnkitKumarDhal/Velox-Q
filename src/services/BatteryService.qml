@@ -34,12 +34,24 @@ Singleton {
     readonly property var chargingOptions: _state?.charging?.options ?? []
     readonly property var displayOptions: _state?.display?.options ?? []
 
+    property bool _backendAvailable: false
+    property string _backendError: ""
+
+    property IntegrationCapability capability: IntegrationCapability {
+        hardwareAvailable: root.hasBattery || UPower.displayDevice?.isLaptopBattery === true
+
+        backendAvailable: root._backendAvailable
+        errorMessage: root._backendError
+    }
+
+    readonly property bool operational: root.capability.operational
     property string _backendPath: Qt.resolvedUrl("../../tools/battery/bin/velox-battery")
     property var _state: null
 
     function getIcon(): string {
         if (full)
             return "󰁹 ";
+
         if (charging) {
             if (capacity >= 95)
                 return "󰂅 ";
@@ -63,6 +75,7 @@ Singleton {
                 return "󰢜 ";
             return "󰢟 ";
         }
+
         if (capacity >= 90)
             return "󰁹 ";
         if (capacity >= 80)
@@ -75,6 +88,7 @@ Singleton {
             return "󰁻 ";
         if (capacity >= 10)
             return "󰁺 ";
+
         return "󰂎 ";
     }
 
@@ -203,15 +217,22 @@ Singleton {
             onStreamFinished: {
                 try {
                     root._applyState(JSON.parse(text));
+                    root._backendAvailable = true;
+                    root._backendError = "";
                 } catch (error) {
+                    root._backendAvailable = false;
+                    root._backendError = "Battery backend returned invalid data";
                     console.warn("BatteryService: failed to parse velox-battery output:", error);
                 }
             }
         }
 
         onExited: (exitCode, exitStatus) => {
-            if (exitCode !== 0)
+            if (exitCode !== 0) {
+                root._backendAvailable = false;
+                root._backendError = "Battery backend exited with code " + exitCode;
                 console.warn("BatteryService: velox-battery status failed:", exitCode);
+            }
         }
     }
 
