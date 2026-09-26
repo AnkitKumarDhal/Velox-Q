@@ -2,6 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Bluetooth
 
 Singleton {
@@ -27,6 +28,20 @@ Singleton {
     readonly property bool effectiveEnabled: root.enabled || root.enabling || root.connectedDeviceCount > 0
     readonly property bool operational: root.enabled || root.connectedDeviceCount > 0
 
+    property bool _hardwareAvailable: false
+    property bool _bluetoothServiceActive: false
+    property string _backendError: ""
+
+    readonly property bool _capabilityBackendAvailable: root._bluetoothServiceActive && root.adapter !== null
+
+    property IntegrationCapability capability: IntegrationCapability {
+        hardwareAvailable: root._hardwareAvailable
+        backendAvailable: root._capabilityBackendAvailable
+        errorMessage: root._backendError
+    }
+
+    readonly property bool capabilityOperational: root.capability.operational
+
     readonly property string stateText: {
         if (!root.available)
             return "Unavailable";
@@ -43,6 +58,54 @@ Singleton {
         if (root.state === BluetoothAdapterState.Enabled)
             return "Ready";
         return "Unavailable";
+    }
+
+    function _refreshCapabilities() {
+        if (!hardwareProbe.running)
+            hardwareProbe.running = true;
+        if (!backendProbe.running)
+            backendProbe.running = true;
+    }
+
+    Process {
+        id: hardwareProbe
+        command: ["sh", "-c", "for path in /sys/class/bluetooth/hci*; do " + "[ -e \"$path\" ] && exit 0; " + "done; " + "exit 1"]
+        running: false
+        onExited: (exitCode, exitStatus) => {
+            root._hardwareAvailable = exitCode === 0;
+        }
+    }
+
+    Process {
+        id: backendProbe
+        command: ["systemctl", "is-active", "bluetooth.service"]
+        running: false
+        onExited: (exitCode, exitStatus) => {
+            root._bluetoothServiceActive = exitCode === 0;
+            if (exitCode !== 0) {
+                root._backendError = "Bluetooth service is unavailable";
+            } else if (root.adapter === null) {
+                root._backendError = "Bluetooth adapter is unavailable";
+            } else {
+                root._backendError = "";
+            }
+        }
+    }
+
+    Timer {
+        id: capabilityTimer
+        interval: 5000
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: root._refreshCapabilities()
+    }
+
+    Connections {
+        target: Bluetooth
+        function onDefaultAdapterChanged() {
+            root._refreshCapabilities();
+        }
     }
 
     function reconcilePowerState() {
@@ -123,10 +186,11 @@ Singleton {
             return;
         }
 
-        if (!root.adapter.enabled && root.effectiveEnabled) {
+        if (!root.adapter.enabled && root.effectiveEnabled)
             root.adapter.enabled = true;
-        }
 
         root.adapter.enabled = false;
     }
+
+    Component.onCompleted: root._refreshCapabilities()
 }
