@@ -10,6 +10,7 @@ Singleton {
     property int brightness: 0
     property bool available: false
     property bool setting: false
+    property int _pendingBrightness: -1
 
     Timer {
         id: refreshTimer
@@ -30,7 +31,13 @@ Singleton {
         onStarted: root.setting = true
         onExited: {
             root.setting = false
-            root.refresh()
+            if (root._pendingBrightness >= 0) {
+                const nextValue = root._pendingBrightness
+                root._pendingBrightness = -1
+                root._startSetBrightness(nextValue)
+            } else {
+                root.refresh()
+            }
         }
     }
 
@@ -75,11 +82,9 @@ Singleton {
         root.available = true
     }
 
-    function setBrightness(percent) {
-        if (!root.available || setProcess.running) return
-
+    function _startSetBrightness(percent) {
         const value = Math.max(1, Math.min(100, Math.round(Number(percent))))
-
+        root.brightness = value
         setProcess.exec({
             command: [
                 "brightnessctl",
@@ -90,6 +95,18 @@ Singleton {
                 value + "%"
             ]
         })
+    }
+
+    function setBrightness(percent) {
+        if (!root.available) return
+        const value = Math.max(1, Math.min(100, Math.round(Number(percent))))
+        root.brightness = value
+        if (setProcess.running) {
+            root._pendingBrightness = value
+            return
+        }
+        root._pendingBrightness = -1
+        root._startSetBrightness(value)
     }
 
     Component.onCompleted: root.refresh()

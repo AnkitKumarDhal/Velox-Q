@@ -325,11 +325,13 @@ PanelWindow {
 
                         onPressed: (mouse) => {
                             brightnessSlider.dragValue = valueFromX(mouse.x)
+                            BrightnessService.setBrightness(brightnessSlider.dragValue)
                         }
 
                         onPositionChanged: (mouse) => {
                             if (!pressed) return
                             brightnessSlider.dragValue = valueFromX(mouse.x)
+                            BrightnessService.setBrightness(brightnessSlider.dragValue)
                         }
 
                         onReleased: { BrightnessService.setBrightness(brightnessSlider.dragValue) }
