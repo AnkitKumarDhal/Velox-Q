@@ -26,7 +26,6 @@ Item {
             height: parent.height
             radius: parent.radius
             color:  root.muted ? Colors.error : Colors.primary
-            Behavior on width { NumberAnimation { duration: 80 } }
             Behavior on color { ColorAnimation  { duration: 120 } }
         }
     }
