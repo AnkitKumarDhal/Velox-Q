@@ -37,6 +37,20 @@ Singleton {
     readonly property bool wifiConnected: root.wifiDevice?.connected ?? false
     readonly property bool wifiEnabled: Networking.wifiEnabled
 
+    property IntegrationCapability wifiCapability: IntegrationCapability {
+        hardwareAvailable: root.wifiDevice !== null
+        backendAvailable: Networking.backend !== NetworkBackendType.None
+
+        errorMessage: {
+            if (Networking.backend === NetworkBackendType.None)
+                return "NetworkManager backend is unavailable";
+
+            return "";
+        }
+    }
+
+    readonly property bool wifiOperational: root.wifiCapability.operational
+
     function setWifiEnabled(value) {
         Networking.wifiEnabled = value;
     }
@@ -50,9 +64,8 @@ Singleton {
     }
 
     function scanWifi() {
-        if (!root.wifiDevice || !root.wifiEnabled) {
+        if (!root.wifiDevice || !root.wifiEnabled)
             return;
-        }
 
         root.wifiDevice.scannerEnabled = false;
 
@@ -67,9 +80,7 @@ Singleton {
     onWifiDeviceChanged: root._updateScanner()
 
     readonly property var bluetooth: BluetoothService
-
     readonly property bool hasWifi: root.wifiDevice !== null
     readonly property bool hasBluetooth: root.bluetooth.available
-
     readonly property bool connectivityAvailable: root.hasWifi || root.hasBluetooth
 }
