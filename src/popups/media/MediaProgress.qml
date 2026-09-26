@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.src.theme
+import qs.src.services
 
 ColumnLayout {
     id: root
@@ -9,6 +10,9 @@ ColumnLayout {
     required property real position
     required property bool seeking
 
+    readonly property bool backendOperational: MediaService.backendOperational
+    readonly property bool seekOperational: root.backendOperational && root.player !== null
+
     signal seekStarted(real pos)
     signal seekMoved(real pos)
     signal seekReleased(real pos)
@@ -16,7 +20,7 @@ ColumnLayout {
     Layout.fillWidth: true
     Layout.preferredHeight: 31
     spacing: 2
-    visible: root.player !== null && root.player.positionSupported
+    visible: root.seekOperational && root.player.positionSupported
 
     Item {
         id: slider
@@ -89,7 +93,7 @@ ColumnLayout {
             id: mouseArea
 
             anchors.fill: parent
-            enabled: root.player?.canSeek ?? false
+            enabled: root.seekOperational && (root.player?.canSeek ?? false)
             hoverEnabled: true
             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
 
@@ -98,14 +102,18 @@ ColumnLayout {
             }
 
             onPressed: mouse => {
+                if (!root.seekOperational || !root.player?.canSeek)
+                    return;
                 root.seekStarted(positionFromMouse(mouse.x));
             }
             onPositionChanged: mouse => {
-                if (!pressed)
+                if (!pressed || !root.seekOperational || !root.player?.canSeek)
                     return;
                 root.seekMoved(positionFromMouse(mouse.x));
             }
             onReleased: mouse => {
+                if (!root.seekOperational || !root.player?.canSeek)
+                    return;
                 root.seekReleased(positionFromMouse(mouse.x));
             }
         }
