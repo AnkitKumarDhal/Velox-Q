@@ -1,16 +1,20 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.src.theme
+import qs.src.services
 
 Item {
     id: root
 
     required property var player
 
+    readonly property bool backendOperational: MediaService.backendOperational
+    readonly property bool volumeOperational: root.backendOperational && root.player !== null && root.player.volumeSupported
+
     Layout.preferredWidth: 30
     Layout.preferredHeight: 24
 
-    visible: root.player !== null && root.player.volumeSupported
+    visible: root.volumeOperational
     property bool expanded: false
 
     Timer {
@@ -86,7 +90,7 @@ Item {
     Loader {
         id: sliderMouseLoader
 
-        active: root.expanded
+        active: root.expanded && root.volumeOperational
         x: sliderPopup.x + sliderContent.x
         y: sliderPopup.y + sliderContent.y
         z: 50
@@ -111,12 +115,12 @@ Item {
                 }
 
                 onPressed: mouse => {
-                    if (!root.player)
+                    if (!root.volumeOperational)
                         return;
                     root.player.volume = volumeFromX(mouse.x);
                 }
                 onPositionChanged: mouse => {
-                    if (pressed && root.player) {
+                    if (pressed && root.volumeOperational) {
                         root.player.volume = volumeFromX(mouse.x);
                     }
                 }
@@ -156,7 +160,8 @@ Item {
 
         anchors.fill: volumeIcon
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
+        enabled: root.volumeOperational
+        cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
         z: 110
         onEntered: {
             hideTimer.stop();
@@ -164,7 +169,7 @@ Item {
         }
         onExited: hideTimer.restart()
         onClicked: {
-            if (!root.player)
+            if (!root.volumeOperational)
                 return;
             if (root.player.volume <= 0) {
                 root.player.volume = 0.5;
