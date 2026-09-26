@@ -15,6 +15,10 @@ ColumnLayout {
     property var pendingKnownNetwork: null
     property bool showPassword: false
 
+    readonly property var capability: NetworkService.wifiCapability
+    readonly property bool operational: root.capability.operational
+    readonly property bool backendFailure: root.capability.backendFailure
+    readonly property bool hardwareAvailable: root.capability.hardwareAvailable
     signal networkSelected(var network)
 
     readonly property bool selectedNetworkSupportsPsk: root.selectedNetwork !== null && (root.selectedNetwork.security === WifiSecurityType.WpaPsk || root.selectedNetwork.security === WifiSecurityType.Wpa2Psk || root.selectedNetwork.security === WifiSecurityType.Sae)
@@ -26,7 +30,8 @@ ColumnLayout {
         root.showPassword = false;
         if (root.selectedNetworkSupportsPsk) {
             Qt.callLater(function () {
-                passwordField.forceActiveFocus();
+                if (root.operational && root.selectedNetwork !== null)
+                    passwordField.forceActiveFocus();
             });
         }
     }
@@ -46,7 +51,7 @@ ColumnLayout {
         id: wifiConnectedModel
         objectProp: "name"
         values: {
-            if (!NetworkService.wifiDevice)
+            if (!root.operational || !NetworkService.wifiDevice)
                 return [];
 
             return [...NetworkService.wifiDevice.networks.values].filter(network => network.connected).sort((a, b) => b.signalStrength - a.signalStrength);
@@ -57,25 +62,88 @@ ColumnLayout {
         id: wifiAvailableModel
         objectProp: "name"
         values: {
-            if (!NetworkService.wifiDevice)
+            if (!root.operational || !NetworkService.wifiDevice)
                 return [];
 
             return [...NetworkService.wifiDevice.networks.values].filter(network => !network.connected && network !== root.selectedNetwork).sort((a, b) => b.signalStrength - a.signalStrength);
         }
     }
 
+    Rectangle {
+        visible: root.backendFailure
+        Layout.fillWidth: true
+        implicitHeight: capabilityErrorColumn.implicitHeight + 20
+        radius: 12
+        color: Colors.errorContainer
+        border.width: 1
+        border.color: Colors.error
+
+        ColumnLayout {
+            id: capabilityErrorColumn
+            anchors {
+                fill: parent
+                margins: 10
+            }
+            spacing: 4
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Text {
+                    text: "󰅙"
+                    font.family: Fonts.fontM
+                    font.pixelSize: 17
+                    color: Colors.on_ErrorContainer
+                }
+
+                Text {
+                    text: "Wi-Fi backend unavailable"
+                    font.family: Fonts.font
+                    font.pixelSize: 11
+                    font.bold: true
+                    color: Colors.on_ErrorContainer
+                    Layout.fillWidth: true
+                }
+            }
+
+            Text {
+                text: root.capability.errorMessage || "The Wi-Fi backend could not be reached."
+                font.family: Fonts.font
+                font.pixelSize: 9
+                color: Colors.on_ErrorContainer
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+            }
+        }
+    }
+
+    Rectangle {
+        visible: root.hardwareAvailable && !root.backendFailure && !root.operational
+        Layout.fillWidth: true
+        implicitHeight: 44
+        radius: 12
+        color: Colors.surfaceContainerHigh
+
+        Text {
+            anchors.centerIn: parent
+            text: "Waiting for Wi-Fi backend…"
+            font.family: Fonts.font
+            font.pixelSize: 10
+            color: Colors.outline
+        }
+    }
+
     RowLayout {
+        visible: root.operational
         Layout.fillWidth: true
 
         Text {
             text: NetworkService.wifiScanning ? "Wi-Fi networks · Scanning" : "Wi-Fi networks"
-
             font.family: Fonts.font
             font.pixelSize: 14
             font.bold: true
-
             color: Colors.on_SurfaceVariant
-
             Layout.fillWidth: true
         }
 
@@ -83,8 +151,7 @@ ColumnLayout {
             width: wifiScanLabel.implicitWidth + 20
             height: 28
             radius: 14
-
-            color: wifiScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
+            color: root.operational && wifiScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
 
             Behavior on color {
                 ColorAnimation {
@@ -95,37 +162,41 @@ ColumnLayout {
             Text {
                 id: wifiScanLabel
                 anchors.centerIn: parent
-
                 text: "Scan"
-
                 font.family: Fonts.font
                 font.pixelSize: 10
                 font.bold: true
-
-                color: wifiScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
+                color: root.operational && wifiScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
             }
 
             HoverHandler {
                 id: wifiScanHover
+                enabled: root.operational
             }
 
             MouseArea {
                 anchors.fill: parent
-                enabled: NetworkService.wifiEnabled
-                cursorShape: Qt.PointingHandCursor
-                onClicked: NetworkService.scanWifi()
+                enabled: root.operational && NetworkService.wifiEnabled
+                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+                onClicked: {
+                    if (!root.operational || !NetworkService.wifiEnabled)
+                        return;
+
+                    NetworkService.scanWifi();
+                }
             }
         }
     }
 
     Flickable {
+        visible: root.operational && NetworkService.wifiEnabled
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(wifiContent.implicitHeight, 320)
         contentHeight: wifiContent.implicitHeight
 
         clip: true
         boundsBehavior: Flickable.StopAtBounds
-        visible: NetworkService.wifiEnabled
 
         ColumnLayout {
             id: wifiContent
@@ -156,6 +227,8 @@ ColumnLayout {
                     Layout.fillWidth: true
                     network: modelData
                     onNetworkSelected: network => {
+                        if (!root.operational)
+                            return;
                         root.networkSelected(network);
                     }
                 }
@@ -218,7 +291,6 @@ ColumnLayout {
 
                         ColumnLayout {
                             Layout.fillWidth: true
-
                             spacing: 1
 
                             Text {
@@ -285,7 +357,7 @@ ColumnLayout {
 
                     RowLayout {
                         visible: root.selectedNetworkSupportsPsk
-
+                        enabled: root.operational
                         Layout.fillWidth: true
                         spacing: 8
 
@@ -297,7 +369,7 @@ ColumnLayout {
                             rightPadding: 42
                             placeholderText: "Password"
 
-                            echoMode: showPassword ? TextInput.Normal : TextInput.Password
+                            echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
 
                             font.family: Fonts.font
                             font.pixelSize: 11
@@ -365,20 +437,23 @@ ColumnLayout {
                             }
 
                             Keys.onReturnPressed: {
-                                if (root.selectedNetworkSupportsPsk && text.length > 0) {
+                                if (root.operational && root.selectedNetworkSupportsPsk && text.length > 0) {
                                     root.selectedNetwork.connectWithPsk(text);
                                     text = "";
                                 }
                             }
 
-                            Component.onCompleted: forceActiveFocus()
+                            Component.onCompleted: {
+                                if (root.operational)
+                                    forceActiveFocus();
+                            }
                         }
 
                         Rectangle {
                             width: 34
                             height: 34
                             radius: 8
-
+                            opacity: root.operational ? 1 : 0.45
                             color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
 
                             Behavior on color {
@@ -389,26 +464,28 @@ ColumnLayout {
 
                             HoverHandler {
                                 id: confirmHover
+                                enabled: root.operational
                             }
 
                             Text {
                                 anchors.centerIn: parent
                                 text: "󰌑"
-
-                                font.family: Fonts.fontM
+                                font.family: Fonts.font
                                 font.pixelSize: 14
-
                                 color: Colors.on_Primary
                             }
 
                             MouseArea {
                                 anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
+                                enabled: root.operational
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+
                                 onClicked: {
-                                    if (root.selectedNetworkSupportsPsk && passwordField.text.length > 0) {
-                                        root.selectedNetwork.connectWithPsk(passwordField.text);
-                                        passwordField.text = "";
+                                    if (!root.operational || !root.selectedNetworkSupportsPsk || passwordField.text.length <= 0) {
+                                        return;
                                     }
+                                    root.selectedNetwork.connectWithPsk(passwordField.text);
+                                    passwordField.text = "";
                                 }
                             }
                         }
@@ -416,11 +493,9 @@ ColumnLayout {
 
                     Rectangle {
                         visible: root.selectedNetwork !== null && !root.selectedNetworkSupportsPsk && root.selectedNetwork.security !== WifiSecurityType.Open
-
                         Layout.fillWidth: true
                         implicitHeight: 34
                         radius: 8
-
                         color: Colors.surfaceContainer
 
                         Text {
@@ -459,6 +534,8 @@ ColumnLayout {
                     network: modelData
 
                     onNetworkSelected: network => {
+                        if (!root.operational)
+                            return;
                         if (network.security === WifiSecurityType.Open) {
                             network.connect();
                             return;
@@ -492,18 +569,19 @@ ColumnLayout {
         }
     }
 
-    Text {
-        visible: !NetworkService.wifiEnabled
+    Rectangle {
+        visible: root.operational && !NetworkService.wifiEnabled
+        Layout.fillWidth: true
+        implicitHeight: 44
+        radius: 12
+        color: Colors.surfaceContainerHigh
 
-        Layout.alignment: Qt.AlignHCenter
-        text: "Wi-Fi is disabled"
-
-        font.family: Fonts.font
-        font.pixelSize: 10
-
-        color: Colors.outline
-
-        topPadding: 8
-        bottomPadding: 8
+        Text {
+            anchors.centerIn: parent
+            text: "Wi-Fi is disabled"
+            font.family: Fonts.font
+            font.pixelSize: 10
+            color: Colors.outline
+        }
     }
 }
