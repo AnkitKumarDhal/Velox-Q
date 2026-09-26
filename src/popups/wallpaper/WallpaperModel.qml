@@ -3,6 +3,8 @@ import QtQml.Models
 import Quickshell
 import Quickshell.Io
 
+import qs.src.services
+
 QtObject {
     id: root
 
@@ -22,7 +24,26 @@ QtObject {
 
     property string _pendingWall: ""
 
+    property bool _awwwAvailable: false
+    property bool _walAvailable: false
+    property bool _matugenAvailable: false
+    property bool _backendProbed: false
+    property string _backendError: ""
+
+    property IntegrationCapability capability: IntegrationCapability {
+        hardwareAvailable: true
+
+        backendAvailable: root._backendProbed && root._awwwAvailable && root._walAvailable && root._matugenAvailable
+
+        errorMessage: root._backendError
+    }
+
+    readonly property bool operational: root.capability.operational
+
+    readonly property bool backendFailure: root.capability.backendFailure
+
     readonly property string thumbnailDir: Quickshell.cachePath("wallpaper-thumbnails-v2")
+
     readonly property int thumbnailWidth: 420
     readonly property int thumbnailHeight: 280
     readonly property int thumbnailPrefetchRadius: 3
@@ -54,11 +75,12 @@ QtObject {
             hashB = Math.imul(hashB, 33) ^ c;
         }
 
-        return (hashA >>> 0).toString(16).padStart(8, "0") + (hashB >>> 0).toString(16).padStart(8, "0");
+        return ((hashA >>> 0).toString(16).padStart(8, "0") + (hashB >>> 0).toString(16).padStart(8, "0"));
     }
 
     function _thumbnailPath(path, mtime, size) {
         const key = _hashKey(path + "\t" + mtime + "\t" + size);
+
         return root.thumbnailDir + "/" + key + ".webp";
     }
 
@@ -69,21 +91,18 @@ QtObject {
     function _findDirectory() {
         const directory = root.wallpaperDir.trim();
 
-        if (directory === "~") {
+        if (directory === "~")
             return "$HOME";
-        }
 
-        if (directory.startsWith("~/")) {
+        if (directory.startsWith("~/"))
             return "$HOME" + _shellQuote(directory.substring(1));
-        }
 
         return _shellQuote(directory);
     }
 
     function _syncCurrentWallSelection() {
-        if (!root.currentWall || root.wallpapers.count === 0) {
+        if (!root.currentWall || root.wallpapers.count === 0)
             return false;
-        }
 
         for (let i = 0; i < root.wallpapers.count; i++) {
             const item = root.wallpapers.get(i);
@@ -100,21 +119,17 @@ QtObject {
     function _formatFileSize(bytes) {
         const size = Number(bytes);
 
-        if (!Number.isFinite(size) || size < 0) {
+        if (!Number.isFinite(size) || size < 0)
             return "";
-        }
 
-        if (size < 1024) {
+        if (size < 1024)
             return size + " B";
-        }
 
-        if (size < 1024 * 1024) {
+        if (size < 1024 * 1024)
             return (size / 1024).toFixed(1) + " KiB";
-        }
 
-        if (size < 1024 * 1024 * 1024) {
+        if (size < 1024 * 1024 * 1024)
             return (size / (1024 * 1024)).toFixed(1) + " MiB";
-        }
 
         return (size / (1024 * 1024 * 1024)).toFixed(1) + " GiB";
     }
@@ -124,9 +139,8 @@ QtObject {
         root.selectedDimensions = "";
         root.selectedFileSize = "";
 
-        if (root.wallpapers.count === 0) {
+        if (root.wallpapers.count === 0)
             return;
-        }
 
         if (root.selectedIndex < 0 || root.selectedIndex >= root.wallpapers.count) {
             return;
@@ -134,9 +148,8 @@ QtObject {
 
         const selected = root.wallpapers.get(root.selectedIndex);
 
-        if (!selected || !selected.sourcePath) {
+        if (!selected || !selected.sourcePath)
             return;
-        }
 
         const selectedPath = selected.sourcePath;
 
@@ -165,6 +178,7 @@ QtObject {
 
         if (!output)
             return;
+
         try {
             const data = JSON.parse(output);
 
@@ -173,11 +187,14 @@ QtObject {
 
                 if (!Array.isArray(outputs))
                     continue;
+
                 for (const outputInfo of outputs) {
                     if (!outputInfo || !outputInfo.displaying)
                         continue;
+
                     if (outputInfo.displaying.image) {
                         root.currentWall = outputInfo.displaying.image;
+
                         root._syncCurrentWallSelection();
                         return;
                     }
@@ -192,6 +209,7 @@ QtObject {
         root._thumbnailQueue = [];
         root._backgroundThumbnailQueue = [];
         root._backgroundPassActive = false;
+
         root._backgroundThumbnailTimer.stop();
 
         scanProc._lines = [];
@@ -203,17 +221,24 @@ QtObject {
 
         for (const line of lines) {
             const firstSep = line.indexOf("\t");
+
             if (firstSep < 0)
                 continue;
+
             const secondSep = line.indexOf("\t", firstSep + 1);
+
             if (secondSep < 0)
                 continue;
+
             const mtime = line.substring(0, firstSep);
+
             const size = line.substring(firstSep + 1, secondSep);
+
             const path = line.substring(secondSep + 1);
 
             if (!path)
                 continue;
+
             root.wallpapers.append({
                 sourcePath: path,
                 thumbnailPath: root._thumbnailPath(path, mtime, size),
@@ -242,9 +267,8 @@ QtObject {
         for (const line of cacheLines) {
             const name = line.trim();
 
-            if (name) {
+            if (name)
                 cached.add(name);
-            }
         }
 
         const expected = new Set();
@@ -281,6 +305,7 @@ QtObject {
     function selectWallpaper(index) {
         if (root.wallpapers.count === 0)
             return;
+
         root.selectedIndex = Math.max(0, Math.min(index, root.wallpapers.count - 1));
 
         root._rebuildThumbnailQueue();
@@ -290,12 +315,23 @@ QtObject {
     function selectRelative(delta) {
         if (root.wallpapers.count === 0)
             return;
+
         root.selectWallpaper(root.selectedIndex + delta);
     }
 
     function applySelectedWallpaper(force = false) {
         if (root.applying)
             return;
+
+        if (!root.operational) {
+            root.wallpaperErrorCode = 20;
+            root.wallpaperErrorMessage = root.capability.errorMessage || "Wallpaper backend is unavailable";
+
+            console.warn("WallpaperModel:", root.wallpaperErrorMessage);
+
+            return;
+        }
+
         if (root.selectedIndex < 0 || root.selectedIndex >= root.wallpapers.count) {
             return;
         }
@@ -304,6 +340,7 @@ QtObject {
 
         if (!selected)
             return;
+
         if (!force && selected.sourcePath === root.currentWall) {
             return;
         }
@@ -336,12 +373,14 @@ QtObject {
 
             if (!item || item.thumbReady)
                 return;
+
             if (thumbProc._item && thumbProc._item.sourcePath === item.sourcePath) {
                 return;
             }
 
             if (queued.has(item.sourcePath))
                 return;
+
             queued.add(item.sourcePath);
             target.push(item);
         };
@@ -372,9 +411,8 @@ QtObject {
     }
 
     function _startNextThumbnail() {
-        if (thumbProc.running) {
+        if (thumbProc.running)
             return;
-        }
 
         if (root._thumbnailQueue.length > 0) {
             const next = root._thumbnailQueue.shift();
@@ -384,13 +422,11 @@ QtObject {
             thumbProc.command = ["magick", next.sourcePath, "-auto-orient", "-thumbnail", root.thumbnailWidth + "x" + root.thumbnailHeight + "^", "-gravity", "center", "-extent", root.thumbnailWidth + "x" + root.thumbnailHeight, "-strip", "-quality", "82", next.thumbnailPath];
 
             thumbProc.running = true;
-
             return;
         }
 
         if (!root._backgroundPassActive && root._backgroundThumbnailQueue.length > 0) {
             root._backgroundThumbnailTimer.start();
-
             return;
         }
 
@@ -435,14 +471,14 @@ QtObject {
             onRead: line => {
                 const p = line.trim();
 
-                if (p) {
+                if (p)
                     imageMetadataProc._lines.push(p);
-                }
             }
         }
 
         onExited: {
             const lines = imageMetadataProc._lines.slice();
+
             const requestedPath = imageMetadataProc._requestedPath;
 
             imageMetadataProc._lines = [];
@@ -459,9 +495,8 @@ QtObject {
 
             const parts = lines[0].split("\t");
 
-            if (parts.length < 2) {
+            if (parts.length < 2)
                 return;
-            }
 
             root.selectedFormat = parts[0];
             root.selectedDimensions = parts[1];
@@ -478,14 +513,14 @@ QtObject {
             onRead: line => {
                 const p = line.trim();
 
-                if (p) {
+                if (p)
                     fileSizeProc._lines.push(p);
-                }
             }
         }
 
         onExited: {
             const lines = fileSizeProc._lines.slice();
+
             const requestedPath = fileSizeProc._requestedPath;
 
             fileSizeProc._lines = [];
@@ -505,7 +540,7 @@ QtObject {
     }
 
     property Process scanProc: Process {
-        command: ["sh", "-c", "find " + root._findDirectory() + " -maxdepth 1 -type f " + "\\( -iname '*.jpg' -o -iname '*.jpeg' " + "-o -iname '*.png' -o -iname '*.webp' \\) " + "-printf '%T@\\t%s\\t%p\\n' 2>/dev/null | sort -k3"]
+        command: ["sh", "-c", "find " + root._findDirectory() + " -maxdepth 1 -type f " + "\\( -iname '*.jpg' -o -iname '*.jpeg' " + "-o -iname '*.png' -o -iname '*.webp' \\) " + "-printf '%T@\\t%s\\t%p\\n' " + "2>/dev/null | sort -k3"]
 
         running: false
 
@@ -515,9 +550,8 @@ QtObject {
             onRead: line => {
                 const p = line.trim();
 
-                if (p) {
+                if (p)
                     scanProc._lines.push(p);
-                }
             }
         }
 
@@ -541,9 +575,8 @@ QtObject {
             onRead: line => {
                 const p = line.trim();
 
-                if (p) {
+                if (p)
                     currentWallProc._lines.push(p);
-                }
             }
         }
 
@@ -577,9 +610,8 @@ QtObject {
             onRead: line => {
                 const p = line.trim();
 
-                if (p) {
+                if (p)
                     cacheList._lines.push(p);
-                }
             }
         }
 
@@ -608,8 +640,72 @@ QtObject {
         }
     }
 
+    function _refreshBackendCapability() {
+        if (!awwwProbe.running)
+            awwwProbe.running = true;
+
+        if (!walProbe.running)
+            walProbe.running = true;
+
+        if (!matugenProbe.running)
+            matugenProbe.running = true;
+    }
+
+    property Process awwwProbe: Process {
+        command: ["sh", "-c", "command -v awww >/dev/null 2>&1"]
+        running: false
+        onExited: (exitCode, exitStatus) => {
+            root._awwwAvailable = exitCode === 0;
+            root._updateBackendCapability();
+        }
+    }
+
+    property Process walProbe: Process {
+        command: ["sh", "-c", "command -v wal >/dev/null 2>&1"]
+        running: false
+        onExited: (exitCode, exitStatus) => {
+            root._walAvailable = exitCode === 0;
+            root._updateBackendCapability();
+        }
+    }
+
+    property Process matugenProbe: Process {
+        command: ["sh", "-c", "command -v matugen >/dev/null 2>&1"]
+        running: false
+        onExited: (exitCode, exitStatus) => {
+            root._matugenAvailable = exitCode === 0;
+            root._updateBackendCapability();
+        }
+    }
+
+    function _updateBackendCapability() {
+        if (!awwwProbe.running && !walProbe.running && !matugenProbe.running) {
+            root._backendProbed = true;
+
+            if (!root._awwwAvailable) {
+                root._backendError = "awww is not installed";
+            } else if (!root._walAvailable) {
+                root._backendError = "pywal is not installed";
+            } else if (!root._matugenAvailable) {
+                root._backendError = "Matugen is not installed";
+            } else {
+                root._backendError = "";
+            }
+        }
+    }
+
+    property Timer backendCapabilityTimer: Timer {
+        interval: 10000
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: root._refreshBackendCapability()
+    }
+
     function _wallpaperError(code) {
         switch (code) {
+        case 20:
+            return "Wallpaper backend is unavailable";
         case 10:
             return "Invalid wallpaper backend usage";
         case 11:
@@ -639,21 +735,27 @@ QtObject {
         running: false
 
         stderr: SplitParser {
-            onRead: line => console.warn("WallpaperModel: ", line)
+            onRead: line => {
+                console.warn("WallpaperModel: ", line);
+            }
         }
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
                 root.currentWall = root._pendingWall;
+
                 root.wallpaperErrorCode = 0;
                 root.wallpaperErrorMessage = "";
             } else {
                 root.wallpaperErrorCode = exitCode;
                 root.wallpaperErrorMessage = root._wallpaperError(exitCode);
+
                 console.warn("WallpaperModel: ", root.wallpaperErrorMessage);
             }
 
             root.applying = false;
         }
     }
+
+    Component.onCompleted: root._refreshBackendCapability()
 }
