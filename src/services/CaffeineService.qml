@@ -36,6 +36,17 @@ Singleton {
     property bool _startupSync: true
     property int _pendingPresetIndex: -1
 
+    property bool _backendAvailable: false
+    property string _backendError: ""
+
+    property IntegrationCapability capability: IntegrationCapability {
+        hardwareAvailable: true
+        backendAvailable: root._backendAvailable
+        errorMessage: root._backendError
+    }
+
+    readonly property bool operational: root.capability.operational
+    readonly property string state: root.capability.state
     readonly property string stateFilePath: Quickshell.statePath("caffeine.json")
 
     FileView {
@@ -117,6 +128,19 @@ Singleton {
                     console.warn("CaffeineService:", this.text.trim());
                 }
             }
+        }
+
+        onExited: (exitCode, exitStatus) => {
+            if (exitCode === 0) {
+                root._backendAvailable = true;
+                root._backendError = "";
+                return;
+            }
+
+            root._backendAvailable = false;
+            root._backendError = "systemd-inhibit is unavailable";
+
+            console.warn("CaffeineService: systemd-inhibit exited with code", exitCode);
         }
     }
 
@@ -226,6 +250,12 @@ Singleton {
     }
 
     function startDetachedInhibitor(seconds) {
+        if (!root.operational) {
+            console.warn("CaffeineService: systemd-inhibit backend unavailable");
+
+            return;
+        }
+
         const duration = seconds < 0 ? "infinity" : String(seconds);
         Quickshell.execDetached(["systemd-inhibit", "--what=idle:sleep", "--who=Quickshell-Caffeine", "--why=Caffeine", "--mode=block", "sleep", duration]);
     }
@@ -285,6 +315,12 @@ Singleton {
             return;
         }
 
+        if (!root.operational) {
+            console.warn("CaffeineService: cannot activate caffeine:", root.capability.errorMessage);
+
+            return;
+        }
+
         root._changingPreset = true;
         root.stopOwnInhibitors();
 
@@ -319,7 +355,14 @@ Singleton {
             return;
         }
 
+        if (!root.operational) {
+            root._changingPreset = false;
+            root.refreshState();
+            return;
+        }
+
         const seconds = index === 6 ? -1 : Number(root.presets[index]) * 60;
+
         root.startDetachedInhibitor(seconds);
         inhibitorAppearTimer.restart();
     }
