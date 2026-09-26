@@ -168,6 +168,7 @@ PanelWindow {
                     emojis: root.currentEmojis
 
                     onEmojiSelected: (emoji) => root.copyEmoji(emoji)
+                    onEscapePressed: Popups.emojiOpen = false
                     onTypedChar:     (ch)    => {
                         searchBar.forceActiveFocus()
                         searchBar.insertText(ch)

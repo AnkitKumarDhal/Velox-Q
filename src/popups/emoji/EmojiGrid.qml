@@ -9,6 +9,7 @@ Item {
 
     signal emojiSelected(string emoji)
     signal typedChar(string ch)
+    signal escapePressed()
 
     function forceActiveFocus() { grid.forceActiveFocus() }
     function resetIndex()       { grid.currentIndex = 0  }
@@ -32,6 +33,10 @@ Item {
 
         model: root.emojis
 
+        Keys.onEscapePressed: (event) => {
+            root.escapePressed()
+            event.accepted = true
+        }
         Keys.onReturnPressed: (event) => {
             const e = root.emojis[currentIndex]
             if (e) root.emojiSelected(e)
