@@ -91,8 +91,8 @@ PanelWindow {
                     left: parent.left
                     right: parent.right
                     topMargin: 14
-                    leftMargin: 16
-                    rightMargin: 16
+                    leftMargin: Theme.spacingXxl
+                    rightMargin: Theme.spacingXxl
                 }
                 spacing: 14
 
@@ -112,14 +112,14 @@ PanelWindow {
 
                         anchors {
                             fill: parent
-                            margins: 10
+                            margins: Theme.spacingLg
                         }
 
-                        spacing: 4
+                        spacing: Theme.spacingXs
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 8
+                            spacing: Theme.spacingMd
 
                             Text {
                                 text: "󰅙"
@@ -340,7 +340,7 @@ PanelWindow {
         signal selected(string id)
 
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Theme.spacingSm
 
         Text {
             text: settingRow.label
@@ -353,7 +353,7 @@ PanelWindow {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 6
+            spacing: Theme.spacingSm
 
             Repeater {
                 model: settingRow.options
@@ -364,7 +364,7 @@ PanelWindow {
 
                     Layout.fillWidth: true
                     height: 30
-                    radius: 8
+                    radius: Theme.radiusSm
 
                     color: isActive ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.16) : optHov.containsMouse ? Colors.surfaceContainerHighest : Colors.surfaceContainerHigh
 

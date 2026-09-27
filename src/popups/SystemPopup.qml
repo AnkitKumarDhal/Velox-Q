@@ -66,9 +66,9 @@ PanelWindow {
                     top: parent.top
                     left: parent.left
                     right: parent.right
-                    margins: 16
+                    margins: Theme.spacingXxl
                 }
-                spacing: 12
+                spacing: Theme.spacingXl
 
                 // ── Header ────────────────────────────────────────────────────────
                 ColumnLayout {
@@ -96,7 +96,7 @@ PanelWindow {
                 // ── CPU / Memory / GPU overview ────────────────────────────────────
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: Theme.spacingMd
 
                     MetricCard {
                         label: ""
@@ -161,7 +161,7 @@ PanelWindow {
 
                     Flow {
                         Layout.fillWidth: true
-                        spacing: 4
+                        spacing: Theme.spacingXs
 
                         Repeater {
                             model: SystemStats.cpuCores
@@ -205,7 +205,7 @@ PanelWindow {
                 // ── Memory / GPU detail ────────────────────────────────────────────
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 12
+                    spacing: Theme.spacingXl
 
                     Text {
                         text: "Available " + SystemStats.memAvailableGb.toFixed(1) + " GB"
@@ -240,7 +240,7 @@ PanelWindow {
                 // ── Network ────────────────────────────────────────────────────────
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: Theme.spacingSm
 
                     RowLayout {
                         Layout.fillWidth: true
@@ -340,7 +340,7 @@ PanelWindow {
                 // ── Storage ────────────────────────────────────────────────────────
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: Theme.spacingMd
 
                     Text {
                         text: " Storage"
@@ -424,7 +424,7 @@ PanelWindow {
                 RowLayout {
                     visible: SystemStats.displayTemperatures.length > 0
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: Theme.spacingMd
 
                     Repeater {
                         model: SystemStats.displayTemperatures
@@ -434,13 +434,13 @@ PanelWindow {
 
                             Layout.fillWidth: true
                             height: 32
-                            radius: 8
+                            radius: Theme.radiusSm
                             color: Colors.surfaceContainerHighest
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 8
-                                anchors.rightMargin: 8
+                                anchors.leftMargin: Theme.spacingMd
+                                anchors.rightMargin: Theme.spacingMd
 
                                 Text {
                                     text: modelData.name

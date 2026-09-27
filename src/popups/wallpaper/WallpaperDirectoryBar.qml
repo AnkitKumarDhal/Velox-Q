@@ -16,7 +16,7 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        spacing: 8
+        spacing: Theme.spacingMd
 
         Text {
             text: "󰉋"
@@ -56,7 +56,7 @@ Item {
             }
 
             background: Rectangle {
-                radius: 8
+                radius: Theme.radiusSm
                 color: Colors.surfaceContainerHigh
                 border.width: 1
 
@@ -74,7 +74,7 @@ Item {
         Rectangle {
             width: 32
             height: 32
-            radius: 8
+            radius: Theme.radiusSm
 
             color: rescanHov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.15) : "transparent"
 

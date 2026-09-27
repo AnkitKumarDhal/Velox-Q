@@ -178,11 +178,11 @@ PanelWindow {
                                     required property var modelData
 
                                     Layout.fillWidth: true
-                                    spacing: 8
+                                    spacing: Theme.spacingMd
 
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        spacing: 8
+                                        spacing: Theme.spacingMd
 
                                         Text {
                                             text: modelData.title.toUpperCase()
@@ -229,13 +229,13 @@ PanelWindow {
                                             RowLayout {
                                                 anchors {
                                                     fill: parent
-                                                    leftMargin: 10
-                                                    rightMargin: 10
+                                                    leftMargin: Theme.spacingLg
+                                                    rightMargin: Theme.spacingLg
                                                     topMargin: 9
                                                     bottomMargin: 9
                                                 }
 
-                                                spacing: 10
+                                                spacing: Theme.spacingLg
 
                                                 Flow {
                                                     id: keyFlow
@@ -244,7 +244,7 @@ PanelWindow {
                                                     Layout.preferredWidth: parent.width * 0.50
                                                     Layout.maximumWidth: parent.width * 0.50
 
-                                                    spacing: 4
+                                                    spacing: Theme.spacingXs
 
                                                     property var keyParts: modelData.keyParts
 
@@ -255,7 +255,7 @@ PanelWindow {
                                                             required property string modelData
                                                             required property int index
 
-                                                            spacing: 4
+                                                            spacing: Theme.spacingXs
 
                                                             Rectangle {
                                                                 width: keyText.implicitWidth + 16

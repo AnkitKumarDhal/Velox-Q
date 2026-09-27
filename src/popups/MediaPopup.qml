@@ -144,8 +144,8 @@ PanelWindow {
             RowLayout {
                 visible: win.mediaOperational
                 anchors.fill: parent
-                anchors.margins: 16
-                spacing: 16
+                anchors.margins: Theme.spacingXxl
+                spacing: Theme.spacingXxl
 
                 MediaArt {
                     id: art
@@ -162,7 +162,7 @@ PanelWindow {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.alignment: Qt.AlignVCenter
-                    spacing: 4
+                    spacing: Theme.spacingXs
 
                     RowLayout {
                         Layout.fillWidth: true
@@ -255,7 +255,7 @@ PanelWindow {
                     margins: 24
                 }
 
-                spacing: 10
+                spacing: Theme.spacingLg
 
                 Item {
                     Layout.fillHeight: true

@@ -39,7 +39,7 @@ Item {
         id: handle
         width: 12
         height: 12
-        radius: 8
+        radius: Theme.radiusSm
         color: root.muted ? Colors.error : Colors.primary
         anchors.verticalCenter: parent.verticalCenter
         x: Math.min(track.width - width, Math.max(0, track.width * root.value - width / 2))

@@ -24,9 +24,9 @@ Rectangle {
         anchors {
             fill: parent
             topMargin: 14
-            leftMargin: 16
-            rightMargin: 16
-            bottomMargin: 16
+            leftMargin: Theme.spacingXxl
+            rightMargin: Theme.spacingXxl
+            bottomMargin: Theme.spacingXxl
         }
 
         spacing: 0
@@ -36,7 +36,7 @@ Rectangle {
 
             Layout.fillWidth: true
             implicitHeight: Math.max(36, contentColumn.implicitHeight)
-            spacing: 10
+            spacing: Theme.spacingLg
 
             Rectangle {
                 id: appIconBackground
@@ -45,7 +45,7 @@ Rectangle {
                 Layout.preferredHeight: 36
                 Layout.alignment: Qt.AlignTop
 
-                radius: 8
+                radius: Theme.radiusSm
                 color: Colors.primaryContainer
 
                 Image {
@@ -156,7 +156,7 @@ Rectangle {
                 Layout.preferredHeight: 20
                 Layout.alignment: Qt.AlignTop
 
-                radius: 10
+                radius: Theme.radiusMd
 
                 color: dismissArea.containsMouse ? Colors.onSurfaceMedium : "transparent"
 
@@ -192,9 +192,9 @@ Rectangle {
             visible: !!root.notification && root.notification.actions && root.notification.actions.length > 0
 
             Layout.fillWidth: true
-            Layout.topMargin: 6
+            Layout.topMargin: Theme.spacingSm
 
-            spacing: 6
+            spacing: Theme.spacingSm
 
             Repeater {
                 model: root.notification ? root.notification.actions : []
@@ -208,7 +208,7 @@ Rectangle {
 
                     height: 30
 
-                    radius: 14
+                    radius: Theme.radiusLg
 
                     color: actionMouse.containsMouse ? Colors.primaryContainer : Colors.surfaceContainer
 

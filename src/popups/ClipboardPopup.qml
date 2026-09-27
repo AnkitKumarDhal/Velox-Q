@@ -106,14 +106,14 @@ PanelWindow {
 
                 anchors {
                     fill: parent
-                    margins: 16
+                    margins: Theme.spacingXxl
                 }
 
-                spacing: 10
+                spacing: Theme.spacingLg
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 10
+                    spacing: Theme.spacingLg
 
                     Text {
                         text: "󰆏"
@@ -191,7 +191,7 @@ PanelWindow {
                         }
 
                         background: Rectangle {
-                            radius: 8
+                            radius: Theme.radiusSm
                             color: Colors.surfaceContainerHigh
 
                             border.width: 1
@@ -208,7 +208,7 @@ PanelWindow {
                     Rectangle {
                         width: 32
                         height: 32
-                        radius: 8
+                        radius: Theme.radiusSm
 
                         color: wipeHov.containsMouse ? Colors.errorContainer : "transparent"
 
@@ -244,7 +244,7 @@ PanelWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: Theme.spacingSm
 
                     Repeater {
                         model: [
@@ -281,7 +281,7 @@ PanelWindow {
 
                             Layout.preferredHeight: 28
 
-                            radius: 8
+                            radius: Theme.radiusSm
 
                             color: ClipboardService.filterCategory === modelData.key ? Colors.primaryContainer : filterHov.containsMouse ? Colors.surfaceContainerHigh : "transparent"
 
@@ -341,17 +341,17 @@ PanelWindow {
                     Layout.fillWidth: true
                     implicitHeight: 42
 
-                    radius: 8
+                    radius: Theme.radiusSm
 
                     color: Colors.errorContainer
 
                     RowLayout {
                         anchors {
                             fill: parent
-                            margins: 8
+                            margins: Theme.spacingMd
                         }
 
-                        spacing: 8
+                        spacing: Theme.spacingMd
 
                         Text {
                             Layout.fillWidth: true
@@ -442,17 +442,17 @@ PanelWindow {
                     Layout.fillWidth: true
                     implicitHeight: Math.max(errorText.implicitHeight + 18, 38)
 
-                    radius: 8
+                    radius: Theme.radiusSm
 
                     color: Colors.errorContainer
 
                     RowLayout {
                         anchors {
                             fill: parent
-                            margins: 10
+                            margins: Theme.spacingLg
                         }
 
-                        spacing: 8
+                        spacing: Theme.spacingMd
 
                         Text {
                             id: errorText
@@ -532,7 +532,7 @@ PanelWindow {
 
                     clip: true
 
-                    spacing: 4
+                    spacing: Theme.spacingXs
 
                     boundsBehavior: Flickable.StopAtBounds
                     flickDeceleration: 2500
@@ -580,7 +580,7 @@ PanelWindow {
 
                         height: modelData.kind === "image" ? 112 : 62
 
-                        radius: 8
+                        radius: Theme.radiusSm
 
                         color: index === listView.currentIndex ? Colors.surfaceContainerHigh : itemHov.containsMouse ? Colors.background : "transparent"
 
@@ -626,10 +626,10 @@ PanelWindow {
                         RowLayout {
                             anchors {
                                 fill: parent
-                                margins: 10
+                                margins: Theme.spacingLg
                             }
 
-                            spacing: 10
+                            spacing: Theme.spacingLg
 
                             Item {
                                 Layout.preferredWidth: modelData.kind === "image" ? 150 : 28
@@ -643,7 +643,7 @@ PanelWindow {
 
                                     visible: modelData.kind !== "image"
 
-                                    radius: 8
+                                    radius: Theme.radiusSm
 
                                     color: Colors.surfaceContainerHighest
 
@@ -663,7 +663,7 @@ PanelWindow {
 
                                     anchors.fill: parent
 
-                                    radius: 8
+                                    radius: Theme.radiusSm
 
                                     color: Colors.surfaceContainerHighest
 
@@ -727,7 +727,7 @@ PanelWindow {
 
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    spacing: 8
+                                    spacing: Theme.spacingMd
 
                                     Text {
                                         text: modelData.kind === "image" ? modelData.format.toUpperCase() + " • " + modelData.sizeText + " • " + modelData.width + " × " + modelData.height : modelData.kind === "link" ? "Link" : modelData.kind === "code" ? "Code" : "Text"
@@ -773,12 +773,12 @@ PanelWindow {
                                 Layout.preferredWidth: 60
                                 Layout.alignment: Qt.AlignVCenter
 
-                                spacing: 4
+                                spacing: Theme.spacingXs
 
                                 Rectangle {
                                     width: 28
                                     height: 28
-                                    radius: 8
+                                    radius: Theme.radiusSm
                                     z: 2
 
                                     color: pinHov.containsMouse ? Colors.primaryContainer : "transparent"
@@ -819,7 +819,7 @@ PanelWindow {
                                 Rectangle {
                                     width: 28
                                     height: 28
-                                    radius: 8
+                                    radius: Theme.radiusSm
                                     z: 2
 
                                     color: deleteHov.containsMouse ? Colors.errorContainer : "transparent"

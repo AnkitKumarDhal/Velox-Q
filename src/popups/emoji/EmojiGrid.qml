@@ -67,7 +67,7 @@ Item {
             width: grid.cellWidth
             height: grid.cellHeight
 
-            radius: 8
+            radius: Theme.radiusSm
 
             color: {
                 if (index === grid.currentIndex)

@@ -135,10 +135,10 @@ PanelWindow {
                     anchors {
                         fill: parent
 
-                        topMargin: 8
-                        leftMargin: 16
-                        rightMargin: 16
-                        bottomMargin: 8
+                        topMargin: Theme.spacingMd
+                        leftMargin: Theme.spacingXxl
+                        rightMargin: Theme.spacingXxl
+                        bottomMargin: Theme.spacingMd
                     }
 
                     Text {
@@ -235,7 +235,7 @@ PanelWindow {
                         right: parent.right
                     }
 
-                    spacing: 4
+                    spacing: Theme.spacingXs
                     padding: 8
 
                     Repeater {
@@ -305,7 +305,7 @@ PanelWindow {
 
                     ColumnLayout {
                         anchors.centerIn: parent
-                        spacing: 6
+                        spacing: Theme.spacingSm
 
                         Text {
                             Layout.alignment: Qt.AlignHCenter

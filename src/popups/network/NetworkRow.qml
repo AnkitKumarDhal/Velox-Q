@@ -27,7 +27,7 @@ Item {
         id: background
 
         anchors.fill: parent
-        radius: 10
+        radius: Theme.radiusMd
 
         color: rootHover.containsMouse ? Colors.surfaceContainerHighest : root.network.connected ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28) : "transparent"
 
@@ -58,11 +58,11 @@ Item {
     RowLayout {
         anchors {
             fill: parent
-            leftMargin: 12
-            rightMargin: 12
+            leftMargin: Theme.spacingXl
+            rightMargin: Theme.spacingXl
         }
 
-        spacing: 10
+        spacing: Theme.spacingLg
 
         Text {
             text: {

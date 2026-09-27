@@ -62,11 +62,11 @@ Item {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            anchors.topMargin: 12
-            anchors.bottomMargin: 12
-            spacing: 4
+            anchors.leftMargin: Theme.spacingXl
+            anchors.rightMargin: Theme.spacingXl
+            anchors.topMargin: Theme.spacingXl
+            anchors.bottomMargin: Theme.spacingXl
+            spacing: Theme.spacingXs
 
             RowLayout {
                 Layout.fillWidth: true

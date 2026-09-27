@@ -44,6 +44,13 @@ QtObject {
     readonly property int borderMedium: 2
     readonly property int borderStrong: 3
 
+    // Corner radii
+    readonly property int radiusXs: 6
+    readonly property int radiusSm: 8
+    readonly property int radiusMd: 10
+    readonly property int radiusLg: 14
+    readonly property int radiusXl: 16
+
     // Control sizes
     readonly property int controlHeightSmall: 28
     readonly property int controlHeightMedium: 32
@@ -51,6 +58,14 @@ QtObject {
     readonly property int controlIconSmall: 14
     readonly property int controlIconMedium: 16
     readonly property int controlIconLarge: 20
+
+    // Opacity
+    readonly property real opacityFaint: 0.4
+    readonly property real opacitySubtle: 0.5
+    readonly property real opacityMuted: 0.6
+    readonly property real opacitySecondary: 0.7
+    readonly property real opacityStrong: 0.75
+    readonly property real opacityEmphasis: 0.8
 
     // Animation
     readonly property int motionInstant: 80

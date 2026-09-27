@@ -23,7 +23,7 @@ PillBase {
     }
 
     Row {
-        spacing: 8
+        spacing: Theme.spacingMd
 
         Text {
             text: NotificationService.notificationsSuppressed ? "󰂛" : "󰂚"

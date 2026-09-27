@@ -95,20 +95,20 @@ Item {
     ColumnLayout {
         anchors {
             fill: parent
-            leftMargin: 10
-            rightMargin: 10
-            topMargin: 8
-            bottomMargin: 8
+            leftMargin: Theme.spacingLg
+            rightMargin: Theme.spacingLg
+            topMargin: Theme.spacingMd
+            bottomMargin: Theme.spacingMd
         }
 
         spacing: 2
 
         Text {
             Layout.fillWidth: true
-            Layout.leftMargin: 8
-            Layout.rightMargin: 8
+            Layout.leftMargin: Theme.spacingMd
+            Layout.rightMargin: Theme.spacingMd
             Layout.topMargin: 2
-            Layout.bottomMargin: 4
+            Layout.bottomMargin: Theme.spacingXs
 
             text: root.appData ? root.appData.name : ""
             color: Colors.on_Surface
@@ -130,7 +130,7 @@ Item {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 10
+                    radius: Theme.radiusMd
 
                     color: index === root.selectedAction ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : actionMouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08) : "transparent"
 
@@ -163,10 +163,10 @@ Item {
                 RowLayout {
                     anchors.fill: parent
 
-                    anchors.leftMargin: 16
+                    anchors.leftMargin: Theme.spacingXxl
                     anchors.rightMargin: 14
 
-                    spacing: 12
+                    spacing: Theme.spacingXl
 
                     Item {
                         Layout.preferredWidth: 24

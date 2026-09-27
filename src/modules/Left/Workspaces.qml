@@ -421,7 +421,7 @@ PillBase {
         Rectangle {
             anchors.fill: parent
 
-            radius: 8
+            radius: Theme.radiusSm
             color: Colors.surfaceContainerHigh
 
             border.width: 1
@@ -431,7 +431,7 @@ PillBase {
                 id: workspaceTooltipText
 
                 anchors.fill: parent
-                anchors.margins: 10
+                anchors.margins: Theme.spacingLg
 
                 text: root.hoveredIndex >= 0 ? root.workspaceTooltip(root.hoveredIndex + 1) : ""
 

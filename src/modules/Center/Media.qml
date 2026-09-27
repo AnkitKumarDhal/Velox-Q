@@ -150,7 +150,7 @@ Item {
         Row {
             id: contentRow
 
-            spacing: 8
+            spacing: Theme.spacingMd
 
             Item {
                 width: 20

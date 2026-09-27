@@ -38,7 +38,7 @@ Item {
         width: parent.width
         height: parent.height
 
-        radius: 16
+        radius: Theme.radiusXl
 
         color: Colors.surfaceContainerHigh
         clip: false
@@ -88,7 +88,7 @@ Item {
             anchors {
                 top: parent.top
                 left: parent.left
-                margins: 10
+                margins: Theme.spacingLg
             }
 
             width: 80
@@ -156,7 +156,7 @@ Item {
                 bottom: parent.bottom
                 leftMargin: 14
                 rightMargin: 14
-                bottomMargin: 12
+                bottomMargin: Theme.spacingXl
             }
 
             text: root.sourcePath.split("/").pop()

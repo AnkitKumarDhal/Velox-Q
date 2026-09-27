@@ -138,7 +138,7 @@ Item {
     Rectangle {
         visible: root.wallpapers && root.wallpapers.count > 1
         anchors.left: parent.left
-        anchors.leftMargin: 6
+        anchors.leftMargin: Theme.spacingSm
         anchors.verticalCenter: parent.verticalCenter
         width: 38
         height: 38
@@ -177,7 +177,7 @@ Item {
         visible: root.wallpapers && root.wallpapers.count > 1
 
         anchors.right: parent.right
-        anchors.rightMargin: 6
+        anchors.rightMargin: Theme.spacingSm
         anchors.verticalCenter: parent.verticalCenter
 
         width: 38

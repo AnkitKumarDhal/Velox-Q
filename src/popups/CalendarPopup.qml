@@ -297,10 +297,10 @@ PanelWindow {
             ColumnLayout {
                 anchors {
                     fill: parent
-                    margins: 16
+                    margins: Theme.spacingXxl
                 }
 
-                spacing: 10
+                spacing: Theme.spacingLg
 
                 Item {
                     id: calendarHeader
@@ -344,13 +344,13 @@ PanelWindow {
                         anchors.right: parent.right
                         anchors.top: parent.top
 
-                        spacing: 6
+                        spacing: Theme.spacingSm
 
                         Rectangle {
                             Layout.preferredWidth: 32
                             Layout.preferredHeight: 32
 
-                            radius: 16
+                            radius: Theme.radiusXl
 
                             color: prevHover.containsMouse ? Colors.primaryContainer : Colors.surfaceContainerHigh
 
@@ -389,7 +389,7 @@ PanelWindow {
                             Layout.preferredWidth: 32
                             Layout.preferredHeight: 32
 
-                            radius: 16
+                            radius: Theme.radiusXl
 
                             color: nextHover.containsMouse ? Colors.primaryContainer : Colors.surfaceContainerHigh
 
@@ -632,7 +632,7 @@ PanelWindow {
                 RowLayout {
                     Layout.fillWidth: true
 
-                    spacing: 8
+                    spacing: Theme.spacingMd
 
                     ColumnLayout {
                         Layout.fillWidth: true

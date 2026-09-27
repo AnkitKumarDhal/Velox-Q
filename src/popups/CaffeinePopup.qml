@@ -59,7 +59,7 @@ PanelWindow {
                     top: parent.top
                     left: parent.left
                     right: parent.right
-                    margins: 16
+                    margins: Theme.spacingXxl
                 }
 
                 spacing: 14
@@ -113,14 +113,14 @@ PanelWindow {
 
                         anchors {
                             fill: parent
-                            margins: 10
+                            margins: Theme.spacingLg
                         }
 
-                        spacing: 4
+                        spacing: Theme.spacingXs
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 8
+                            spacing: Theme.spacingMd
 
                             Text {
                                 text: "󰅙"
@@ -320,7 +320,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         width: 16
                         height: 16
-                        radius: 8
+                        radius: Theme.radiusSm
                         color: Colors.primary
 
                         Behavior on x {

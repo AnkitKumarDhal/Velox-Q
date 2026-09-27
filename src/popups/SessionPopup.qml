@@ -295,7 +295,7 @@ PanelWindow {
 
         Column {
             anchors.centerIn: parent
-            spacing: 4
+            spacing: Theme.spacingXs
             z: 5
 
             Text {
@@ -450,7 +450,7 @@ PanelWindow {
                 Text {
                     anchors {
                         top: button.bottom
-                        topMargin: 8
+                        topMargin: Theme.spacingMd
                         horizontalCenter: button.horizontalCenter
                     }
 

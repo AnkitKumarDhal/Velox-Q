@@ -73,7 +73,7 @@ PillBase {
         Rectangle {
             anchors.fill: parent
 
-            radius: 8
+            radius: Theme.radiusSm
             color: Colors.surfaceContainerHigh
 
             border.width: 1
@@ -83,7 +83,7 @@ PillBase {
                 id: clockTooltipText
 
                 anchors.fill: parent
-                anchors.margins: 10
+                anchors.margins: Theme.spacingLg
 
                 text: Qt.formatDateTime(tooltipClock.date, "dddd, MMMM d, yyyy") + "\n" + Qt.formatDateTime(tooltipClock.date, root.use24Hour ? "HH:mm:ss" : "hh:mm:ss AP")
 

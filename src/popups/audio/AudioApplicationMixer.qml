@@ -31,7 +31,7 @@ ColumnLayout {
         values: [...Pipewire.nodes.values].filter(node => root.isApplicationStream(node))
     }
 
-    spacing: 6
+    spacing: Theme.spacingSm
 
     RowLayout {
         Layout.fillWidth: true
@@ -69,13 +69,13 @@ ColumnLayout {
 
         Rectangle {
             anchors.fill: parent
-            radius: 10
+            radius: Theme.radiusMd
             color: Colors.surfaceContainerHigh
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 12
-                anchors.rightMargin: 12
-                spacing: 10
+                anchors.leftMargin: Theme.spacingXl
+                anchors.rightMargin: Theme.spacingXl
+                spacing: Theme.spacingLg
 
                 Text {
                     text: root.inputMode ? "󰍭" : "󰕾"

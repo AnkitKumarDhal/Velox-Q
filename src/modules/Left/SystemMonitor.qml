@@ -25,7 +25,7 @@ PillBase {
     property real memUsedGb: SystemStats.memUsedGb
 
     Row {
-        spacing: 6
+        spacing: Theme.spacingSm
 
         Text {
             text: " " + Math.round(root.cpuUsage) + "%"

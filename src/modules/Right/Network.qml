@@ -152,7 +152,7 @@ PillBase {
         Layout.preferredWidth: countText.implicitWidth + 8
         Layout.preferredHeight: 16
 
-        radius: 8
+        radius: Theme.radiusSm
 
         color: Colors.primaryContainer
 

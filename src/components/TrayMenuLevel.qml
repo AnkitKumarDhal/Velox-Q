@@ -229,7 +229,7 @@ FocusScope {
 
     Rectangle {
         anchors.fill: parent
-        radius: 14
+        radius: Theme.radiusLg
         color: Colors.surfaceContainer
         border.width: 1
         border.color: Colors.outlineVariant
@@ -337,9 +337,9 @@ FocusScope {
                     RowLayout {
                         visible: !menuItem.isSeparator
                         anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        spacing: 10
+                        anchors.leftMargin: Theme.spacingLg
+                        anchors.rightMargin: Theme.spacingLg
+                        spacing: Theme.spacingLg
                         opacity: menuItem.enabledItem ? 1 : 0.42
 
                         Item {
@@ -382,7 +382,7 @@ FocusScope {
                                 anchors.centerIn: parent
                                 width: 16
                                 height: 16
-                                radius: 8
+                                radius: Theme.radiusSm
                                 color: "transparent"
                                 border.width: 1
                                 border.color: menuItem.checked ? Colors.primary : Colors.outline

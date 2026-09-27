@@ -68,7 +68,7 @@ PanelWindow {
                 anchors {
                     fill: parent
                     margins: 24
-                    topMargin: 12
+                    topMargin: Theme.spacingXl
                 }
 
                 spacing: 14
@@ -95,7 +95,7 @@ PanelWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 12
+                    spacing: Theme.spacingXl
 
                     ColumnLayout {
                         Layout.fillWidth: true
@@ -148,7 +148,7 @@ PanelWindow {
 
                     background: Rectangle {
                         color: Colors.surfaceContainerHighest
-                        radius: 10
+                        radius: Theme.radiusMd
 
                         border.width: 1
                         border.color: Colors.outlineVariant
@@ -190,7 +190,7 @@ PanelWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 10
+                    spacing: Theme.spacingLg
 
                     Item {
                         Layout.fillWidth: true
@@ -204,7 +204,7 @@ PanelWindow {
 
                         background: Rectangle {
                             color: Colors.surfaceContainerHighest
-                            radius: 10
+                            radius: Theme.radiusMd
 
                             border.width: 1
                             border.color: Colors.outlineVariant
@@ -237,7 +237,7 @@ PanelWindow {
 
                         background: Rectangle {
                             color: Colors.primary
-                            radius: 10
+                            radius: Theme.radiusMd
                         }
 
                         contentItem: Text {

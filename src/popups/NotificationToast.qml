@@ -43,8 +43,8 @@ PanelWindow {
             right: parent.right
             bottom: parent.bottom
 
-            rightMargin: 12
-            bottomMargin: 12
+            rightMargin: Theme.spacingXl
+            bottomMargin: Theme.spacingXl
         }
 
         ListView {

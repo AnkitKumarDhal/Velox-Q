@@ -14,7 +14,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 10
+        radius: Theme.radiusMd
         color: rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Colors.primaryContainer : Colors.surfaceContainerHigh)
 
         border.width: root.isDefault ? 1 : 0
@@ -35,15 +35,15 @@ Item {
         RowLayout {
             anchors {
                 fill: parent
-                leftMargin: 12
-                rightMargin: 12
+                leftMargin: Theme.spacingXl
+                rightMargin: Theme.spacingXl
             }
-            spacing: 10
+            spacing: Theme.spacingLg
 
             Rectangle {
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
-                radius: 14
+                radius: Theme.radiusLg
                 color: root.isDefault && !rowHov.containsMouse ? Colors.surface : Colors.surfaceContainerHighest
 
                 Text {

@@ -15,7 +15,7 @@ ColumnLayout {
     readonly property bool backendOperational: root.capability.operational
 
     Layout.fillWidth: true
-    spacing: 8
+    spacing: Theme.spacingMd
 
     ScriptModel {
         id: btConnectedModel
@@ -60,13 +60,13 @@ ColumnLayout {
             id: capabilityErrorColumn
             anchors {
                 fill: parent
-                margins: 10
+                margins: Theme.spacingLg
             }
-            spacing: 4
+            spacing: Theme.spacingXs
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Theme.spacingMd
 
                 Text {
                     text: root.backendFailure ? "󰅙" : "󰂲"
@@ -117,7 +117,7 @@ ColumnLayout {
         Rectangle {
             width: scanLabel.implicitWidth + 20
             height: 28
-            radius: 14
+            radius: Theme.radiusLg
             enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
             color: {
                 if (!enabled)
@@ -182,7 +182,7 @@ ColumnLayout {
         ColumnLayout {
             id: contentColumn
             width: parent.width
-            spacing: 6
+            spacing: Theme.spacingSm
 
             Text {
                 visible: btConnectedModel.values.length > 0
@@ -200,7 +200,7 @@ ColumnLayout {
                     required property var modelData
                     Layout.fillWidth: true
                     implicitHeight: 52
-                    radius: 10
+                    radius: Theme.radiusMd
                     color: connectedHover.hovered ? Colors.surfaceContainerHighest : Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28)
 
                     Behavior on color {
@@ -215,8 +215,8 @@ ColumnLayout {
                     RowLayout {
                         anchors {
                             fill: parent
-                            leftMargin: 12
-                            rightMargin: 10
+                            leftMargin: Theme.spacingXl
+                            rightMargin: Theme.spacingLg
                         }
                         spacing: 9
 
@@ -303,7 +303,7 @@ ColumnLayout {
                     required property var modelData
                     Layout.fillWidth: true
                     implicitHeight: 46
-                    radius: 10
+                    radius: Theme.radiusMd
                     color: pairedHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
                     Behavior on color {
@@ -318,8 +318,8 @@ ColumnLayout {
                     RowLayout {
                         anchors {
                             fill: parent
-                            leftMargin: 12
-                            rightMargin: 10
+                            leftMargin: Theme.spacingXl
+                            rightMargin: Theme.spacingLg
                         }
                         spacing: 9
 
@@ -436,7 +436,7 @@ ColumnLayout {
                     required property var modelData
                     Layout.fillWidth: true
                     implicitHeight: 46
-                    radius: 10
+                    radius: Theme.radiusMd
                     color: availableHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
                     Behavior on color {
@@ -451,8 +451,8 @@ ColumnLayout {
                     RowLayout {
                         anchors {
                             fill: parent
-                            leftMargin: 12
-                            rightMargin: 10
+                            leftMargin: Theme.spacingXl
+                            rightMargin: Theme.spacingLg
                         }
 
                         spacing: 9

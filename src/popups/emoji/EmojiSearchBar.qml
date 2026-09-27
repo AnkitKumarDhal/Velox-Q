@@ -27,7 +27,7 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        spacing: 8
+        spacing: Theme.spacingMd
 
         Text {
             text: "😊"
@@ -72,7 +72,7 @@ Item {
             }
 
             background: Rectangle {
-                radius: 8
+                radius: Theme.radiusSm
                 color: Colors.surfaceContainerHigh
                 border.width: 1
                 border.color: field.activeFocus ? Colors.primary : Colors.outline

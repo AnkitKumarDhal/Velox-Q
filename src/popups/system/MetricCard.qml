@@ -23,8 +23,8 @@ Item {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 12
-            spacing: 4
+            anchors.margins: Theme.spacingXl
+            spacing: Theme.spacingXs
 
             RowLayout {
                 Layout.fillWidth: true

@@ -19,7 +19,7 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        spacing: 10
+        spacing: Theme.spacingLg
 
         ColumnLayout {
             Layout.fillWidth: true

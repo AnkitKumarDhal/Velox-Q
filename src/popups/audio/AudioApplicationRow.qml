@@ -45,7 +45,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 10
+        radius: Theme.radiusMd
         color: rowHov.containsMouse ? Colors.surfaceContainerHighest : Colors.surfaceContainerHigh
         Behavior on color {
             ColorAnimation {
@@ -56,12 +56,12 @@ Item {
         RowLayout {
             anchors {
                 fill: parent
-                leftMargin: 10
-                rightMargin: 10
-                topMargin: 6
-                bottomMargin: 6
+                leftMargin: Theme.spacingLg
+                rightMargin: Theme.spacingLg
+                topMargin: Theme.spacingSm
+                bottomMargin: Theme.spacingSm
             }
-            spacing: 12
+            spacing: Theme.spacingXl
 
             Rectangle {
                 Layout.preferredWidth: 34
@@ -84,7 +84,7 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: Theme.spacingMd
 
                     Text {
                         text: root.applicationName
@@ -130,7 +130,7 @@ Item {
             Rectangle {
                 Layout.preferredWidth: 32
                 Layout.preferredHeight: 32
-                radius: 16
+                radius: Theme.radiusXl
                 color: root.muted ? Colors.errorContainer : Colors.surfaceContainerHighest
 
                 Behavior on color {

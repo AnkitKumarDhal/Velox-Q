@@ -50,7 +50,7 @@ Item {
             id: searchInput
 
             Layout.fillWidth: true
-            Layout.leftMargin: 10
+            Layout.leftMargin: Theme.spacingLg
             Layout.alignment: Qt.AlignVCenter
             color: Colors.on_Surface
             selectionColor: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.3)

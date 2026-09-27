@@ -26,8 +26,8 @@ Item {
     RowLayout {
         anchors {
             fill: parent
-            leftMargin: 16
-            rightMargin: 16
+            leftMargin: Theme.spacingXxl
+            rightMargin: Theme.spacingXxl
         }
 
         spacing: root.slotGap
@@ -102,8 +102,8 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             color: Colors.outlineVariant
             opacity: 0.7
-            Layout.leftMargin: 4
-            Layout.rightMargin: 4
+            Layout.leftMargin: Theme.spacingXs
+            Layout.rightMargin: Theme.spacingXs
         }
 
         Repeater {

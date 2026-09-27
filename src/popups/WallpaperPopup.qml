@@ -99,16 +99,16 @@ PanelWindow {
             ColumnLayout {
                 anchors {
                     fill: parent
-                    margins: 16
-                    bottomMargin: 12
+                    margins: Theme.spacingXxl
+                    bottomMargin: Theme.spacingXl
                 }
 
-                spacing: 10
+                spacing: Theme.spacingLg
 
                 RowLayout {
                     Layout.fillWidth: true
 
-                    spacing: 10
+                    spacing: Theme.spacingLg
 
                     Text {
                         text: "󰋲"

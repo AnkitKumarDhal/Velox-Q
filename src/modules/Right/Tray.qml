@@ -92,7 +92,7 @@ PillBase {
 
                 width: root.hiddenTrayCount > 9 ? 18 : 14
                 height: 12
-                radius: 6
+                radius: Theme.radiusXs
 
                 color: Colors.primary
 
@@ -189,7 +189,7 @@ PillBase {
                             Rectangle {
                                 anchors.fill: parent
 
-                                radius: 8
+                                radius: Theme.radiusSm
                                 color: Colors.surfaceContainerHigh
 
                                 border.width: 1
@@ -199,7 +199,7 @@ PillBase {
                                     id: pinnedTooltipText
 
                                     anchors.fill: parent
-                                    anchors.margins: 10
+                                    anchors.margins: Theme.spacingLg
 
                                     text: modelData.tooltipTitle || modelData.tooltipDescription || modelData.title || ""
                                     color: Colors.on_Surface
@@ -410,7 +410,7 @@ PillBase {
 
                                 Rectangle {
                                     anchors.fill: parent
-                                    radius: 8
+                                    radius: Theme.radiusSm
 
                                     color: Colors.surfaceContainerHigh
 
@@ -421,7 +421,7 @@ PillBase {
                                         id: overflowTooltipText
 
                                         anchors.fill: parent
-                                        anchors.margins: 10
+                                        anchors.margins: Theme.spacingLg
 
                                         text: modelData.tooltipTitle || modelData.tooltipDescription || modelData.title || ""
                                         color: Colors.on_Surface

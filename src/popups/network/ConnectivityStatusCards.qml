@@ -16,7 +16,7 @@ RowLayout {
     readonly property var bluetoothCapability: NetworkService.bluetooth.capability
 
     Layout.fillWidth: true
-    spacing: 8
+    spacing: Theme.spacingMd
 
     Rectangle {
         Layout.fillWidth: true
@@ -60,11 +60,11 @@ RowLayout {
         RowLayout {
             anchors {
                 fill: parent
-                leftMargin: 12
-                rightMargin: 12
+                leftMargin: Theme.spacingXl
+                rightMargin: Theme.spacingXl
             }
             z: 1
-            spacing: 10
+            spacing: Theme.spacingLg
 
             Text {
                 text: {
@@ -185,7 +185,7 @@ RowLayout {
                 Rectangle {
                     width: 16
                     height: 16
-                    radius: 8
+                    radius: Theme.radiusSm
                     anchors.verticalCenter: parent.verticalCenter
                     x: NetworkService.wifiEnabled && root.wifiCapability.operational ? 19 : 3
                     color: NetworkService.wifiEnabled && root.wifiCapability.operational ? Colors.on_Primary : Colors.outline
@@ -253,11 +253,11 @@ RowLayout {
         RowLayout {
             anchors {
                 fill: parent
-                leftMargin: 12
-                rightMargin: 12
+                leftMargin: Theme.spacingXl
+                rightMargin: Theme.spacingXl
             }
 
-            spacing: 10
+            spacing: Theme.spacingLg
 
             Text {
                 text: {
@@ -361,7 +361,7 @@ RowLayout {
                 Rectangle {
                     width: 16
                     height: 16
-                    radius: 8
+                    radius: Theme.radiusSm
                     anchors.verticalCenter: parent.verticalCenter
                     x: NetworkService.bluetooth.effectiveEnabled && root.bluetoothCapability.operational ? 19 : 3
                     color: NetworkService.bluetooth.effectiveEnabled && root.bluetoothCapability.operational ? Colors.on_Primary : Colors.outline

@@ -453,7 +453,7 @@ PanelWindow {
                         bottomMargin: 14
                     }
 
-                    spacing: 4
+                    spacing: Theme.spacingXs
                     Text {
                         Layout.fillWidth: true
                         text: root.specialTitle

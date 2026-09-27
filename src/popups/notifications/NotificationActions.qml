@@ -21,7 +21,7 @@ Item {
             top: parent.top
         }
 
-        spacing: 6
+        spacing: Theme.spacingSm
 
         Repeater {
             model: root.notification ? root.notification.actions : []
@@ -34,7 +34,7 @@ Item {
 
                 color: actionHover.hovered ? Colors.primaryContainer : "transparent"
 
-                radius: 14
+                radius: Theme.radiusLg
                 border.color: actionHover.hovered ? Colors.primary : Colors.outline
                 border.width: 1
 
@@ -58,8 +58,8 @@ Item {
                         right: parent.right
                         verticalCenter: parent.verticalCenter
 
-                        leftMargin: 12
-                        rightMargin: 12
+                        leftMargin: Theme.spacingXl
+                        rightMargin: Theme.spacingXl
                     }
 
                     text: modelData ? modelData.text : ""

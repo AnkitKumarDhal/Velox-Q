@@ -24,7 +24,7 @@ ColumnLayout {
     readonly property bool selectedNetworkSupportsPsk: root.selectedNetwork !== null && (root.selectedNetwork.security === WifiSecurityType.WpaPsk || root.selectedNetwork.security === WifiSecurityType.Wpa2Psk || root.selectedNetwork.security === WifiSecurityType.Sae)
 
     Layout.fillWidth: true
-    spacing: 8
+    spacing: Theme.spacingMd
 
     onSelectedNetworkChanged: {
         root.showPassword = false;
@@ -82,13 +82,13 @@ ColumnLayout {
             id: capabilityErrorColumn
             anchors {
                 fill: parent
-                margins: 10
+                margins: Theme.spacingLg
             }
-            spacing: 4
+            spacing: Theme.spacingXs
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: Theme.spacingMd
 
                 Text {
                     text: "󰅙"
@@ -150,7 +150,7 @@ ColumnLayout {
         Rectangle {
             width: wifiScanLabel.implicitWidth + 20
             height: 28
-            radius: 14
+            radius: Theme.radiusLg
             color: root.operational && wifiScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
 
             Behavior on color {
@@ -202,7 +202,7 @@ ColumnLayout {
             id: wifiContent
 
             width: parent.width
-            spacing: 6
+            spacing: Theme.spacingSm
 
             Text {
                 visible: wifiConnectedModel.values.length > 0
@@ -265,14 +265,14 @@ ColumnLayout {
 
                     anchors {
                         fill: parent
-                        margins: 10
+                        margins: Theme.spacingLg
                     }
 
-                    spacing: 8
+                    spacing: Theme.spacingMd
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: Theme.spacingMd
 
                         Item {
                             Layout.preferredWidth: 24
@@ -323,7 +323,7 @@ ColumnLayout {
                         Rectangle {
                             width: 28
                             height: 28
-                            radius: 14
+                            radius: Theme.radiusLg
 
                             color: closeConnectHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
@@ -359,7 +359,7 @@ ColumnLayout {
                         visible: root.selectedNetworkSupportsPsk
                         enabled: root.operational
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: Theme.spacingMd
 
                         TextField {
                             id: passwordField
@@ -378,7 +378,7 @@ ColumnLayout {
                             placeholderTextColor: Colors.outline
 
                             background: Rectangle {
-                                radius: 8
+                                radius: Theme.radiusSm
                                 color: Colors.surfaceContainer
                                 border.width: passwordField.activeFocus ? 1 : 0
                                 border.color: Colors.primary
@@ -452,7 +452,7 @@ ColumnLayout {
                         Rectangle {
                             width: 34
                             height: 34
-                            radius: 8
+                            radius: Theme.radiusSm
                             opacity: root.operational ? 1 : 0.45
                             color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
 
@@ -495,7 +495,7 @@ ColumnLayout {
                         visible: root.selectedNetwork !== null && !root.selectedNetworkSupportsPsk && root.selectedNetwork.security !== WifiSecurityType.Open
                         Layout.fillWidth: true
                         implicitHeight: 34
-                        radius: 8
+                        radius: Theme.radiusSm
                         color: Colors.surfaceContainer
 
                         Text {

@@ -17,7 +17,7 @@ Item {
         anchors.fill: parent
 
         orientation: ListView.Horizontal
-        spacing: 4
+        spacing: Theme.spacingXs
 
         clip: true
         boundsBehavior: Flickable.StopAtBounds
@@ -31,7 +31,7 @@ Item {
             width: tabLabel.implicitWidth + 16
             height: 30
 
-            radius: 8
+            radius: Theme.radiusSm
 
             color: {
                 if (!root.searchActive && root.activeIndex === index)

@@ -71,7 +71,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        spacing: 8
+        spacing: Theme.spacingMd
         opacity: root.visible ? 1 : 0
         Behavior on opacity {
             NumberAnimation {
@@ -81,7 +81,7 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 10
+            spacing: Theme.spacingLg
 
             Rectangle {
                 Layout.preferredWidth: 36
@@ -159,7 +159,7 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: 46
-            radius: 10
+            radius: Theme.radiusMd
             color: !root.available ? Colors.surfaceContainerHigh : selectorHov.containsMouse ? Colors.surfaceContainerHighest : Colors.surfaceContainerHigh
             border.width: root.backendFailure ? 1 : 0
             border.color: Colors.error
@@ -175,9 +175,9 @@ Item {
             }
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 12
-                anchors.rightMargin: 12
-                spacing: 10
+                anchors.leftMargin: Theme.spacingXl
+                anchors.rightMargin: Theme.spacingXl
+                spacing: Theme.spacingLg
                 Text {
                     text: root.isOutput ? "󰓃" : "󰍬"
                     color: root.backendFailure ? Colors.error : root.available ? Colors.primary : Colors.outline
@@ -259,7 +259,7 @@ Item {
                     left: parent.left
                     right: parent.right
                 }
-                spacing: 8
+                spacing: Theme.spacingMd
                 Repeater {
                     model: Pipewire.nodes.values
                     delegate: AudioDeviceOption {

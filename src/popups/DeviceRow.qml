@@ -15,7 +15,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 10
+        radius: Theme.radiusMd
         color: rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.3) : "transparent")
         Behavior on color {
             ColorAnimation {
@@ -26,9 +26,9 @@ Item {
         RowLayout {
             anchors {
                 fill: parent
-                margins: 12
+                margins: Theme.spacingXl
             }
-            spacing: 10
+            spacing: Theme.spacingLg
 
             // Device icon
             Text {
@@ -70,7 +70,7 @@ Item {
                 Row {
                     id: chipRow
                     anchors.centerIn: parent
-                    spacing: 4
+                    spacing: Theme.spacingXs
 
                     Text {
                         text: "󰄵"

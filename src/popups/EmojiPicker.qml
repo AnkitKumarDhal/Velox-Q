@@ -107,8 +107,8 @@ PanelWindow {
             anchors {
                 bottom: parent.bottom
                 left: parent.left
-                bottomMargin: 10
-                leftMargin: 10
+                bottomMargin: Theme.spacingLg
+                leftMargin: Theme.spacingLg
             }
 
             width: 380
@@ -127,7 +127,7 @@ PanelWindow {
                     fill: parent
                     margins: 14
                 }
-                spacing: 10
+                spacing: Theme.spacingLg
 
                 EmojiSearchBar {
                     id: searchBar

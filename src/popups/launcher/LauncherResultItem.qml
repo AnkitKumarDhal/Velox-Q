@@ -51,11 +51,11 @@ Item {
     RowLayout {
         anchors {
             fill: parent
-            leftMargin: 16
+            leftMargin: Theme.spacingXxl
             rightMargin: 14
         }
 
-        spacing: 12
+        spacing: Theme.spacingXl
 
         Rectangle {
             width: 36

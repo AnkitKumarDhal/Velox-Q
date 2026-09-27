@@ -56,8 +56,8 @@ Item {
             id: sliderContent
 
             anchors.fill: parent
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+            anchors.leftMargin: Theme.spacingLg
+            anchors.rightMargin: Theme.spacingLg
             property real volume: Math.max(0, Math.min(1, root.player?.volume ?? 0))
 
             Rectangle {

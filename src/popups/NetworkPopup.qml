@@ -167,13 +167,13 @@ PanelWindow {
                     top: parent.top
                     left: parent.left
                     right: parent.right
-                    topMargin: 16
-                    leftMargin: 16
-                    rightMargin: 16
-                    bottomMargin: 16
+                    topMargin: Theme.spacingXxl
+                    leftMargin: Theme.spacingXxl
+                    rightMargin: Theme.spacingXxl
+                    bottomMargin: Theme.spacingXxl
                 }
 
-                spacing: 10
+                spacing: Theme.spacingLg
 
                 ConnectivityStatusCards {
                     Layout.fillWidth: true
