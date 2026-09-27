@@ -39,10 +39,20 @@ PanelWindow {
     property real _position: 0
     property bool _seeking: false
     property int trackChangeToken: 0
+    property real trackContextX: 0
+    property real trackContextY: 0
+    property bool trackContextOpen: false
 
     onPlayerChanged: {
         _position = 0;
         trackChangeToken++;
+    }
+
+    onVisibleChanged: {
+        if (!visible) {
+            playerSelector.open = false;
+            win.trackContextOpen = false;
+        }
     }
 
     Timer {
@@ -169,16 +179,66 @@ PanelWindow {
                         anchors.fill: parent
                         spacing: Theme.spacingXs
 
+                        Rectangle {
+                            id: raisePlayerButton
+                            anchors {
+                                top: parent.top
+                                right: playerSelector.left
+                                rightMargin: Theme.spacingXs
+                                topMargin: 12
+                            }
+
+                            width: 18
+                            height: 18
+                            radius: 9
+
+                            visible: win.player?.canRaise ?? false
+                            color: raiseMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : raiseMouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity) : "transparent"
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Theme.motionFast
+                                }
+                            }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰏂"
+                                color: Colors.on_SurfaceVariant
+                                font.family: Fonts.fontM
+                                font.pixelSize: 11
+                            }
+
+                            MouseArea {
+                                id: raiseMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                enabled: win.player?.canRaise ?? false
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: {
+                                    if (win.player?.canRaise)
+                                        win.player.raise();
+                                }
+                            }
+                        }
+
                         RowLayout {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 18
                         }
 
                         MediaTrackInfo {
+                            id: trackInfo
                             player: win.player
                             transitionKey: win.trackChangeToken
                             Layout.fillWidth: true
                             Layout.preferredHeight: 60
+                            onContextRequested: (x, y) => {
+                                const point = trackInfo.mapToItem(rightColumn, x, y);
+                                win.trackContextX = point.x;
+                                win.trackContextY = point.y;
+                                win.trackContextOpen = true;
+                            }
                         }
 
                         MediaProgress {
@@ -223,6 +283,183 @@ PanelWindow {
                         }
                     }
 
+                    MouseArea {
+                        id: trackContextDismiss
+                        anchors.fill: parent
+                        visible: win.trackContextOpen
+                        z: 110
+                        onClicked: win.trackContextOpen = false
+                    }
+
+                    PopupCard {
+                        id: trackContextMenu
+                        x: Math.min(Math.max(0, win.trackContextX + 8), rightColumn.width - width)
+                        y: Math.min(Math.max(0, win.trackContextY + 8), rightColumn.height - height)
+                        width: 170
+                        height: 132
+                        color: Colors.surfaceContainerHigh
+                        visible: win.trackContextOpen
+                        opacity: visible ? 1 : 0
+                        scale: visible ? 1 : 0.94
+                        transformOrigin: Item.TopRight
+                        z: 120
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.motionFast
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: Theme.motionSmooth
+                                easing.type: Easing.OutBack
+                            }
+                        }
+
+                        ColumnLayout {
+                            anchors {
+                                fill: parent
+                                margins: Theme.spacingXs
+                            }
+
+                            spacing: 1
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 28
+                                radius: Theme.radiusSm
+
+                                color: copyTitleMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : copyTitleMouse.containsMouse ? Colors.surfaceContainerHighest : "transparent"
+
+                                Text {
+                                    anchors {
+                                        left: parent.left
+                                        leftMargin: Theme.spacingSm
+                                        verticalCenter: parent.verticalCenter
+                                    }
+
+                                    text: "Copy title"
+                                    color: Colors.on_SurfaceVariant
+                                    font.family: Fonts.font
+                                    font.pixelSize: 9
+                                }
+
+                                MouseArea {
+                                    id: copyTitleMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+
+                                    onClicked: {
+                                        Quickshell.clipboardText = win.player?.trackTitle || "Unknown Title";
+                                        win.trackContextOpen = false;
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 28
+                                radius: Theme.radiusSm
+                                color: copyArtistMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : copyArtistMouse.containsMouse ? Colors.surfaceContainerHighest : "transparent"
+
+                                Text {
+                                    anchors {
+                                        left: parent.left
+                                        leftMargin: Theme.spacingSm
+                                        verticalCenter: parent.verticalCenter
+                                    }
+
+                                    text: "Copy artist"
+                                    color: Colors.on_SurfaceVariant
+                                    font.family: Fonts.font
+                                    font.pixelSize: 9
+                                }
+
+                                MouseArea {
+                                    id: copyArtistMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        Quickshell.clipboardText = win.player?.trackArtist || "Unknown Artist";
+                                        win.trackContextOpen = false;
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 28
+                                radius: Theme.radiusSm
+
+                                color: copyAlbumMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : copyAlbumMouse.containsMouse ? Colors.surfaceContainerHighest : "transparent"
+
+                                Text {
+                                    anchors {
+                                        left: parent.left
+                                        leftMargin: Theme.spacingSm
+                                        verticalCenter: parent.verticalCenter
+                                    }
+
+                                    text: "Copy album"
+                                    color: Colors.on_SurfaceVariant
+                                    font.family: Fonts.font
+                                    font.pixelSize: 9
+                                }
+
+                                MouseArea {
+                                    id: copyAlbumMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+
+                                    onClicked: {
+                                        Quickshell.clipboardText = win.player?.trackAlbum || "Unknown Album";
+                                        win.trackContextOpen = false;
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 28
+                                radius: Theme.radiusSm
+
+                                color: copyTrackMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : copyTrackMouse.containsMouse ? Colors.surfaceContainerHighest : "transparent"
+
+                                Text {
+                                    anchors {
+                                        left: parent.left
+                                        leftMargin: Theme.spacingSm
+                                        verticalCenter: parent.verticalCenter
+                                    }
+
+                                    text: "Copy artist — title"
+                                    color: Colors.on_SurfaceVariant
+                                    font.family: Fonts.font
+                                    font.pixelSize: 9
+                                }
+
+                                MouseArea {
+                                    id: copyTrackMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+
+                                    onClicked: {
+                                        const artist = win.player?.trackArtist || "Unknown Artist";
+                                        const title = win.player?.trackTitle || "Unknown Title";
+                                        Quickshell.clipboardText = artist + " — " + title;
+                                        win.trackContextOpen = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     MediaPlayerSelector {
                         id: playerSelector
                         player: win.player
@@ -232,6 +469,16 @@ PanelWindow {
                             topMargin: 12
                         }
                         z: 10
+                    }
+
+                    MouseArea {
+                        id: playerSelectorDismiss
+
+                        anchors.fill: parent
+                        visible: playerSelector.open
+                        z: 9
+
+                        onClicked: playerSelector.open = false
                     }
                 }
             }

@@ -18,6 +18,8 @@ Item {
     property string incomingArtist: ""
     property string incomingAlbum: ""
 
+    signal contextRequested(real x, real y)
+
     Layout.fillWidth: true
     implicitHeight: 54
 
@@ -199,5 +201,11 @@ Item {
             maximumLineCount: 1
             opacity: 0.72
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        onClicked: root.contextRequested(mouseX, mouseY)
     }
 }
