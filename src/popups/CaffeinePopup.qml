@@ -10,6 +10,8 @@ import qs.src.services
 PanelWindow {
     id: root
 
+    required property var screen
+
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
@@ -23,8 +25,8 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     visible: slidePanel.windowVisible
     mask: Region {
-        x: (root.width - card.width) / 2
-        y: Theme.barHeight + 8
+        x: card.x
+        y: Theme.barHeight + Theme.spacingMd
         width: card.width
         height: card.height
     }
@@ -33,16 +35,17 @@ PanelWindow {
         id: slidePanel
         anchors.fill: parent
         edge: "top"
-        open: Popups.caffeineOpen
+        open: Popups.caffeineOpen && Popups.caffeineScreen === root.screen
         onCloseRequested: Popups.caffeineOpen = false
 
         Rectangle {
             id: card
             anchors {
                 top: parent.top
-                horizontalCenter: parent.horizontalCenter
                 topMargin: Theme.barHeight + 8
             }
+
+            x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.caffeineAnchorX - width / 2))
 
             width: 370
             height: cardColumn.implicitHeight + 28

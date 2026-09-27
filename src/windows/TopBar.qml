@@ -98,7 +98,9 @@ PanelWindow {
 
             ClockDate {}
             Media {}
-            IdleInhibitor {}
+            IdleInhibitor {
+                screen: root.screen
+            }
         }
 
         // Right modules

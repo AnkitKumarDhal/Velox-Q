@@ -250,7 +250,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: Colors.scrim
-        opacity: root._visualOpen ? 1 : 0
+        opacity: root._visualOpen ? Theme.opacitySubtle : 0
 
         Behavior on opacity {
             NumberAnimation {

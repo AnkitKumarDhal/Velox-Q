@@ -185,7 +185,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         color: Colors.scrim
-        opacity: Popups.launcherOpen ? 1 : 0
+        opacity: Popups.launcherOpen ? Theme.opacitySubtle : 0
 
         Behavior on opacity {
             NumberAnimation {

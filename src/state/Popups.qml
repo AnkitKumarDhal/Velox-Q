@@ -18,7 +18,6 @@ Singleton {
     property bool batteryOpen: false
     property bool keybindsOpen: false
     property bool sessionOpen: false
-    property bool caffeineOpen: false
     property int networkTab: 0
 
     property bool systemOpen: false
@@ -32,6 +31,10 @@ Singleton {
     property bool volumeOpen: false
     property var volumeScreen: null
     property real volumeAnchorX: 0
+
+    property bool caffeineOpen: false
+    property var caffeineScreen: null
+    property real caffeineAnchorX: 0
 
     // Mutual Exclusion
     onNotificationsOpenChanged: if (notificationsOpen)

@@ -8,6 +8,8 @@ import qs.src.services
 PillBase {
     id: root
 
+    required property var screen
+
     hoverExpand: true
 
     border.color: Popups.caffeineOpen ? Colors.primary : "transparent"
@@ -81,8 +83,15 @@ PillBase {
         }
     }
 
+    function updatePopupAnchor() {
+        Popups.caffeineScreen = root.screen;
+        Popups.caffeineAnchorX = root.mapToItem(null, root.width / 2, 0).x;
+    }
+
     onClicked: {
-        Popups.caffeineOpen = !Popups.caffeineOpen;
+        const wasOpen = Popups.caffeineOpen;
+        root.updatePopupAnchor();
+        Popups.caffeineOpen = !wasOpen;
     }
 
     onRightClicked: {
