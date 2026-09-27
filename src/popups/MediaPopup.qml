@@ -175,6 +175,7 @@ PanelWindow {
                         MediaPlayerSelector {
                             player: win.player
                             Layout.alignment: Qt.AlignVCenter
+                            z: 100
                         }
                     }
 
