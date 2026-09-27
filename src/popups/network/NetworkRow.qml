@@ -11,6 +11,7 @@ Item {
     signal networkSelected(var network)
 
     implicitHeight: 46
+    opacity: root.network.stateChanging ? Theme.stateLoadingOpacity : 1
 
     readonly property bool supportsPsk: {
         switch (root.network.security) {
@@ -29,7 +30,7 @@ Item {
         anchors.fill: parent
         radius: Theme.radiusMd
 
-        color: rootHover.containsMouse ? Colors.surfaceContainerHighest : root.network.connected ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28) : "transparent"
+        color: rootHover.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : rootHover.containsMouse ? Colors.surfaceContainerHighest : root.network.connected ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28) : "transparent"
 
         Behavior on color {
             ColorAnimation {

@@ -132,7 +132,7 @@ Item {
                     anchors.fill: parent
                     radius: Theme.radiusMd
 
-                    color: index === root.selectedAction ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : actionMouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08) : "transparent"
+                    color: actionMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : index === root.selectedAction ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateSelectedOpacity) : actionMouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity) : "transparent"
 
                     Behavior on color {
                         ColorAnimation {
@@ -149,7 +149,7 @@ Item {
                     }
 
                     width: 3
-                    radius: 1.5
+                    radius: Theme.radiusXs / 4
                     color: Colors.primary
                     opacity: index === root.selectedAction ? 1 : 0
 

@@ -66,7 +66,7 @@ Item {
                     width: Math.min(parent.width - Theme.spacingXs, hIcon.implicitWidth + (hLabel.visible ? hLabel.implicitWidth + Theme.spacingMd : 0) + 24)
                     height: parent.height - Theme.spacingMd
                     radius: height / 2
-                    color: hTab.isActive ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : (hHov.containsMouse ? Colors.onSurfaceWeak : "transparent")
+                    color: hHov.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : hTab.isActive ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateSelectedOpacity) : (hHov.containsMouse ? Colors.onSurfaceWeak : "transparent")
 
                     Behavior on color {
                         ColorAnimation {
@@ -153,7 +153,7 @@ Item {
                 width: Theme.controlHeightLarge
                 height: vCol.tabH
                 radius: Theme.pillRadius
-                color: vTab.isActive ? Colors.primary : (vHov.containsMouse ? Colors.onSurfaceWeak : "transparent")
+                color: vHov.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : vTab.isActive ? Colors.primary : (vHov.containsMouse ? Colors.onSurfaceWeak : "transparent")
 
                 Behavior on color {
                     ColorAnimation {

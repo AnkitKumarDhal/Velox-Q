@@ -32,10 +32,10 @@ Item {
                 width: Math.min(actionText.implicitWidth + 24, 150)
                 height: 28
 
-                color: actionHover.hovered ? Colors.primaryContainer : "transparent"
+                color: actionTap.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : actionHover.hovered ? Colors.primaryContainer : "transparent"
 
                 radius: Theme.radiusLg
-                border.color: actionHover.hovered ? Colors.primary : Colors.outline
+                border.color: actionTap.pressed ? Colors.primary : actionHover.hovered ? Colors.primary : Colors.outline
                 border.width: 1
 
                 Behavior on color {
@@ -63,7 +63,7 @@ Item {
                     }
 
                     text: modelData ? modelData.text : ""
-                    color: actionHover.hovered ? Colors.on_PrimaryContainer : Colors.on_Surface
+                    color: actionTap.pressed ? Colors.on_Primary : actionHover.hovered ? Colors.on_PrimaryContainer : Colors.on_Surface
                     font.pixelSize: 10
                     font.family: Fonts.font
 
@@ -80,6 +80,7 @@ Item {
                 }
 
                 TapHandler {
+                    id: actionTap
                     acceptedButtons: Qt.LeftButton
                     onTapped: {
                         if (modelData)

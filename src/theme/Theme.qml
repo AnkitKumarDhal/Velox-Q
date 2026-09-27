@@ -67,6 +67,14 @@ QtObject {
     readonly property real opacityStrong: 0.75
     readonly property real opacityEmphasis: 0.8
 
+    // UI states
+    readonly property real stateHoverOpacity: 0.08
+    readonly property real statePressedOpacity: 0.16
+    readonly property real stateSelectedOpacity: 0.18
+    readonly property real stateFocusedOpacity: 0.12
+    readonly property real stateDisabledOpacity: 0.38
+    readonly property real stateLoadingOpacity: 0.65
+
     // Animation
     readonly property int motionInstant: 80
     readonly property int motionQuick: 100

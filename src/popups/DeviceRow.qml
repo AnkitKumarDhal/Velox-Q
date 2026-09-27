@@ -16,7 +16,8 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: Theme.radiusMd
-        color: rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.3) : "transparent")
+        color: rowHov.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.3) : "transparent")
+
         Behavior on color {
             ColorAnimation {
                 duration: Theme.motionFast

@@ -15,7 +15,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: Theme.radiusMd
-        color: rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Colors.primaryContainer : Colors.surfaceContainerHigh)
+        color: rowHov.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : rowHov.containsMouse ? Colors.surfaceContainerHighest : (root.isDefault ? Colors.primaryContainer : Colors.surfaceContainerHigh)
 
         border.width: root.isDefault ? 1 : 0
         border.color: Colors.primary

@@ -17,10 +17,10 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        topRightRadius: 15
-        bottomRightRadius: 15
+        topRightRadius: Theme.radiusLg
+        bottomRightRadius: Theme.radiusLg
 
-        color: root.isSelected ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.18) : hov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08) : "transparent"
+        color: hov.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : root.isSelected ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateSelectedOpacity) : hov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity) : "transparent"
 
         Behavior on color {
             ColorAnimation {

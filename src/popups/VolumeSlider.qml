@@ -43,6 +43,13 @@ Item {
         color: root.muted ? Colors.error : Colors.primary
         anchors.verticalCenter: parent.verticalCenter
         x: Math.min(track.width - width, Math.max(0, track.width * root.value - width / 2))
+        scale: dragArea.pressed ? 1.1 : 1
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.motionFast
+            }
+        }
 
         Behavior on color {
             ColorAnimation {
@@ -57,7 +64,7 @@ Item {
             height: parent.height + 8
             radius: width / 2
             color: Colors.primary
-            opacity: dragArea.pressed ? 0.2 : 0
+            opacity: dragArea.pressed ? Theme.statePressedOpacity : 0
             Behavior on opacity {
                 NumberAnimation {
                     duration: Theme.motionQuick

@@ -35,7 +35,7 @@ Rectangle {
         anchors.fill: parent
         radius: parent.radius
         color: Colors.primary
-        opacity: hoverEnabled && hov.containsMouse ? Theme.hoverOpacity : 0
+        opacity: hov.pressed ? Theme.statePressedOpacity : hoverEnabled && hov.containsMouse ? Theme.hoverOpacity : 0
         z: 2
 
         Behavior on opacity {

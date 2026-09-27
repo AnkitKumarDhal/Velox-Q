@@ -30,12 +30,9 @@ Item {
 
             Layout.fillWidth: true
             height: 32
-
             text: root.directory
-
             font.family: Fonts.font
             font.pixelSize: 12
-
             color: Colors.on_Surface
             placeholderTextColor: Colors.outline
             placeholderText: "Wallpaper directory…"
@@ -76,7 +73,7 @@ Item {
             height: 32
             radius: Theme.radiusSm
 
-            color: rescanHov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.15) : "transparent"
+            color: rescanHov.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : rescanHov.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity) : "transparent"
 
             Behavior on color {
                 ColorAnimation {
@@ -86,23 +83,17 @@ Item {
 
             Text {
                 anchors.centerIn: parent
-
                 text: "󰑐"
-
                 font.family: Fonts.fontM
                 font.pixelSize: 16
-
-                color: rescanHov.containsMouse ? Colors.primary : Colors.on_SurfaceVariant
+                color: rescanHov.pressed ? Colors.primary : rescanHov.containsMouse ? Colors.primary : Colors.on_SurfaceVariant
             }
 
             MouseArea {
                 id: rescanHov
-
                 anchors.fill: parent
-
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-
                 onClicked: {
                     root.directory = dirField.text;
                     root.rescanRequested(dirField.text);

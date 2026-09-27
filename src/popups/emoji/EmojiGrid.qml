@@ -70,6 +70,8 @@ Item {
             radius: Theme.radiusSm
 
             color: {
+                if (hov.pressed)
+                    return Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity);
                 if (index === grid.currentIndex)
                     return Colors.primaryContainer;
                 if (hov.containsMouse)

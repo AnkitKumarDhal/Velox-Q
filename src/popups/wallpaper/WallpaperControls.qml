@@ -57,8 +57,8 @@ Item {
             width: 130
             height: 34
             radius: 17
-            color: !root.canApply ? Colors.surfaceContainerHighest : root.applying ? Colors.surfaceContainerHighest : applyHov.containsMouse ? Colors.primaryContainer : Colors.primary
-            opacity: root.canApply ? 1 : 0.55
+            color: !root.canApply ? Colors.surfaceContainerHighest : root.applying ? Colors.surfaceContainerHighest : applyHov.pressed ? Colors.primary : applyHov.containsMouse ? Colors.primaryContainer : Colors.primary
+            opacity: root.canApply ? 1 : Theme.stateDisabledOpacity
 
             Behavior on color {
                 ColorAnimation {
@@ -75,7 +75,7 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: !root.canApply ? "Unavailable" : root.applying ? "Applying…" : root.applied ? "↻ Re-apply" : "󰀝 Apply Wallpaper"
-                color: !root.canApply ? Colors.outline : root.applying ? Colors.on_SurfaceVariant : root.applied ? Colors.on_Primary : Colors.on_Primary
+                color: !root.canApply ? Colors.outline : root.applying ? Colors.on_SurfaceVariant : applyHov.containsMouse ? Colors.on_PrimaryContainer : root.applied ? Colors.on_Primary : Colors.on_Primary
                 font.family: Fonts.font
                 font.pixelSize: 11
                 font.bold: true
