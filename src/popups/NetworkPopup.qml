@@ -136,7 +136,7 @@ PanelWindow {
         open: Popups.networkOpen && Popups.networkScreen === root.screen
         onCloseRequested: Popups.networkOpen = false
 
-        Rectangle {
+        PopupCard {
             id: connectivityCard
 
             anchors {
@@ -146,11 +146,6 @@ PanelWindow {
             x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.networkAnchorX - width / 2))
             width: 380
             height: mainColumn.implicitHeight + 32
-            radius: Theme.popupRadius
-            color: Colors.surfaceContainer
-            border.width: Theme.popupBorder
-            border.color: Colors.outlineVariant
-            clip: true
 
             Behavior on height {
                 NumberAnimation {

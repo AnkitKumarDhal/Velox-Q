@@ -38,22 +38,18 @@ PanelWindow {
         open: Popups.caffeineOpen && Popups.caffeineScreen === root.screen
         onCloseRequested: Popups.caffeineOpen = false
 
-        Rectangle {
+        PopupCard {
             id: card
             anchors {
                 top: parent.top
-                topMargin: Theme.barHeight + 8
+                topMargin: Theme.barHeight + Theme.spacingMd
             }
 
             x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.caffeineAnchorX - width / 2))
 
             width: 370
             height: cardColumn.implicitHeight + 28
-            radius: Theme.popupRadius
-            color: Colors.surfaceContainer
             border.color: CaffeineService.capability.backendFailure ? Colors.error : Colors.outlineVariant
-            border.width: Theme.popupBorder
-            clip: true
 
             ColumnLayout {
                 id: cardColumn

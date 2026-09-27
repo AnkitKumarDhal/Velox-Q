@@ -52,7 +52,7 @@ PanelWindow {
         open: Popups.volumeOpen && Popups.volumeScreen === root.screen
         onCloseRequested: Popups.volumeOpen = false
 
-        Rectangle {
+        PopupCard {
             id: card
 
             anchors {
@@ -63,11 +63,6 @@ PanelWindow {
             x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.volumeAnchorX - width / 2))
             width: 440
             height: mainColumn.implicitHeight + 32
-            radius: Theme.popupRadius
-            color: Colors.surfaceContainer
-            border.color: Colors.outlineVariant
-            border.width: Theme.popupBorder
-            clip: true
 
             Behavior on height {
                 NumberAnimation {

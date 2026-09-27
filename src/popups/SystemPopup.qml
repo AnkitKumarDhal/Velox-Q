@@ -45,7 +45,7 @@ PanelWindow {
                 DiskStats.refresh();
         }
 
-        Rectangle {
+        PopupCard {
             id: sysCard
             anchors {
                 top: parent.top
@@ -54,11 +54,6 @@ PanelWindow {
             x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.systemAnchorX - width / 2))
             width: 400
             height: cardCol.implicitHeight + 24
-            radius: Theme.popupRadius
-            color: Colors.surfaceContainer
-            border.color: Colors.outlineVariant
-            border.width: Theme.popupBorder
-            clip: true
 
             ColumnLayout {
                 id: cardCol
