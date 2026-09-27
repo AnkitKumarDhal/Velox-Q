@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Services.Mpris
 import qs.src.components
 import qs.src.theme
 import qs.src.services
@@ -25,7 +26,7 @@ Item {
     Rectangle {
         id: selectorButton
 
-        implicitWidth: playerRow.implicitWidth + 8
+        implicitWidth: playerRow.implicitWidth + 12
         height: 18
         radius: 9
 
@@ -41,8 +42,8 @@ Item {
             id: playerRow
 
             anchors.fill: parent
-            anchors.leftMargin: Theme.spacingXs
-            anchors.rightMargin: Theme.spacingXs
+            anchors.leftMargin: Theme.spacingMd
+            anchors.rightMargin: Theme.spacingMd
             spacing: Theme.spacingXs
 
             Image {

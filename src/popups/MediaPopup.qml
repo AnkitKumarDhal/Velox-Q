@@ -156,75 +156,82 @@ PanelWindow {
                     Layout.alignment: Qt.AlignVCenter
                 }
 
-                ColumnLayout {
+                Item {
                     id: rightColumn
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.alignment: Qt.AlignVCenter
-                    spacing: Theme.spacingXs
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 18
+                    ColumnLayout {
+                        id: contentColumn
 
-                        Item {
+                        anchors.fill: parent
+                        spacing: Theme.spacingXs
+
+                        RowLayout {
                             Layout.fillWidth: true
+                            Layout.preferredHeight: 18
                         }
 
-                        MediaPlayerSelector {
+                        MediaTrackInfo {
                             player: win.player
-                            Layout.alignment: Qt.AlignVCenter
-                            z: 100
+                            transitionKey: win.trackChangeToken
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 60
                         }
-                    }
 
-                    MediaTrackInfo {
-                        player: win.player
-                        transitionKey: win.trackChangeToken
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 60
-                    }
+                        MediaProgress {
+                            player: win.player
+                            position: win._position
+                            seeking: win._seeking
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 24
 
-                    MediaProgress {
-                        player: win.player
-                        position: win._position
-                        seeking: win._seeking
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 24
-
-                        onSeekStarted: pos => {
-                            win._seeking = true;
-                            win._position = pos;
-                        }
-                        onSeekMoved: pos => {
-                            win._position = pos;
-                        }
-                        onSeekReleased: pos => {
-                            if (win.mediaOperational && win.player && win.player.canSeek) {
-                                win.player.position = pos;
+                            onSeekStarted: pos => {
+                                win._seeking = true;
+                                win._position = pos;
                             }
-                            win._seeking = false;
+                            onSeekMoved: pos => {
+                                win._position = pos;
+                            }
+                            onSeekReleased: pos => {
+                                if (win.mediaOperational && win.player && win.player.canSeek) {
+                                    win.player.position = pos;
+                                }
+                                win._seeking = false;
+                            }
                         }
-                    }
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 40
-
-                        MediaControls {
-                            player: win.player
-                            isPlaying: win.isPlaying
+                        RowLayout {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 40
-                        }
 
-                        MediaVolumeRow {
-                            player: win.player
-                            Layout.preferredWidth: 30
-                            Layout.preferredHeight: 24
-                            Layout.alignment: Qt.AlignVCenter
+                            MediaControls {
+                                player: win.player
+                                isPlaying: win.isPlaying
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                            }
+
+                            MediaVolumeRow {
+                                player: win.player
+                                Layout.preferredWidth: 30
+                                Layout.preferredHeight: 24
+                                Layout.alignment: Qt.AlignVCenter
+                            }
                         }
+                    }
+
+                    MediaPlayerSelector {
+                        id: playerSelector
+                        player: win.player
+                        anchors {
+                            top: parent.top
+                            right: parent.right
+                            topMargin: 12
+                        }
+                        z: 10
                     }
                 }
             }
