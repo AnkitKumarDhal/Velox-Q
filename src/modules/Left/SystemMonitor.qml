@@ -19,7 +19,7 @@ PillBase {
 
     required property var screen
 
-    hoverExpand: false
+    hoverExpand: true
 
     property real cpuUsage: SystemStats.cpuUsage * 100
     property real memUsedGb: SystemStats.memUsedGb
@@ -58,16 +58,6 @@ PillBase {
     function updatePopupAnchor() {
         Popups.systemScreen = root.screen;
         Popups.systemAnchorX = root.mapToItem(null, root.width / 2, 0).x;
-    }
-
-    onWidthChanged: {
-        if (Popups.systemOpen)
-            root.updatePopupAnchor();
-    }
-
-    onXChanged: {
-        if (Popups.systemOpen)
-            root.updatePopupAnchor();
     }
 
     onClicked: {

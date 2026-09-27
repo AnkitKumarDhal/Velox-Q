@@ -44,16 +44,6 @@ PillBase {
         Popups.volumeAnchorX = root.mapToItem(null, root.width / 2, 0).x;
     }
 
-    onWidthChanged: {
-        if (Popups.volumeOpen)
-            root.updatePopupAnchor();
-    }
-
-    onXChanged: {
-        if (Popups.volumeOpen)
-            root.updatePopupAnchor();
-    }
-
     onClicked: {
         const wasOpen = Popups.volumeOpen;
         root.updatePopupAnchor();
