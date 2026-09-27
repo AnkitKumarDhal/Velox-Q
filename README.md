@@ -1,5 +1,7 @@
 # Quickshell Shell Configuration
 
+**Velox-Q 0.1.0**
+
 A modern, modular shell configuration built with Quickshell for the Hyprland Wayland compositor. It provides a polished top bar, system controls, application launcher, clipboard manager, wallpaper selector, notifications, media controls, and other desktop utilities while keeping the configuration modular and easy to customize.
 
 ## Resources
