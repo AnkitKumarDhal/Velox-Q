@@ -24,7 +24,7 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     visible: true
 
-    readonly property int cardSpacing: 8
+    readonly property int cardSpacing: Theme.spacingSm
     readonly property int availableStackHeight: Math.max(0, root.height - 24)
     readonly property int stackHeight: Math.min(toastList.contentHeight, root.availableStackHeight)
     readonly property int visibleStackHeight: root.stackHeight
