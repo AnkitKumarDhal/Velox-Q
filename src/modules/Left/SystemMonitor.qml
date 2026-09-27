@@ -55,15 +55,29 @@ PillBase {
         }
     }
 
-    onClicked: {
+    function updatePopupAnchor() {
         Popups.systemScreen = root.screen;
-        Popups.systemAnchorX = Theme.barMargin + root.x + root.width / 2;
-        Popups.systemOpen = !Popups.systemOpen;
+        Popups.systemAnchorX = root.mapToItem(null, root.width / 2, 0).x;
+    }
+
+    onWidthChanged: {
+        if (Popups.systemOpen)
+            root.updatePopupAnchor();
+    }
+
+    onXChanged: {
+        if (Popups.systemOpen)
+            root.updatePopupAnchor();
+    }
+
+    onClicked: {
+        const wasOpen = Popups.systemOpen;
+        root.updatePopupAnchor();
+        Popups.systemOpen = !wasOpen;
     }
 
     onRightClicked: {
-        Popups.systemScreen = root.screen;
-        Popups.systemAnchorX = Theme.barMargin + root.x + root.width / 2;
-        Popups.systemOpen = !Popups.systemOpen;
+        root.updatePopupAnchor();
+        Popups.systemOpen = true;
     }
 }

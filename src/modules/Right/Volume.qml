@@ -39,12 +39,27 @@ PillBase {
         verticalAlignment: Text.AlignVCenter
     }
 
-    onClicked: {
-        const wasOpen = Popups.volumeOpen;
+    function updatePopupAnchor() {
         Popups.volumeScreen = root.screen;
         Popups.volumeAnchorX = root.mapToItem(null, root.width / 2, 0).x;
+    }
+
+    onWidthChanged: {
+        if (Popups.volumeOpen)
+            root.updatePopupAnchor();
+    }
+
+    onXChanged: {
+        if (Popups.volumeOpen)
+            root.updatePopupAnchor();
+    }
+
+    onClicked: {
+        const wasOpen = Popups.volumeOpen;
+        root.updatePopupAnchor();
         Popups.volumeOpen = !wasOpen;
     }
+
     onRightClicked: VolumeService.toggleMute()
     onScrolled: wheel => {
         VolumeService.changeVolume(wheel.angleDelta.y > 0 ? 0.05 : -0.05);

@@ -72,10 +72,24 @@ PillBase {
         return 0;
     }
 
-    onClicked: {
-        const wasOpen = Popups.networkOpen;
+    function updatePopupAnchor() {
         Popups.networkScreen = root.screen;
         Popups.networkAnchorX = root.mapToItem(null, root.width / 2, 0).x;
+    }
+
+    onWidthChanged: {
+        if (Popups.networkOpen)
+            root.updatePopupAnchor();
+    }
+
+    onXChanged: {
+        if (Popups.networkOpen)
+            root.updatePopupAnchor();
+    }
+
+    onClicked: {
+        const wasOpen = Popups.networkOpen;
+        root.updatePopupAnchor();
         Popups.networkOpen = !wasOpen;
         if (!wasOpen) {
             Popups.networkTab = root.defaultNetworkTab();
@@ -83,8 +97,7 @@ PillBase {
     }
 
     onRightClicked: {
-        Popups.networkScreen = root.screen;
-        Popups.networkAnchorX = root.mapToItem(null, root.width / 2, 0).x;
+        root.updatePopupAnchor();
         Popups.networkOpen = true;
         Popups.networkTab = root.defaultNetworkTab(true);
     }

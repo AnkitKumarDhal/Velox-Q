@@ -123,7 +123,7 @@ PanelWindow {
 
     mask: Region {
         x: connectivityCard.x
-        y: Theme.barHeight + 8
+        y: Theme.barHeight + Theme.spacingMd
         width: connectivityCard.width
         height: connectivityCard.height
     }
@@ -141,10 +141,9 @@ PanelWindow {
 
             anchors {
                 top: parent.top
-                topMargin: Theme.barHeight + 8
+                topMargin: Theme.barHeight + Theme.spacingMd
             }
-            x: Popups.networkAnchorX - width / 2
-
+            x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.networkAnchorX - width / 2))
             width: 380
             height: mainColumn.implicitHeight + 32
             radius: Theme.popupRadius

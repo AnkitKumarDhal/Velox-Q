@@ -27,7 +27,7 @@ PanelWindow {
 
     mask: Region {
         x: sysCard.x
-        y: Theme.barHeight + 8
+        y: Theme.barHeight + Theme.spacingMd
         width: sysCard.width
         height: sysCard.height
     }
@@ -49,9 +49,9 @@ PanelWindow {
             id: sysCard
             anchors {
                 top: parent.top
-                topMargin: Theme.barHeight + 8
+                topMargin: Theme.barHeight + Theme.spacingMd
             }
-            x: Popups.systemAnchorX - width / 2
+            x: Math.max(Theme.barMargin, Math.min(parent.width - width - Theme.barMargin, Popups.systemAnchorX - width / 2))
             width: 400
             height: cardCol.implicitHeight + 24
             radius: Theme.popupRadius
