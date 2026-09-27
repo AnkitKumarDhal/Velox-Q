@@ -172,28 +172,9 @@ PanelWindow {
                             Layout.fillWidth: true
                         }
 
-                        Rectangle {
-                            width: 7
-                            height: 7
-                            radius: 3.5
-
-                            color: win.isPlaying ? Colors.primary : Colors.on_SurfaceVariant
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.motionNormal
-                                }
-                            }
-                        }
-
-                        Text {
-                            text: MediaService.playerIdentity
-                            color: Colors.on_SurfaceVariant
-                            font.family: Fonts.font
-                            font.pointSize: 8.5
-                            font.bold: true
-                            elide: Text.ElideRight
-                            maximumLineCount: 1
+                        MediaPlayerSelector {
+                            player: win.player
+                            Layout.alignment: Qt.AlignVCenter
                         }
                     }
 

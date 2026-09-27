@@ -12,6 +12,7 @@ Singleton {
     property var _lastActive: null
     property bool _sessionBusAvailable: false
     property string _backendError: ""
+    property var selectedPlayer: null
 
     property IntegrationCapability capability: IntegrationCapability {
         hardwareAvailable: true
@@ -31,19 +32,38 @@ Singleton {
         return null;
     }
 
+    readonly property bool hasExplicitSelection: {
+        if (!root.selectedPlayer)
+            return false;
+        return root.players.indexOf(root.selectedPlayer) >= 0;
+    }
+
     readonly property var activePlayer: {
-        if (players.length === 0)
+        if (root.hasExplicitSelection)
+            return root.selectedPlayer;
+        if (root.players.length === 0)
             return null;
-        if (currentlyPlaying)
-            return currentlyPlaying;
-        if (_lastActive) {
-            for (let i = 0; i < players.length; i++) {
-                if (players[i] === _lastActive)
-                    return _lastActive;
+        if (root.currentlyPlaying)
+            return root.currentlyPlaying;
+        if (root._lastActive) {
+            for (let i = 0; i < root.players.length; i++) {
+                if (root.players[i] === root._lastActive) {
+                    return root._lastActive;
+                }
             }
         }
+        return root.players[0];
+    }
 
-        return players[0];
+    function selectPlayer(player) {
+        if (!player)
+            return;
+        root.selectedPlayer = player;
+        root._lastActive = player;
+    }
+
+    function clearPlayerSelection() {
+        root.selectedPlayer = null;
     }
 
     readonly property bool hasPlayer: root.activePlayer !== null
@@ -83,6 +103,11 @@ Singleton {
     onCurrentlyPlayingChanged: {
         if (currentlyPlaying)
             _lastActive = currentlyPlaying;
+    }
+
+    onPlayersChanged: {
+        if (root.selectedPlayer && root.players.indexOf(root.selectedPlayer) < 0)
+            root.selectedPlayer = null;
     }
 
     Component.onCompleted: root._refreshCapability()

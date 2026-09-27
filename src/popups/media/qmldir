@@ -1,6 +1,7 @@
 # module qs.src.popups.media
-MediaArt        1.0 MediaArt.qml
-MediaTrackInfo  1.0 MediaTrackInfo.qml
-MediaProgress   1.0 MediaProgress.qml
-MediaControls   1.0 MediaControls.qml
-MediaVolumeRow  1.0 MediaVolumeRow.qml
+MediaArt            1.0 MediaArt.qml
+MediaTrackInfo      1.0 MediaTrackInfo.qml
+MediaProgress       1.0 MediaProgress.qml
+MediaControls       1.0 MediaControls.qml
+MediaVolumeRow      1.0 MediaVolumeRow.qml
+MediaPlayerSelector 1.0 MediaPlayerSelector.qml

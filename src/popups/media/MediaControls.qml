@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Services.Mpris
 import qs.src.theme
 import qs.src.services
 
@@ -11,6 +12,8 @@ RowLayout {
 
     readonly property bool backendOperational: MediaService.backendOperational
     readonly property bool playerAvailable: root.backendOperational && root.player !== null
+    readonly property bool shuffleAvailable: root.playerAvailable && root.player?.canControl && root.player?.shuffleSupported
+    readonly property bool repeatAvailable: root.playerAvailable && root.player?.canControl && root.player?.loopSupported
 
     Layout.fillWidth: true
     spacing: 2
@@ -22,6 +25,7 @@ RowLayout {
         property color iconColor: Colors.on_SurfaceVariant
         property int iconSize: 16
         property bool enabledState: true
+        property bool activeState: false
 
         signal clicked
 
@@ -40,7 +44,7 @@ RowLayout {
             width: mouse.containsMouse ? 30 : 26
             height: width
             radius: width / 2
-            color: mouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.12) : "transparent"
+            color: !button.enabledState ? "transparent" : mouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : button.activeState ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateSelectedOpacity) : mouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity) : "transparent"
 
             Behavior on width {
                 NumberAnimation {
@@ -66,7 +70,7 @@ RowLayout {
             text: button.icon
             font.family: Fonts.fontM
             font.pointSize: button.iconSize
-            color: button.iconColor
+            color: button.activeState ? Colors.primary : button.iconColor
         }
 
         MouseArea {
@@ -81,6 +85,18 @@ RowLayout {
 
     Item {
         Layout.fillWidth: true
+    }
+
+    // Shuffle
+    IconButton {
+        icon: "󰒝"
+        activeState: root.shuffleAvailable && root.player?.shuffle
+        enabledState: root.shuffleAvailable
+        iconColor: root.shuffleAvailable ? Colors.on_SurfaceVariant : Colors.outline
+        onClicked: {
+            if (root.shuffleAvailable)
+                root.player.shuffle = !root.player.shuffle;
+        }
     }
 
     // Previous
@@ -152,6 +168,31 @@ RowLayout {
         onClicked: {
             if (root.playerAvailable && root.player?.canGoNext) {
                 root.player.next();
+            }
+        }
+    }
+
+    // Repeat
+    IconButton {
+        icon: "󰑖"
+        activeState: root.repeatAvailable && root.player?.loopState !== MprisLoopState.None
+        enabledState: root.repeatAvailable
+        iconColor: root.repeatAvailable ? Colors.on_SurfaceVariant : Colors.outline
+
+        onClicked: {
+            if (!root.repeatAvailable)
+                return;
+
+            switch (root.player.loopState) {
+            case MprisLoopState.None:
+                root.player.loopState = MprisLoopState.Track;
+                break;
+            case MprisLoopState.Track:
+                root.player.loopState = MprisLoopState.Playlist;
+                break;
+            default:
+                root.player.loopState = MprisLoopState.None;
+                break;
             }
         }
     }
