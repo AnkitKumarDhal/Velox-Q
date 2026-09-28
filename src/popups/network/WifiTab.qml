@@ -14,6 +14,8 @@ ColumnLayout {
     property var selectedNetwork: null
     property var pendingKnownNetwork: null
     property bool showPassword: false
+    property string connectionError: ""
+    property var connectionErrorNetwork: null
     property real selectionSourceY: -1
     property real selectionIntroOffsetY: 0
     property real selectionIntroOpacity: 1
@@ -32,6 +34,8 @@ ColumnLayout {
 
     onSelectedNetworkChanged: {
         root.showPassword = false;
+        root.connectionError = "";
+        root.connectionErrorNetwork = null;
         selectionIntroAnimation.stop();
 
         if (root.selectedNetwork === null) {
@@ -104,10 +108,40 @@ ColumnLayout {
         target: root.pendingKnownNetwork
 
         function onConnectionFailed(reason) {
-            if (reason === ConnectionFailReason.NoSecrets && root.pendingKnownNetwork !== null) {
+            if (root.pendingKnownNetwork === null)
+                return;
+
+            if (reason === ConnectionFailReason.NoSecrets) {
                 root.selectedNetwork = root.pendingKnownNetwork;
                 root.pendingKnownNetwork = null;
+                return;
             }
+
+            root.connectionErrorNetwork = root.pendingKnownNetwork;
+            root.connectionError = "Connection failed. Try again.";
+            root.selectedNetwork = root.pendingKnownNetwork;
+            root.pendingKnownNetwork = null;
+        }
+    }
+
+    Connections {
+        target: root.selectedNetwork
+
+        function onConnectionFailed(reason) {
+            if (!root.selectedNetwork)
+                return;
+
+            if (reason === ConnectionFailReason.NoSecrets) {
+                root.connectionError = "";
+                Qt.callLater(function () {
+                    if (root.selectedNetwork !== null && root.selectedNetworkSupportsPsk)
+                        passwordField.forceActiveFocus();
+                });
+                return;
+            }
+
+            root.connectionErrorNetwork = root.selectedNetwork;
+            root.connectionError = "Connection failed. Check the network and try again.";
         }
     }
 
@@ -384,10 +418,19 @@ ColumnLayout {
                                 }
 
                                 Text {
-                                    text: root.selectedNetworkSupportsPsk ? "Enter Wi-Fi password" : "Additional authentication may be required"
+                                    text: {
+                                        if (root.connectionError.length > 0)
+                                            return "Connection failed";
+                                        if (root.selectedNetwork?.stateChanging)
+                                            return "Connecting…";
+                                        if (root.selectedNetworkSupportsPsk)
+                                            return "Enter Wi-Fi password";
+                                        return "Additional authentication may be required";
+                                    }
                                     font.family: Fonts.font
                                     font.pixelSize: 9
-                                    color: Colors.surfaceContainerHighest
+
+                                    color: root.connectionError.length > 0 ? Colors.error : Colors.surfaceContainerHighest
                                 }
                             }
 
@@ -433,6 +476,118 @@ ColumnLayout {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.networkSelected(null)
+                                }
+                            }
+                        }
+
+                        Rectangle {
+                            visible: root.connectionError.length > 0
+                            Layout.fillWidth: true
+                            implicitHeight: connectionErrorColumn.implicitHeight + 12
+
+                            radius: Theme.radiusSm
+                            color: Colors.errorContainer
+                            border.width: 1
+                            border.color: Colors.error
+
+                            opacity: visible ? 1 : 0
+                            scale: visible ? 1 : 0.96
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionSmooth
+                                    easing.type: Easing.OutBack
+                                }
+                            }
+
+                            ColumnLayout {
+                                id: connectionErrorColumn
+
+                                anchors {
+                                    fill: parent
+                                    margins: Theme.spacingSm
+                                }
+
+                                spacing: Theme.spacingXs
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: Theme.spacingSm
+
+                                    Text {
+                                        text: "󰅙"
+                                        color: Colors.on_ErrorContainer
+                                        font.family: Fonts.fontM
+                                        font.pixelSize: 14
+                                    }
+
+                                    Text {
+                                        Layout.fillWidth: true
+                                        text: root.connectionError
+                                        color: Colors.on_ErrorContainer
+                                        font.family: Fonts.font
+                                        font.pixelSize: 9
+                                        wrapMode: Text.WordWrap
+                                    }
+                                }
+
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 28
+                                    radius: Theme.radiusSm
+
+                                    color: retryConnectionMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : retryConnectionMouse.containsMouse ? Colors.primary : Colors.primaryContainer
+
+                                    Behavior on color {
+                                        ColorAnimation {
+                                            duration: Theme.motionFast
+                                        }
+                                    }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "Retry"
+                                        color: retryConnectionMouse.containsMouse ? Colors.on_Primary : Colors.on_PrimaryContainer
+                                        font.family: Fonts.font
+                                        font.pixelSize: 9
+                                        font.bold: true
+                                    }
+
+                                    MouseArea {
+                                        id: retryConnectionMouse
+
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        enabled: root.selectedNetwork !== null && root.operational
+                                        cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+                                        onClicked: {
+                                            if (!root.selectedNetwork || !root.operational)
+                                                return;
+
+                                            root.connectionError = "";
+
+                                            if (root.selectedNetworkSupportsPsk) {
+                                                if (passwordField.text.length <= 0) {
+                                                    passwordField.forceActiveFocus();
+                                                    return;
+                                                }
+
+                                                root.selectedNetwork.connectWithPsk(passwordField.text);
+                                                passwordField.text = "";
+                                                return;
+                                            }
+
+                                            root.selectedNetwork.connect();
+                                        }
+                                    }
                                 }
                             }
                         }

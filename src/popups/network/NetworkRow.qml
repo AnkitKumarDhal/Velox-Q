@@ -74,8 +74,12 @@ Item {
         spacing: Theme.spacingLg
 
         Text {
+            id: signalIcon
+
             text: {
-                if (!root.network.connected && root.network.state === ConnectionState.Connecting)
+                if (root.network.state === ConnectionState.Connecting)
+                    return "󱑤";
+                if (root.network.state === ConnectionState.Disconnecting)
                     return "󱑤";
 
                 const signal = root.network.signalStrength ?? 0;
@@ -92,7 +96,32 @@ Item {
             font.family: Fonts.fontM
             font.pixelSize: 16
 
-            color: root.network.connected ? Colors.primary : Colors.on_SurfaceVariant
+            color: {
+                if (root.network.stateChanging)
+                    return Colors.primary;
+                if (root.network.connected)
+                    return Colors.primary;
+                return Colors.on_SurfaceVariant;
+            }
+
+            opacity: root.network.stateChanging ? 0.55 : 1
+
+            SequentialAnimation on opacity {
+                running: root.network.stateChanging
+                loops: Animation.Infinite
+
+                NumberAnimation {
+                    to: 1
+                    duration: Theme.motionNormal
+                    easing.type: Easing.InOutSine
+                }
+
+                NumberAnimation {
+                    to: 0.55
+                    duration: Theme.motionNormal
+                    easing.type: Easing.InOutSine
+                }
+            }
         }
 
         Text {
@@ -130,11 +159,24 @@ Item {
 
             color: root.network.connected ? Colors.primary : Colors.surfaceContainerHighest
 
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.motionNormal
+                    easing.type: Easing.OutCubic
+                }
+            }
+
             Text {
                 id: stateLabel
 
                 anchors.centerIn: parent
-                text: root.network.connected ? "Connected" : "Connecting"
+                text: {
+                    if (root.network.connected)
+                        return "Connected";
+                    if (root.network.state === ConnectionState.Disconnecting)
+                        return "Disconnecting";
+                    return "Connecting";
+                }
 
                 font.family: Fonts.font
                 font.pixelSize: 9

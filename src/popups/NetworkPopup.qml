@@ -69,7 +69,7 @@ PanelWindow {
     }
 
     property int tabDirection: 1
-    property string previousTagKey: ""
+    property string previousTabKey: ""
 
     onCurrentTabKeyChanged: {
         if (root.currentTabKey === "")
