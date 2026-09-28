@@ -1,8 +1,9 @@
-PillBase        1.0 PillBase.qml
-PopupPage       1.0 PopupPage.qml
-PopupSlide      1.0 PopupSlide.qml
-PopupCard       1.0 PopupCard.qml
-TabBar          1.0 TabBar.qml
-PopupLoader     1.0 PopupLoader.qml
-TrayMenuLevel   1.0 TrayMenuLevel.qml
-TrayContextMenu 1.0 TrayContextMenu.qml
+PillBase            1.0 PillBase.qml
+PopupPage           1.0 PopupPage.qml
+PopupSlide          1.0 PopupSlide.qml
+PopupCard           1.0 PopupCard.qml
+TabBar              1.0 TabBar.qml
+PopupLoader         1.0 PopupLoader.qml
+TrayMenuLevel       1.0 TrayMenuLevel.qml
+TrayContextMenu     1.0 TrayContextMenu.qml
+InteractionFeedback 1.0 InteractionFeedback.qml

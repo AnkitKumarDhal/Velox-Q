@@ -3,6 +3,7 @@ import QtQuick.Layouts
 
 import Quickshell
 
+import qs.src.components
 import qs.src.services
 import qs.src.theme
 
@@ -210,12 +211,21 @@ ColumnLayout {
                     Layout.fillWidth: true
                     implicitHeight: 52
                     radius: Theme.radiusMd
-                    color: connectedHover.hovered ? Colors.surfaceContainerHighest : Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28)
+                    scale: connectedHover.hovered ? 1.005 : 1
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.hoverFadeDuration
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: Theme.motionFast
+                            easing.type: Easing.OutCubic
                         }
+                    }
+
+                    color: Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28)
+
+                    InteractionFeedback {
+                        hovered: connectedHover.hovered
+                        pressed: false
+                        radius: parent.radius
                     }
                     HoverHandler {
                         id: connectedHover
@@ -322,12 +332,21 @@ ColumnLayout {
                     Layout.fillWidth: true
                     implicitHeight: 46
                     radius: Theme.radiusMd
-                    color: pairedHover.hovered ? Colors.surfaceContainerHighest : "transparent"
+                    scale: pairedHover.hovered ? 1.005 : 1
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.hoverFadeDuration
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: Theme.motionFast
+                            easing.type: Easing.OutCubic
                         }
+                    }
+
+                    color: "transparent"
+
+                    InteractionFeedback {
+                        hovered: pairedHover.hovered
+                        pressed: false
+                        radius: parent.radius
                     }
                     HoverHandler {
                         id: pairedHover
@@ -473,12 +492,21 @@ ColumnLayout {
                     Layout.fillWidth: true
                     implicitHeight: 46
                     radius: Theme.radiusMd
-                    color: availableHover.hovered ? Colors.surfaceContainerHighest : "transparent"
+                    scale: availableHover.hovered ? 1.005 : 1
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.hoverFadeDuration
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: Theme.motionFast
+                            easing.type: Easing.OutCubic
                         }
+                    }
+
+                    color: "transparent"
+
+                    InteractionFeedback {
+                        hovered: availableHover.hovered
+                        pressed: false
+                        radius: parent.radius
                     }
                     HoverHandler {
                         id: availableHover

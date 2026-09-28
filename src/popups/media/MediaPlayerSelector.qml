@@ -30,12 +30,22 @@ Item {
         height: 18
         radius: 9
 
-        color: buttonMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : buttonMouse.containsMouse ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity) : "transparent"
+        scale: buttonMouse.pressed ? 0.985 : buttonMouse.containsMouse ? 1.01 : 1
 
-        Behavior on color {
-            ColorAnimation {
+        Behavior on scale {
+            NumberAnimation {
                 duration: Theme.motionFast
+                easing.type: Easing.OutCubic
             }
+        }
+
+        color: "transparent"
+
+        InteractionFeedback {
+            hovered: buttonMouse.containsMouse
+            pressed: buttonMouse.pressed
+            radius: parent.radius
+            hoverColor: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateHoverOpacity)
         }
 
         RowLayout {
@@ -160,12 +170,21 @@ Item {
                     readonly property bool isActive: !automatic && modelData === MediaService.activePlayer
                     readonly property bool isSelected: automatic ? !MediaService.hasExplicitSelection : MediaService.hasExplicitSelection && modelData === MediaService.activePlayer
 
-                    color: itemMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : isSelected ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateSelectedOpacity) : itemMouse.containsMouse ? Colors.surfaceContainerHighest : "transparent"
+                    scale: itemMouse.pressed ? 0.985 : itemMouse.containsMouse ? 1.01 : 1
 
-                    Behavior on color {
-                        ColorAnimation {
+                    Behavior on scale {
+                        NumberAnimation {
                             duration: Theme.motionFast
+                            easing.type: Easing.OutCubic
                         }
+                    }
+
+                    color: isSelected ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.stateSelectedOpacity) : "transparent"
+
+                    InteractionFeedback {
+                        hovered: itemMouse.containsMouse
+                        pressed: itemMouse.pressed
+                        radius: parent.radius
                     }
 
                     RowLayout {

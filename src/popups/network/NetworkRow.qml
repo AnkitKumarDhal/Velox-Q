@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Networking
 
+import qs.src.components
 import qs.src.theme
 
 Item {
@@ -11,7 +12,7 @@ Item {
     signal networkSelected(var network)
 
     implicitHeight: 46
-    scale: rootHover.pressed ? 0.985 : 1
+    scale: rootHover.pressed ? 0.985 : rootHover.containsMouse ? 1.01 : 1
     Behavior on scale {
         NumberAnimation {
             duration: Theme.motionFast
@@ -37,12 +38,12 @@ Item {
         anchors.fill: parent
         radius: Theme.radiusMd
 
-        color: rootHover.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : rootHover.containsMouse ? Colors.surfaceContainerHighest : root.network.connected ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28) : "transparent"
+        color: root.network.connected ? Qt.rgba(Colors.primaryContainer.r, Colors.primaryContainer.g, Colors.primaryContainer.b, 0.28) : "transparent"
 
-        Behavior on color {
-            ColorAnimation {
-                duration: Theme.motionFast
-            }
+        InteractionFeedback {
+            hovered: rootHover.containsMouse
+            pressed: rootHover.pressed
+            radius: parent.radius
         }
     }
 

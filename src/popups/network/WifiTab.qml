@@ -14,6 +14,10 @@ ColumnLayout {
     property var selectedNetwork: null
     property var pendingKnownNetwork: null
     property bool showPassword: false
+    property real selectionSourceY: -1
+    property real selectionIntroOffsetY: 0
+    property real selectionIntroOpacity: 1
+    property real selectionIntroScale: 1
 
     readonly property var capability: NetworkService.wifiCapability
     readonly property bool operational: root.capability.operational
@@ -28,12 +32,72 @@ ColumnLayout {
 
     onSelectedNetworkChanged: {
         root.showPassword = false;
+        selectionIntroAnimation.stop();
+
+        if (root.selectedNetwork === null) {
+            root.selectionSourceY = -1;
+            root.selectionIntroOffsetY = 0;
+            root.selectionIntroOpacity = 1;
+            root.selectionIntroScale = 1;
+            return;
+        }
+
+        if (root.selectionSourceY >= 0) {
+            root.selectionIntroOffsetY = 0;
+            root.selectionIntroOpacity = 0;
+            root.selectionIntroScale = 0.96;
+
+            Qt.callLater(function () {
+                if (!root.selectedNetwork || root.selectionSourceY < 0)
+                    return;
+
+                const targetY = selectionSection.mapToItem(wifiContent, 0, 0).y;
+
+                root.selectionIntroOffsetY = root.selectionSourceY - targetY;
+                selectionIntroAnimation.restart();
+            });
+        } else {
+            root.selectionIntroOffsetY = 0;
+            root.selectionIntroOpacity = 1;
+            root.selectionIntroScale = 1;
+        }
+
         if (root.selectedNetworkSupportsPsk) {
             Qt.callLater(function () {
                 if (root.operational && root.selectedNetwork !== null)
                     passwordField.forceActiveFocus();
             });
         }
+    }
+
+    ParallelAnimation {
+        id: selectionIntroAnimation
+
+        NumberAnimation {
+            target: root
+            property: "selectionIntroOffsetY"
+            to: 0
+            duration: Theme.motionMedium
+            easing.type: Easing.OutCubic
+        }
+
+        NumberAnimation {
+            target: root
+            property: "selectionIntroOpacity"
+            to: 1
+            duration: Theme.motionFast
+            easing.type: Easing.OutCubic
+        }
+
+        NumberAnimation {
+            target: root
+            property: "selectionIntroScale"
+            to: 1
+            duration: Theme.motionSmooth
+            easing.type: Easing.OutBack
+        }
+
+        onFinished: root.selectionSourceY = -1
     }
 
     Connections {
@@ -243,297 +307,289 @@ ColumnLayout {
                 }
             }
 
-            Text {
-                visible: root.selectedNetwork !== null
-                text: "Connect"
+            ColumnLayout {
+                id: selectionSection
 
-                font.family: Fonts.font
-                font.pixelSize: 10
-                font.bold: true
-
-                color: Colors.on_SurfaceVariant
-
-                topPadding: 6
-                bottomPadding: 2
-            }
-
-            Rectangle {
                 visible: root.selectedNetwork !== null
 
                 Layout.fillWidth: true
-                implicitHeight: selectedEditorColumn.implicitHeight + 20
+                spacing: 0
+                z: 10
 
-                radius: 12
-                color: Colors.primaryContainer
+                opacity: root.selectionIntroOpacity
+                scale: root.selectionIntroScale
+                transformOrigin: Item.Top
 
-                border.width: 1
-                border.color: Colors.primary
+                transform: Translate {
+                    y: root.selectionIntroOffsetY
+                }
 
-                ColumnLayout {
-                    id: selectedEditorColumn
+                Text {
+                    text: "Connect"
+                    font.family: Fonts.font
+                    font.pixelSize: 10
+                    font.bold: true
+                    color: Colors.on_SurfaceVariant
+                    topPadding: 6
+                    bottomPadding: 2
+                }
 
-                    anchors {
-                        fill: parent
-                        margins: Theme.spacingLg
-                    }
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: selectedEditorColumn.implicitHeight + 20
+                    radius: 12
+                    color: Colors.primaryContainer
+                    border.width: 1
+                    border.color: Colors.primary
 
-                    spacing: Theme.spacingMd
+                    ColumnLayout {
+                        id: selectedEditorColumn
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: Theme.spacingMd
-
-                        Item {
-                            Layout.preferredWidth: 24
-                            Layout.preferredHeight: 28
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "󰤨"
-
-                                font.family: Fonts.fontM
-                                font.pixelSize: 18
-
-                                color: Colors.on_PrimaryContainer
-                            }
+                        anchors {
+                            fill: parent
+                            margins: Theme.spacingLg
                         }
 
-                        ColumnLayout {
+                        spacing: Theme.spacingMd
+
+                        RowLayout {
                             Layout.fillWidth: true
-                            spacing: 1
+                            spacing: Theme.spacingMd
 
-                            Text {
-                                text: root.selectedNetwork?.name ?? ""
+                            Item {
+                                Layout.preferredWidth: 24
+                                Layout.preferredHeight: 28
 
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "󰤨"
+                                    font.family: Fonts.fontM
+                                    font.pixelSize: 18
+                                    color: Colors.on_PrimaryContainer
+                                }
+                            }
+
+                            ColumnLayout {
                                 Layout.fillWidth: true
-                                elide: Text.ElideRight
+                                spacing: 1
 
-                                font.family: Fonts.font
-                                font.pixelSize: 12
-                                font.bold: true
+                                Text {
+                                    text: root.selectedNetwork?.name ?? ""
+                                    Layout.fillWidth: true
+                                    elide: Text.ElideRight
+                                    font.family: Fonts.font
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: Colors.on_PrimaryContainer
+                                }
 
-                                color: Colors.on_PrimaryContainer
-                            }
-
-                            Text {
-                                text: root.selectedNetworkSupportsPsk ? "Enter Wi-Fi password" : "Additional authentication may be required"
-
-                                font.family: Fonts.font
-                                font.pixelSize: 9
-
-                                color: Colors.surfaceContainerHighest
-                            }
-                        }
-
-                        Item {
-                            Layout.fillWidth: true
-                        }
-
-                        Rectangle {
-                            width: 28
-                            height: 28
-                            radius: Theme.radiusLg
-                            scale: closeConnectMouse.pressed ? 0.94 : 1
-
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: Theme.motionFast
-                                    easing.type: Easing.OutCubic
+                                Text {
+                                    text: root.selectedNetworkSupportsPsk ? "Enter Wi-Fi password" : "Additional authentication may be required"
+                                    font.family: Fonts.font
+                                    font.pixelSize: 9
+                                    color: Colors.surfaceContainerHighest
                                 }
                             }
 
-                            color: closeConnectHover.hovered ? Colors.surfaceContainerHighest : "transparent"
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.hoverFadeDuration
-                                }
-                            }
-
-                            HoverHandler {
-                                id: closeConnectHover
-                            }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "󰅖"
-
-                                font.family: Fonts.fontM
-                                font.pixelSize: 14
-
-                                color: Colors.on_PrimaryContainer
-                            }
-
-                            MouseArea {
-                                id: closeConnectMouse
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.networkSelected(null)
-                            }
-                        }
-                    }
-
-                    RowLayout {
-                        visible: root.selectedNetworkSupportsPsk
-                        enabled: root.operational
-                        Layout.fillWidth: true
-                        spacing: Theme.spacingMd
-
-                        TextField {
-                            id: passwordField
-
-                            Layout.fillWidth: true
-                            height: 34
-                            rightPadding: 42
-                            placeholderText: "Password"
-
-                            echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
-
-                            font.family: Fonts.font
-                            font.pixelSize: 11
-
-                            color: Colors.on_Surface
-                            placeholderTextColor: Colors.outline
-
-                            background: Rectangle {
-                                radius: Theme.radiusSm
-                                color: Colors.surfaceContainer
-                                border.width: passwordField.activeFocus ? 1 : 0
-                                border.color: Colors.primary
+                            Item {
+                                Layout.fillWidth: true
                             }
 
                             Rectangle {
-                                id: passwordVisibilityButton
+                                width: 28
+                                height: 28
+                                radius: Theme.radiusLg
+                                scale: closeConnectMouse.pressed ? 0.94 : 1
 
-                                anchors {
-                                    top: parent.top
-                                    right: parent.right
-                                    bottom: parent.bottom
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: Theme.motionFast
+                                        easing.type: Easing.OutCubic
+                                    }
                                 }
 
-                                width: 42
-                                color: "transparent"
+                                color: closeConnectHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
-                                z: 10
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Theme.hoverFadeDuration
+                                    }
+                                }
 
                                 HoverHandler {
-                                    id: passwordVisibilityHover
-                                    cursorShape: Qt.PointingHandCursor
+                                    id: closeConnectHover
                                 }
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: root.showPassword ? "󰈉" : "󰈈"
-
+                                    text: "󰅖"
                                     font.family: Fonts.fontM
-                                    font.pixelSize: 15
+                                    font.pixelSize: 14
+                                    color: Colors.on_PrimaryContainer
+                                }
 
-                                    color: passwordVisibilityHover.hovered ? Colors.primary : Colors.outline
+                                MouseArea {
+                                    id: closeConnectMouse
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.networkSelected(null)
+                                }
+                            }
+                        }
 
-                                    Behavior on color {
-                                        ColorAnimation {
-                                            duration: Theme.hoverFadeDuration
+                        RowLayout {
+                            visible: root.selectedNetworkSupportsPsk
+                            enabled: root.operational
+                            Layout.fillWidth: true
+                            spacing: Theme.spacingMd
+
+                            TextField {
+                                id: passwordField
+
+                                Layout.fillWidth: true
+                                height: 34
+                                rightPadding: 42
+                                placeholderText: "Password"
+                                echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
+                                font.family: Fonts.font
+                                font.pixelSize: 11
+                                color: Colors.on_Surface
+                                placeholderTextColor: Colors.outline
+
+                                background: Rectangle {
+                                    radius: Theme.radiusSm
+                                    color: Colors.surfaceContainer
+                                    border.width: passwordField.activeFocus ? 1 : 0
+                                    border.color: Colors.primary
+                                }
+
+                                Rectangle {
+                                    id: passwordVisibilityButton
+
+                                    anchors {
+                                        top: parent.top
+                                        right: parent.right
+                                        bottom: parent.bottom
+                                    }
+
+                                    width: 42
+                                    color: "transparent"
+
+                                    z: 10
+
+                                    HoverHandler {
+                                        id: passwordVisibilityHover
+                                        cursorShape: Qt.PointingHandCursor
+                                    }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: root.showPassword ? "󰈉" : "󰈈"
+                                        font.family: Fonts.fontM
+                                        font.pixelSize: 15
+                                        color: passwordVisibilityHover.hovered ? Colors.primary : Colors.outline
+
+                                        Behavior on color {
+                                            ColorAnimation {
+                                                duration: Theme.hoverFadeDuration
+                                            }
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        z: 1
+                                        acceptedButtons: Qt.LeftButton
+                                        cursorShape: Qt.PointingHandCursor
+                                        onPressed: mouse => mouse.accepted = true
+                                        onReleased: mouse => mouse.accepted = true
+                                        onClicked: mouse => {
+                                            mouse.accepted = true;
+                                            root.showPassword = !root.showPassword;
+                                            passwordField.forceActiveFocus();
                                         }
                                     }
                                 }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    z: 1
-
-                                    acceptedButtons: Qt.LeftButton
-                                    cursorShape: Qt.PointingHandCursor
-
-                                    onPressed: mouse => mouse.accepted = true
-                                    onReleased: mouse => mouse.accepted = true
-                                    onClicked: mouse => {
-                                        mouse.accepted = true;
-                                        root.showPassword = !root.showPassword;
-                                        passwordField.forceActiveFocus();
+                                Keys.onReturnPressed: {
+                                    if (root.operational && root.selectedNetworkSupportsPsk && text.length > 0) {
+                                        root.selectedNetwork.connectWithPsk(text);
+                                        text = "";
                                     }
                                 }
-                            }
 
-                            Keys.onReturnPressed: {
-                                if (root.operational && root.selectedNetworkSupportsPsk && text.length > 0) {
-                                    root.selectedNetwork.connectWithPsk(text);
-                                    text = "";
+                                Component.onCompleted: {
+                                    if (root.operational)
+                                        forceActiveFocus();
                                 }
                             }
 
-                            Component.onCompleted: {
-                                if (root.operational)
-                                    forceActiveFocus();
+                            Rectangle {
+                                width: 30
+                                height: 29
+                                radius: Theme.radiusSm
+                                opacity: root.operational ? 1 : 0.45
+                                scale: confirmMouse.pressed ? 0.94 : 1
+
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: Theme.motionFast
+                                        easing.type: Easing.OutCubic
+                                    }
+                                }
+
+                                color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: Theme.hoverFadeDuration
+                                    }
+                                }
+
+                                HoverHandler {
+                                    id: confirmHover
+                                    enabled: root.operational
+                                }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "󰌑"
+                                    font.family: Fonts.font
+                                    font.pixelSize: 14
+                                    color: Colors.on_Primary
+                                }
+
+                                MouseArea {
+                                    id: confirmMouse
+                                    anchors.fill: parent
+                                    enabled: root.operational
+                                    cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+                                    onClicked: {
+                                        if (!root.operational || !root.selectedNetworkSupportsPsk || passwordField.text.length <= 0) {
+                                            return;
+                                        }
+                                        root.selectedNetwork.connectWithPsk(passwordField.text);
+                                        passwordField.text = "";
+                                    }
+                                }
                             }
                         }
 
                         Rectangle {
-                            width: 30
-                            height: 29
+                            visible: root.selectedNetwork !== null && !root.selectedNetworkSupportsPsk && root.selectedNetwork.security !== WifiSecurityType.Open
+                            Layout.fillWidth: true
+                            implicitHeight: 34
                             radius: Theme.radiusSm
-                            opacity: root.operational ? 1 : 0.45
-                            scale: confirmMouse.pressed ? 0.94 : 1
-
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: Theme.motionFast
-                                    easing.type: Easing.OutCubic
-                                }
-                            }
-
-                            color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
-
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.hoverFadeDuration
-                                }
-                            }
-
-                            HoverHandler {
-                                id: confirmHover
-                                enabled: root.operational
-                            }
+                            color: Colors.surfaceContainer
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "󰌑"
+                                text: "This network does not use PSK authentication."
                                 font.family: Fonts.font
-                                font.pixelSize: 14
-                                color: Colors.on_Primary
+                                font.pixelSize: 9
+                                color: Colors.on_SurfaceVariant
                             }
-
-                            MouseArea {
-                                id: confirmMouse
-                                anchors.fill: parent
-                                enabled: root.operational
-                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-
-                                onClicked: {
-                                    if (!root.operational || !root.selectedNetworkSupportsPsk || passwordField.text.length <= 0) {
-                                        return;
-                                    }
-                                    root.selectedNetwork.connectWithPsk(passwordField.text);
-                                    passwordField.text = "";
-                                }
-                            }
-                        }
-                    }
-
-                    Rectangle {
-                        visible: root.selectedNetwork !== null && !root.selectedNetworkSupportsPsk && root.selectedNetwork.security !== WifiSecurityType.Open
-                        Layout.fillWidth: true
-                        implicitHeight: 34
-                        radius: Theme.radiusSm
-                        color: Colors.surfaceContainer
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "This network does not use PSK authentication."
-
-                            font.family: Fonts.font
-                            font.pixelSize: 9
-
-                            color: Colors.on_SurfaceVariant
                         }
                     }
                 }
@@ -542,13 +598,10 @@ ColumnLayout {
             Text {
                 visible: wifiAvailableModel.values.length > 0
                 text: "Available"
-
                 font.family: Fonts.font
                 font.pixelSize: 10
                 font.bold: true
-
                 color: Colors.on_SurfaceVariant
-
                 topPadding: 6
                 bottomPadding: 2
             }
@@ -568,6 +621,8 @@ ColumnLayout {
                             network.connect();
                             return;
                         }
+
+                        root.selectionSourceY = y;
 
                         if (network.known) {
                             root.pendingKnownNetwork = network;

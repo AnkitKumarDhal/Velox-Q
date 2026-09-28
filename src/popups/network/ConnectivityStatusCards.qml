@@ -3,6 +3,7 @@ import QtQuick.Layouts
 
 import qs.src.services
 import qs.src.theme
+import qs.src.components
 
 RowLayout {
     id: root
@@ -22,7 +23,7 @@ RowLayout {
         Layout.fillWidth: true
         implicitHeight: 66
         radius: 12
-        scale: wifiCardClick.pressed ? 0.985 : 1
+        scale: wifiCardClick.pressed ? 0.985 : wifiCardClick.containsMouse ? 1.01 : 1
 
         Behavior on scale {
             NumberAnimation {
@@ -33,25 +34,23 @@ RowLayout {
 
         color: {
             if (root.wifiCapability.backendFailure)
-                return wifiCardClick.containsMouse ? Colors.error : Colors.errorContainer;
+                return Colors.errorContainer;
             if (!root.wifiCapability.hardwareAvailable)
                 return Colors.surfaceContainerHigh;
-            if (wifiCardClick.pressed)
-                return Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity);
-            if (wifiCardClick.containsMouse)
-                return Colors.surfaceContainerHighest;
             return NetworkService.wifiConnected ? Colors.primaryContainer : Colors.surfaceContainerHigh;
+        }
+
+        InteractionFeedback {
+            hovered: wifiCardClick.containsMouse
+            pressed: wifiCardClick.pressed
+            radius: parent.radius
+            borderWidth: parent.border.width
+            hoverColor: root.wifiCapability.backendFailure ? Colors.error : Colors.surfaceContainerHighest
         }
 
         border.width: root.activeTab === "wifi" ? 2 : root.wifiCapability.backendFailure ? 1 : 0
         border.color: root.wifiCapability.backendFailure ? Colors.error : Colors.primary
         opacity: root.wifiCapability.hardwareAvailable ? 1 : 0.65
-
-        Behavior on color {
-            ColorAnimation {
-                duration: Theme.hoverFadeDuration
-            }
-        }
 
         Behavior on border.width {
             NumberAnimation {
@@ -227,7 +226,7 @@ RowLayout {
         implicitHeight: 66
         radius: 12
 
-        scale: bluetoothCardClick.pressed ? 0.985 : 1
+        scale: bluetoothCardClick.pressed ? 0.985 : bluetoothCardClick.containsMouse ? 1.01 : 1
 
         Behavior on scale {
             NumberAnimation {
@@ -238,25 +237,23 @@ RowLayout {
 
         color: {
             if (root.bluetoothCapability.backendFailure)
-                return bluetoothCardClick.containsMouse ? Colors.error : Colors.errorContainer;
+                return Colors.errorContainer;
             if (!root.bluetoothCapability.hardwareAvailable)
                 return Colors.surfaceContainerHigh;
-            if (bluetoothCardClick.pressed)
-                return Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity);
-            if (bluetoothCardClick.containsMouse)
-                return Colors.surfaceContainerHighest;
             return NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.primaryContainer : Colors.surfaceContainerHigh;
+        }
+
+        InteractionFeedback {
+            hovered: bluetoothCardClick.containsMouse
+            pressed: bluetoothCardClick.pressed
+            radius: parent.radius
+            borderWidth: parent.border.width
+            hoverColor: root.bluetoothCapability.backendFailure ? Colors.error : Colors.surfaceContainerHighest
         }
 
         border.width: root.activeTab === "bluetooth" ? 2 : root.bluetoothCapability.backendFailure ? 1 : 0
         border.color: root.bluetoothCapability.backendFailure ? Colors.error : Colors.primary
         opacity: root.bluetoothCapability.hardwareAvailable ? 1 : 0.65
-
-        Behavior on color {
-            ColorAnimation {
-                duration: Theme.hoverFadeDuration
-            }
-        }
 
         Behavior on border.width {
             NumberAnimation {
