@@ -115,9 +115,17 @@ ColumnLayout {
         }
 
         Rectangle {
+            id: bluetoothScanButton
             width: scanLabel.implicitWidth + 20
             height: 28
             radius: Theme.radiusLg
+            scale: bluetoothScanMouse.pressed ? 0.94 : 1
+            Behavior on scale {
+                NumberAnimation {
+                    duration: Theme.motionFast
+                    easing.type: Easing.OutCubic
+                }
+            }
             enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
             color: {
                 if (!enabled)
@@ -155,6 +163,7 @@ ColumnLayout {
             }
 
             MouseArea {
+                id: bluetoothScanMouse
                 anchors.fill: parent
                 enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -253,6 +262,14 @@ ColumnLayout {
                             width: disconnectLabel.implicitWidth + 18
                             height: 24
                             radius: 12
+                            scale: disconnectMouse.pressed ? 0.94 : 1
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
                             enabled: root.backendOperational
                             color: enabled ? disconnectHover.hovered ? Colors.primary : Colors.primary : Colors.surfaceContainerHighest
                             opacity: enabled ? 1 : 0.45
@@ -273,6 +290,7 @@ ColumnLayout {
                             }
 
                             MouseArea {
+                                id: disconnectMouse
                                 anchors.fill: parent
                                 enabled: root.backendOperational
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -343,6 +361,14 @@ ColumnLayout {
                             width: connectLabel.implicitWidth + 18
                             height: 24
                             radius: 12
+                            scale: connectMouse.pressed ? 0.94 : 1
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
                             enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
                             color: !enabled ? Colors.surfaceContainerHighest : pairedConnectHover.hovered ? Colors.primary : Colors.primaryContainer
                             opacity: enabled ? 1 : 0.45
@@ -368,6 +394,7 @@ ColumnLayout {
                             }
 
                             MouseArea {
+                                id: connectMouse
                                 anchors.fill: parent
                                 enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -383,6 +410,14 @@ ColumnLayout {
                             width: 26
                             height: 26
                             radius: 13
+                            scale: removeMouse.pressed ? 0.94 : 1
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
                             enabled: root.backendOperational
                             color: enabled && removeHover.hovered ? Colors.errorContainer : "transparent"
                             opacity: enabled ? 1 : 0.45
@@ -406,6 +441,7 @@ ColumnLayout {
                             }
 
                             MouseArea {
+                                id: removeMouse
                                 anchors.fill: parent
                                 enabled: root.backendOperational
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -477,6 +513,14 @@ ColumnLayout {
                             width: pairLabel.implicitWidth + 18
                             height: 24
                             radius: 12
+                            scale: pairMouse.pressed ? 0.94 : 1
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
                             enabled: root.backendOperational
                             color: !enabled ? Colors.surfaceContainerHighest : NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
                             opacity: enabled ? 1 : 0.45
@@ -501,6 +545,7 @@ ColumnLayout {
                             }
 
                             MouseArea {
+                                id: pairMouse
                                 anchors.fill: parent
                                 enabled: root.backendOperational
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor

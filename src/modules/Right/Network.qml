@@ -64,7 +64,7 @@ PillBase {
         if (root.wifiGood)
             return 0;
         if (root.bluetoothGood)
-            return 0;
+            return 1;
         if (root.hasWifi)
             return 0;
         if (root.hasBluetooth)

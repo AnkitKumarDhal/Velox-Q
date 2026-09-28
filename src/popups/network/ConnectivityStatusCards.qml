@@ -22,11 +22,22 @@ RowLayout {
         Layout.fillWidth: true
         implicitHeight: 66
         radius: 12
+        scale: wifiCardClick.pressed ? 0.985 : 1
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.motionFast
+                easing.type: Easing.OutCubic
+            }
+        }
+
         color: {
             if (root.wifiCapability.backendFailure)
                 return wifiCardClick.containsMouse ? Colors.error : Colors.errorContainer;
             if (!root.wifiCapability.hardwareAvailable)
                 return Colors.surfaceContainerHigh;
+            if (wifiCardClick.pressed)
+                return Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity);
             if (wifiCardClick.containsMouse)
                 return Colors.surfaceContainerHighest;
             return NetworkService.wifiConnected ? Colors.primaryContainer : Colors.surfaceContainerHigh;
@@ -215,11 +226,23 @@ RowLayout {
         Layout.fillWidth: true
         implicitHeight: 66
         radius: 12
+
+        scale: bluetoothCardClick.pressed ? 0.985 : 1
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.motionFast
+                easing.type: Easing.OutCubic
+            }
+        }
+
         color: {
             if (root.bluetoothCapability.backendFailure)
                 return bluetoothCardClick.containsMouse ? Colors.error : Colors.errorContainer;
             if (!root.bluetoothCapability.hardwareAvailable)
                 return Colors.surfaceContainerHigh;
+            if (bluetoothCardClick.pressed)
+                return Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity);
             if (bluetoothCardClick.containsMouse)
                 return Colors.surfaceContainerHighest;
             return NetworkService.bluetooth.connectedDeviceCount > 0 ? Colors.primaryContainer : Colors.surfaceContainerHigh;

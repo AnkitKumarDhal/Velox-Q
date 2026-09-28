@@ -11,6 +11,13 @@ Item {
     signal networkSelected(var network)
 
     implicitHeight: 46
+    scale: rootHover.pressed ? 0.985 : 1
+    Behavior on scale {
+        NumberAnimation {
+            duration: Theme.motionFast
+            easing.type: Easing.OutCubic
+        }
+    }
     opacity: root.network.stateChanging ? Theme.stateLoadingOpacity : 1
 
     readonly property bool supportsPsk: {

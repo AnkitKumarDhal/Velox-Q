@@ -148,9 +148,17 @@ ColumnLayout {
         }
 
         Rectangle {
+            id: wifiScanButton
             width: wifiScanLabel.implicitWidth + 20
             height: 28
             radius: Theme.radiusLg
+            scale: wifiScanMouse.pressed ? 0.94 : 1
+            Behavior on scale {
+                NumberAnimation {
+                    duration: Theme.motionFast
+                    easing.type: Easing.OutCubic
+                }
+            }
             color: root.operational && wifiScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
 
             Behavior on color {
@@ -175,6 +183,7 @@ ColumnLayout {
             }
 
             MouseArea {
+                id: wifiScanMouse
                 anchors.fill: parent
                 enabled: root.operational && NetworkService.wifiEnabled
                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -324,6 +333,14 @@ ColumnLayout {
                             width: 28
                             height: 28
                             radius: Theme.radiusLg
+                            scale: closeConnectMouse.pressed ? 0.94 : 1
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
 
                             color: closeConnectHover.hovered ? Colors.surfaceContainerHighest : "transparent"
 
@@ -348,6 +365,7 @@ ColumnLayout {
                             }
 
                             MouseArea {
+                                id: closeConnectMouse
                                 anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.networkSelected(null)
@@ -450,10 +468,19 @@ ColumnLayout {
                         }
 
                         Rectangle {
-                            width: 34
-                            height: 34
+                            width: 30
+                            height: 29
                             radius: Theme.radiusSm
                             opacity: root.operational ? 1 : 0.45
+                            scale: confirmMouse.pressed ? 0.94 : 1
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Theme.motionFast
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
+
                             color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
 
                             Behavior on color {
@@ -476,6 +503,7 @@ ColumnLayout {
                             }
 
                             MouseArea {
+                                id: confirmMouse
                                 anchors.fill: parent
                                 enabled: root.operational
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
