@@ -208,6 +208,7 @@ ColumnLayout {
                 model: btConnectedModel
                 delegate: Rectangle {
                     required property var modelData
+                    readonly property bool deviceBusy: NetworkService.bluetooth.isDisconnecting(modelData.address)
                     Layout.fillWidth: true
                     implicitHeight: 52
                     radius: Theme.radiusMd
@@ -281,13 +282,19 @@ ColumnLayout {
                                 }
                             }
                             enabled: root.backendOperational
-                            color: enabled ? disconnectHover.hovered ? Colors.primary : Colors.primary : Colors.surfaceContainerHighest
+                            color: {
+                                if (!enabled)
+                                    return Colors.surfaceContainerHighest;
+                                if (deviceBusy)
+                                    return Colors.surfaceContainerHighest;
+                                return disconnectHover.hovered ? Colors.primary : Colors.primary;
+                            }
                             opacity: enabled ? 1 : 0.45
 
                             Text {
                                 id: disconnectLabel
                                 anchors.centerIn: parent
-                                text: "Disconnect"
+                                text: deviceBusy ? "Disconnecting..." : "Disconnect"
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true
@@ -302,7 +309,7 @@ ColumnLayout {
                             MouseArea {
                                 id: disconnectMouse
                                 anchors.fill: parent
-                                enabled: root.backendOperational
+                                enabled: root.backendOperational && !root.deviceBusy
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: {
                                     if (!root.backendOperational)
@@ -329,6 +336,8 @@ ColumnLayout {
                 model: btPairedModel
                 delegate: Rectangle {
                     required property var modelData
+                    readonly property bool deviceBusy: NetworkService.bluetooth.isConnecting(modelData.address) || NetworkService.bluetooth.isDisconnecting(modelData.address)
+                    readonly property bool deviceBlocked: modelData.blocked
                     Layout.fillWidth: true
                     implicitHeight: 46
                     radius: Theme.radiusMd
@@ -367,13 +376,26 @@ ColumnLayout {
                             color: Colors.on_SurfaceVariant
                         }
 
-                        Text {
-                            text: modelData.name
-                            font.family: Fonts.font
-                            font.pixelSize: 11
-                            color: Colors.on_SurfaceVariant
-                            elide: Text.ElideRight
+                        ColumnLayout {
                             Layout.fillWidth: true
+                            spacing: 1
+
+                            Text {
+                                text: modelData.name
+                                font.family: Fonts.font
+                                font.pixelSize: 11
+                                color: Colors.on_SurfaceVariant
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                            }
+
+                            Text {
+                                visible: deviceBusy || deviceBlocked
+                                text: deviceBlocked ? "Blocked" : NetworkService.bluetooth.deviceStateText(modelData.address)
+                                font.family: Fonts.font
+                                font.pixelSize: 8
+                                color: deviceBlocked ? Colors.error : Colors.primary
+                            }
                         }
 
                         Rectangle {
@@ -388,8 +410,14 @@ ColumnLayout {
                                     easing.type: Easing.OutCubic
                                 }
                             }
-                            enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
-                            color: !enabled ? Colors.surfaceContainerHighest : pairedConnectHover.hovered ? Colors.primary : Colors.primaryContainer
+                            enabled: root.backendOperational && !deviceBusy && !deviceBlocked
+                            color: {
+                                if (!enabled)
+                                    return Colors.surfaceContainerHighest;
+                                if (pairedConnectHover.hovered)
+                                    return Colors.primary;
+                                return Colors.primaryContainer;
+                            }
                             opacity: enabled ? 1 : 0.45
 
                             Behavior on color {
@@ -399,13 +427,13 @@ ColumnLayout {
                             }
                             HoverHandler {
                                 id: pairedConnectHover
-                                enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
+                                enabled: root.backendOperational && !deviceBusy && !deviceBlocked
                             }
 
                             Text {
                                 id: connectLabel
                                 anchors.centerIn: parent
-                                text: NetworkService.bluetooth.isConnecting(modelData.address) ? "Connecting..." : "Connect"
+                                text: deviceBlocked ? "Blocked" : deviceBusy ? NetworkService.bluetooth.deviceStateText(modelData.address) : "Connect"
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true
@@ -415,7 +443,7 @@ ColumnLayout {
                             MouseArea {
                                 id: connectMouse
                                 anchors.fill: parent
-                                enabled: root.backendOperational && !NetworkService.bluetooth.isConnecting(modelData.address)
+                                enabled: root.backendOperational && !deviceBusy && !deviceBlocked
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: {
                                     if (!root.backendOperational)
@@ -489,6 +517,8 @@ ColumnLayout {
                 model: btAvailableModel
                 delegate: Rectangle {
                     required property var modelData
+                    readonly property bool deviceBusy: NetworkService.bluetooth.isPairing(modelData.address)
+                    readonly property bool deviceBlocked: modelData.blocked
                     Layout.fillWidth: true
                     implicitHeight: 46
                     radius: Theme.radiusMd
@@ -525,16 +555,46 @@ ColumnLayout {
                             text: "󰂯"
                             font.family: Fonts.fontM
                             font.pixelSize: 16
-                            color: Colors.on_SurfaceVariant
+                            color: deviceBusy ? Colors.primary : Colors.on_SurfaceVariant
+
+                            SequentialAnimation on opacity {
+                                running: deviceBusy
+                                loops: Animation.Infinite
+
+                                NumberAnimation {
+                                    to: 1
+                                    duration: Theme.motionNormal
+                                    easing.type: Easing.InOutSine
+                                }
+
+                                NumberAnimation {
+                                    to: 0.45
+                                    duration: Theme.motionNormal
+                                    easing.type: Easing.InOutSine
+                                }
+                            }
                         }
 
-                        Text {
-                            text: modelData.name
-                            font.family: Fonts.font
-                            font.pixelSize: 11
-                            color: Colors.on_SurfaceVariant
-                            elide: Text.ElideRight
+                        ColumnLayout {
                             Layout.fillWidth: true
+                            spacing: 1
+
+                            Text {
+                                text: modelData.name
+                                font.family: Fonts.font
+                                font.pixelSize: 11
+                                color: Colors.on_SurfaceVariant
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                            }
+
+                            Text {
+                                visible: deviceBusy || deviceBlocked
+                                text: deviceBlocked ? "Blocked" : "Pairing…"
+                                font.family: Fonts.font
+                                font.pixelSize: 8
+                                color: deviceBlocked ? Colors.error : Colors.primary
+                            }
                         }
 
                         Rectangle {
@@ -549,7 +609,7 @@ ColumnLayout {
                                     easing.type: Easing.OutCubic
                                 }
                             }
-                            enabled: root.backendOperational
+                            enabled: root.backendOperational && !deviceBlocked
                             color: !enabled ? Colors.surfaceContainerHighest : NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
                             opacity: enabled ? 1 : 0.45
                             Behavior on color {
@@ -565,7 +625,7 @@ ColumnLayout {
                             Text {
                                 id: pairLabel
                                 anchors.centerIn: parent
-                                text: NetworkService.bluetooth.isPairing(modelData.address) ? "Cancel" : "Pair"
+                                text: deviceBlocked ? "Blocked" : deviceBusy ? "Cancel" : "Pair"
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true

@@ -131,6 +131,38 @@ Singleton {
         return device?.state === BluetoothDeviceState.Connecting;
     }
 
+    function isDisconnecting(address) {
+        const device = root.devices.find(item => item.address === address);
+        return device?.state === BluetoothDeviceState.Disconnecting;
+    }
+
+    function isBusy(address) {
+        const device = root.devices.find(item => item.address === address);
+        return device?.pairing || device?.state === BluetoothDeviceState.Connecting || device?.state === BluetoothDeviceState.Disconnecting;
+    }
+
+    function deviceStateText(address) {
+        const device = root.devices.find(item => item.address === address);
+
+        if (!device)
+            return "Unavailable";
+        if (device.blocked)
+            return "Blocked";
+        if (device.pairing)
+            return "Pairing…";
+
+        switch (device.state) {
+        case BluetoothDeviceState.Connecting:
+            return "Connecting…";
+        case BluetoothDeviceState.Disconnecting:
+            return "Disconnecting…";
+        case BluetoothDeviceState.Connected:
+            return "Connected";
+        default:
+            return "Disconnected";
+        }
+    }
+
     function scan() {
         if (!root.adapter || !root.enabled)
             return;
