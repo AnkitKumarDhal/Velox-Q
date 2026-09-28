@@ -598,11 +598,14 @@ ColumnLayout {
                         }
 
                         Rectangle {
-                            width: pairLabel.implicitWidth + 18
+                            implicitWidth: pairLabel.implicitWidth + 18
+                            width: implicitWidth
+                            Layout.preferredWidth: implicitWidth
+                            Layout.minimumWidth: implicitWidth
+                            Layout.maximumWidth: implicitWidth
                             height: 24
                             radius: 12
                             scale: pairMouse.pressed ? 0.94 : 1
-
                             Behavior on scale {
                                 NumberAnimation {
                                     duration: Theme.motionFast
