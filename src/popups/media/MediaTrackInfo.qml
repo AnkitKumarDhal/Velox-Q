@@ -29,13 +29,21 @@ Item {
     }
 
     onPlayerChanged: {
-        if (!root.player)
+        if (!root.initialized)
             return;
-        loadCurrentMetadata();
-        incomingMetadata.opacity = 0;
-        incomingMetadata.x = width * 0.06;
-        currentMetadata.opacity = 1;
-        currentMetadata.x = 0;
+
+        if (!root.player) {
+            currentTitle = "Nothing Playing";
+            currentArtist = "Unknown Artist";
+            currentAlbum = "Unknown Album";
+            incomingMetadata.opacity = 0;
+            incomingMetadata.x = width * 0.06;
+            currentMetadata.opacity = 1;
+            currentMetadata.x = 0;
+            return;
+        }
+
+        animateToCurrentMetadata();
     }
 
     onTransitionKeyChanged: {

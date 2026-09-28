@@ -45,7 +45,6 @@ PanelWindow {
 
     onPlayerChanged: {
         _position = 0;
-        trackChangeToken++;
     }
 
     onVisibleChanged: {
