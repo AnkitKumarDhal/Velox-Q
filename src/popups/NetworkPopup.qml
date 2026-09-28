@@ -69,6 +69,24 @@ PanelWindow {
     }
 
     property int tabDirection: 1
+    property string previousTagKey: ""
+
+    onCurrentTabKeyChanged: {
+        if (root.currentTabKey === "")
+            return;
+
+        if (root.previousTabKey === "") {
+            root.previousTabKey = root.currentTabKey;
+            return;
+        }
+
+        if (root.previousTabKey === "wifi" && root.currentTabKey === "bluetooth")
+            root.tabDirection = 1;
+        else if (root.previousTabKey === "bluetooth" && root.currentTabKey === "wifi")
+            root.tabDirection = -1;
+
+        root.previousTabKey = root.currentTabKey;
+    }
 
     function ensureValidTab() {
         if (root.hasWifi && root.hasBluetooth) {
@@ -175,13 +193,11 @@ PanelWindow {
                     onWifiClicked: {
                         if (!root.hasWifi)
                             return;
-                        root.tabDirection = root.currentTabKey === "bluetooth" ? -1 : 1;
                         Popups.networkTab = 0;
                     }
                     onBluetoothClicked: {
                         if (!root.hasBluetooth)
                             return;
-                        root.tabDirection = root.currentTabKey === "wifi" ? 1 : -1;
                         Popups.networkTab = 1;
                     }
                 }
