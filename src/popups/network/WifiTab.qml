@@ -248,7 +248,7 @@ ColumnLayout {
 
         Rectangle {
             id: wifiScanButton
-            width: wifiScanLabel.implicitWidth + 20
+            Layout.preferredWidth: scanContent.implicitWidth + 20
             height: 28
             radius: Theme.radiusLg
             scale: wifiScanMouse.pressed ? 0.94 : 1
@@ -269,6 +269,7 @@ ColumnLayout {
             }
 
             RowLayout {
+                id: scanContent
                 anchors.centerIn: parent
                 spacing: Theme.spacingXs
 
@@ -283,7 +284,7 @@ ColumnLayout {
                         radius: 4.5
                         color: "transparent"
                         border.width: 1
-                        border.color: Colors.on_Primary
+                        border.color: wifiScanHover.hovered ? Colors.on_Primary : Colors.on_PrimaryContainer
                         opacity: 0.45
                     }
 
@@ -293,7 +294,7 @@ ColumnLayout {
                         radius: 1.25
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.top: parent.top
-                        color: Colors.on_Primary
+                        color: wifiScanHover.hovered ? Colors.on_Primary : Colors.on_PrimaryContainer
                         transformOrigin: Item.Bottom
 
                         RotationAnimation on rotation {
