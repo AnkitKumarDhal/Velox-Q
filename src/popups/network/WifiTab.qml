@@ -736,12 +736,14 @@ ColumnLayout {
                                     }
                                 }
 
-                                color: confirmHover.hovered ? Colors.primary : Colors.on_Surface
+                                color: Colors.on_Surface
 
-                                Behavior on color {
-                                    ColorAnimation {
-                                        duration: Theme.hoverFadeDuration
-                                    }
+                                InteractionFeedback {
+                                    hovered: confirmHover.hovered
+                                    pressed: confirmMouse.pressed
+                                    radius: parent.radius
+                                    active: parent.enabled
+                                    hoverColor: Colors.primary
                                 }
 
                                 HoverHandler {

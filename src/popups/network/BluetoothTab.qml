@@ -236,7 +236,7 @@ ColumnLayout {
                             leftMargin: Theme.spacingXl
                             rightMargin: Theme.spacingLg
                         }
-                        spacing: 9
+                        spacing: Theme.spacingMd
 
                         Text {
                             text: modelData.icon.includes("headphones") ? "󰋋" : modelData.icon.includes("keyboard") ? "󰌌" : modelData.icon.includes("mouse") ? "󰍽" : "󰂯"
@@ -371,7 +371,7 @@ ColumnLayout {
                             leftMargin: Theme.spacingXl
                             rightMargin: Theme.spacingLg
                         }
-                        spacing: 9
+                        spacing: Theme.spacingMd
 
                         Text {
                             text: "󰂯"
@@ -553,7 +553,7 @@ ColumnLayout {
                             rightMargin: Theme.spacingLg
                         }
 
-                        spacing: 9
+                        spacing: Theme.spacingMd
 
                         Text {
                             text: "󰂯"
