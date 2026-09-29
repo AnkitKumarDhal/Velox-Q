@@ -7,6 +7,7 @@ import Quickshell.Networking
 
 import qs.src.services
 import qs.src.theme
+import qs.src.components
 
 ColumnLayout {
     id: root
@@ -251,28 +252,71 @@ ColumnLayout {
             height: 28
             radius: Theme.radiusLg
             scale: wifiScanMouse.pressed ? 0.94 : 1
+
             Behavior on scale {
                 NumberAnimation {
                     duration: Theme.motionFast
                     easing.type: Easing.OutCubic
                 }
             }
-            color: root.operational && wifiScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest
+            color: Colors.surfaceContainerHighest
 
-            Behavior on color {
-                ColorAnimation {
-                    duration: Theme.hoverFadeDuration
-                }
+            InteractionFeedback {
+                hovered: wifiScanHover.hovered
+                pressed: wifiScanMouse.pressed
+                radius: parent.radius
+                hoverColor: Colors.primary
             }
 
-            Text {
-                id: wifiScanLabel
+            RowLayout {
                 anchors.centerIn: parent
-                text: "Scan"
-                font.family: Fonts.font
-                font.pixelSize: 10
-                font.bold: true
-                color: root.operational && wifiScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
+                spacing: Theme.spacingXs
+
+                Item {
+                    visible: NetworkService.wifiScanning
+
+                    width: 9
+                    height: 9
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 4.5
+                        color: "transparent"
+                        border.width: 1
+                        border.color: Colors.on_Primary
+                        opacity: 0.45
+                    }
+
+                    Rectangle {
+                        width: 2.5
+                        height: 4
+                        radius: 1.25
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        color: Colors.on_Primary
+                        transformOrigin: Item.Bottom
+
+                        RotationAnimation on rotation {
+                            from: 0
+                            to: 360
+                            duration: Theme.motionAmbient
+                            loops: Animation.Infinite
+                            running: NetworkService.wifiScanning
+                        }
+                    }
+                }
+
+                Text {
+                    id: wifiScanLabel
+
+                    text: NetworkService.wifiScanning ? "Scanning…" : "Scan"
+
+                    font.family: Fonts.font
+                    font.pixelSize: 10
+                    font.bold: true
+
+                    color: wifiScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
+                }
             }
 
             HoverHandler {
@@ -282,6 +326,7 @@ ColumnLayout {
 
             MouseArea {
                 id: wifiScanMouse
+
                 anchors.fill: parent
                 enabled: root.operational && NetworkService.wifiEnabled
                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -430,7 +475,7 @@ ColumnLayout {
                                     font.family: Fonts.font
                                     font.pixelSize: 9
 
-                                    color: root.connectionError.length > 0 ? Colors.error : Colors.surfaceContainerHighest
+                                    color: root.connectionError.length > 0 ? Colors.error : Colors.on_PrimaryContainer
                                 }
                             }
 
@@ -451,12 +496,13 @@ ColumnLayout {
                                     }
                                 }
 
-                                color: closeConnectHover.hovered ? Colors.surfaceContainerHighest : "transparent"
+                                color: "transparent"
 
-                                Behavior on color {
-                                    ColorAnimation {
-                                        duration: Theme.hoverFadeDuration
-                                    }
+                                InteractionFeedback {
+                                    hovered: closeConnectHover.hovered
+                                    pressed: closeConnectMouse.pressed
+                                    radius: parent.radius
+                                    hoverColor: Colors.surfaceContainerHighest
                                 }
 
                                 HoverHandler {
@@ -543,12 +589,13 @@ ColumnLayout {
                                     Layout.preferredHeight: 28
                                     radius: Theme.radiusSm
 
-                                    color: retryConnectionMouse.pressed ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, Theme.statePressedOpacity) : retryConnectionMouse.containsMouse ? Colors.primary : Colors.primaryContainer
+                                    color: Colors.primaryContainer
 
-                                    Behavior on color {
-                                        ColorAnimation {
-                                            duration: Theme.motionFast
-                                        }
+                                    InteractionFeedback {
+                                        hovered: retryConnectionMouse.containsMouse
+                                        pressed: retryConnectionMouse.pressed
+                                        radius: parent.radius
+                                        hoverColor: Colors.primary
                                     }
 
                                     Text {
@@ -594,7 +641,7 @@ ColumnLayout {
 
                         RowLayout {
                             visible: root.selectedNetworkSupportsPsk
-                            enabled: root.operational
+                            enabled: root.operational && !root.selectedNetwork?.stateChanging
                             Layout.fillWidth: true
                             spacing: Theme.spacingMd
 
@@ -643,12 +690,6 @@ ColumnLayout {
                                         font.family: Fonts.fontM
                                         font.pixelSize: 15
                                         color: passwordVisibilityHover.hovered ? Colors.primary : Colors.outline
-
-                                        Behavior on color {
-                                            ColorAnimation {
-                                                duration: Theme.hoverFadeDuration
-                                            }
-                                        }
                                     }
 
                                     MouseArea {
@@ -680,11 +721,12 @@ ColumnLayout {
                             }
 
                             Rectangle {
-                                width: 30
-                                height: 29
-                                radius: Theme.radiusSm
+                                width: 26
+                                height: 26
+                                radius: root.selectedNetwork?.stateChanging ? 15 : Theme.radiusSm
                                 opacity: root.operational ? 1 : 0.45
                                 scale: confirmMouse.pressed ? 0.94 : 1
+                                enabled: root.operational && !root.selectedNetwork?.stateChanging
 
                                 Behavior on scale {
                                     NumberAnimation {
@@ -708,10 +750,18 @@ ColumnLayout {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "󰌑"
+                                    text: root.selectedNetwork?.stateChanging ? "󰑣" : "󰌑"
                                     font.family: Fonts.font
                                     font.pixelSize: 14
                                     color: Colors.on_Primary
+                                }
+
+                                RotationAnimation on rotation {
+                                    from: 0
+                                    to: 360
+                                    duration: Theme.motionAmbient
+                                    loops: Animation.Infinite
+                                    running: root.selectedNetwork?.stateChanging ?? false
                                 }
 
                                 MouseArea {

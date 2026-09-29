@@ -152,37 +152,65 @@ Item {
         // Connection state
         Rectangle {
             visible: root.network.connected || root.network.stateChanging
-
-            width: stateLabel.implicitWidth + 16
+            width: stateContent.implicitWidth + 16
             height: 22
             radius: 11
+            color: root.network.connected && !root.network.stateChanging ? Colors.primary : Colors.surfaceContainerHighest
 
-            color: root.network.connected ? Colors.primary : Colors.surfaceContainerHighest
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Theme.motionNormal
-                    easing.type: Easing.OutCubic
-                }
-            }
-
-            Text {
-                id: stateLabel
-
+            RowLayout {
+                id: stateContent
                 anchors.centerIn: parent
-                text: {
-                    if (root.network.connected)
-                        return "Connected";
-                    if (root.network.state === ConnectionState.Disconnecting)
-                        return "Disconnecting";
-                    return "Connecting";
+                spacing: Theme.spacingXs
+
+                Item {
+                    visible: root.network.stateChanging
+                    width: 10
+                    height: 10
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 5
+                        color: "transparent"
+                        border.width: 1
+                        border.color: Colors.outline
+                        opacity: 0.45
+                    }
+
+                    Rectangle {
+                        width: 3
+                        height: 5
+                        radius: 1.5
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        color: Colors.primary
+                        transformOrigin: Item.Bottom
+
+                        RotationAnimation on rotation {
+                            from: 0
+                            to: 360
+                            duration: Theme.motionAmbient
+                            loops: Animation.Infinite
+                            running: root.network.stateChanging
+                        }
+                    }
                 }
 
-                font.family: Fonts.font
-                font.pixelSize: 9
-                font.bold: true
+                Text {
+                    id: stateLabel
 
-                color: root.network.connected ? Colors.on_Primary : Colors.on_SurfaceVariant
+                    text: {
+                        if (root.network.connected && root.network.stateChanging)
+                            return "Disconnecting…";
+                        if (root.network.stateChanging)
+                            return "Connecting…";
+                        return "Connected";
+                    }
+
+                    font.family: Fonts.font
+                    font.pixelSize: 9
+                    font.bold: true
+                    color: root.network.connected && !root.network.stateChanging ? Colors.on_Primary : Colors.on_SurfaceVariant
+                }
             }
         }
     }
