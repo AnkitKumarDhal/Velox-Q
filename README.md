@@ -789,7 +789,7 @@ The following features and improvements are planned for future development:
 
 * [x] **Dedicated System Services**: System functionality split into focused singleton services.
 
-* [ ] **Enhanced Media Player**: Continue improving the media popup with richer controls, better multi-player handling, and optional lyrics.
+* [x] **Enhanced Media Player**: Continue improving the media popup with richer controls, better multi-player handling, and optional lyrics.
 
 * [ ] **Advanced Calendar / Productivity Suite**: Expand the calendar into a broader productivity interface.
 
