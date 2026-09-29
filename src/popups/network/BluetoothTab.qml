@@ -128,19 +128,17 @@ ColumnLayout {
                 }
             }
             enabled: root.backendOperational && (NetworkService.bluetooth.operational || NetworkService.bluetooth.scanning)
-            color: {
-                if (!enabled)
-                    return Colors.surfaceContainerHighest;
-                return NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.primary : Colors.surfaceContainerHighest;
+            color: Colors.surfaceContainerHighest
+
+            InteractionFeedback {
+                hovered: btScanHover.hovered
+                pressed: bluetoothScanMouse.pressed
+                radius: parent.radius
+                active: parent.enabled
+                hoverColor: Colors.primary
             }
 
             opacity: enabled ? 1 : 0.45
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Theme.hoverFadeDuration
-                }
-            }
 
             Behavior on opacity {
                 NumberAnimation {
@@ -155,7 +153,7 @@ ColumnLayout {
                 font.family: Fonts.font
                 font.pixelSize: 10
                 font.bold: true
-                color: (root.backendOperational && (NetworkService.bluetooth.scanning || btScanHover.hovered)) ? Colors.on_Primary : Colors.on_Surface
+                color: NetworkService.bluetooth.scanning || btScanHover.hovered ? Colors.on_Primary : Colors.on_Surface
             }
 
             HoverHandler {
@@ -281,15 +279,21 @@ ColumnLayout {
                                     easing.type: Easing.OutCubic
                                 }
                             }
-                            enabled: root.backendOperational
-                            color: {
-                                if (!enabled)
-                                    return Colors.surfaceContainerHighest;
-                                if (deviceBusy)
-                                    return Colors.surfaceContainerHighest;
-                                return disconnectHover.hovered ? Colors.primary : Colors.primary;
+                            enabled: root.backendOperational && !deviceBusy
+                            color: Colors.primary
+
+                            InteractionFeedback {
+                                hovered: disconnectHover.hovered
+                                pressed: disconnectMouse.pressed
+                                radius: parent.radius
+                                active: parent.enabled
+                                hoverColor: Colors.on_Primary
+                                pressedColor: Colors.on_Primary
+                                hoverOpacity: Theme.stateHoverOpacity
+                                pressedOpacity: Theme.statePressedOpacity
                             }
-                            opacity: enabled ? 1 : 0.45
+
+                            opacity: root.backendOperational ? 1 : 0.45
 
                             Text {
                                 id: disconnectLabel
@@ -298,7 +302,7 @@ ColumnLayout {
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true
-                                color: Colors.on_Primary
+                                color: disconnectHover.hovered && !deviceBusy ? Colors.on_Primary : Colors.on_Primary
                             }
 
                             HoverHandler {
@@ -309,7 +313,7 @@ ColumnLayout {
                             MouseArea {
                                 id: disconnectMouse
                                 anchors.fill: parent
-                                enabled: root.backendOperational && !root.deviceBusy
+                                enabled: root.backendOperational && !deviceBusy
                                 cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: {
                                     if (!root.backendOperational)
@@ -411,20 +415,17 @@ ColumnLayout {
                                 }
                             }
                             enabled: root.backendOperational && !deviceBusy && !deviceBlocked
-                            color: {
-                                if (!enabled)
-                                    return Colors.surfaceContainerHighest;
-                                if (pairedConnectHover.hovered)
-                                    return Colors.primary;
-                                return Colors.primaryContainer;
-                            }
+                            color: !enabled ? Colors.surfaceContainerHighest : Colors.primaryContainer
                             opacity: enabled ? 1 : 0.45
 
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.hoverFadeDuration
-                                }
+                            InteractionFeedback {
+                                hovered: pairedConnectHover.hovered
+                                pressed: connectMouse.pressed
+                                radius: parent.radius
+                                active: parent.enabled
+                                hoverColor: Colors.primary
                             }
+
                             HoverHandler {
                                 id: pairedConnectHover
                                 enabled: root.backendOperational && !deviceBusy && !deviceBlocked
@@ -466,14 +467,17 @@ ColumnLayout {
                                 }
                             }
                             enabled: root.backendOperational
-                            color: enabled && removeHover.hovered ? Colors.errorContainer : "transparent"
+                            color: "transparent"
                             opacity: enabled ? 1 : 0.45
 
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.hoverFadeDuration
-                                }
+                            InteractionFeedback {
+                                hovered: removeHover.hovered
+                                pressed: removeMouse.pressed
+                                radius: parent.radius
+                                active: parent.enabled
+                                hoverColor: Colors.errorContainer
                             }
+
                             HoverHandler {
                                 id: removeHover
                                 enabled: root.backendOperational
@@ -613,13 +617,19 @@ ColumnLayout {
                                 }
                             }
                             enabled: root.backendOperational && !deviceBlocked
-                            color: !enabled ? Colors.surfaceContainerHighest : NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : availablePairHover.hovered ? Colors.primaryContainer : Colors.primary
+                            color: !enabled || NetworkService.bluetooth.isPairing(modelData.address) ? Colors.surfaceContainerHighest : Colors.primary
+
                             opacity: enabled ? 1 : 0.45
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.hoverFadeDuration
-                                }
+
+                            InteractionFeedback {
+                                hovered: availablePairHover.hovered
+                                pressed: pairMouse.pressed
+                                radius: parent.radius
+                                active: parent.enabled && !NetworkService.bluetooth.isPairing(modelData.address)
+                                hoverColor: Colors.primaryContainer
+                                pressedColor: Colors.primary
                             }
+
                             HoverHandler {
                                 id: availablePairHover
                                 enabled: root.backendOperational
@@ -628,7 +638,7 @@ ColumnLayout {
                             Text {
                                 id: pairLabel
                                 anchors.centerIn: parent
-                                text: deviceBlocked ? "Blocked" : deviceBusy ? "Cancel" : "Pair"
+                                text: deviceBlocked ? "Blocked" : deviceBusy ? "Cancel pairing" : "Pair"
                                 font.family: Fonts.font
                                 font.pixelSize: 9
                                 font.bold: true
@@ -670,11 +680,58 @@ ColumnLayout {
                 visible: root.backendOperational && NetworkService.bluetooth.available && !NetworkService.bluetooth.operational && (NetworkService.bluetooth.enabling || NetworkService.bluetooth.disabling || NetworkService.bluetooth.blocked || NetworkService.bluetooth.state === BluetoothAdapterState.Disabled)
                 Layout.alignment: Qt.AlignHCenter
                 text: NetworkService.bluetooth.enabling ? "Bluetooth is starting…" : NetworkService.bluetooth.disabling ? "Bluetooth is turning off…" : NetworkService.bluetooth.blocked ? "Bluetooth is blocked" : "Bluetooth is disabled"
+                opacity: NetworkService.bluetooth.powerTransitioning ? 0.55 : 1
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.motionFast
+                        easing.type: Easing.OutCubic
+                    }
+                }
                 font.family: Fonts.font
                 font.pixelSize: 10
                 color: Colors.outline
                 topPadding: 12
                 bottomPadding: 12
+            }
+
+            Rectangle {
+                visible: NetworkService.bluetooth.powerTransitioning
+
+                Layout.preferredWidth: 18
+                Layout.preferredHeight: 18
+                Layout.alignment: Qt.AlignHCenter
+
+                color: "transparent"
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 9
+                    border.width: 1
+                    border.color: Colors.outline
+                    opacity: 0.4
+                }
+
+                Rectangle {
+                    width: 3
+                    height: 7
+                    radius: 1.5
+
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+
+                    color: Colors.primary
+
+                    transformOrigin: Item.Bottom
+
+                    RotationAnimation on rotation {
+                        from: 0
+                        to: 360
+                        duration: Theme.motionAmbient
+                        loops: Animation.Infinite
+                        running: NetworkService.bluetooth.powerTransitioning
+                    }
+                }
             }
         }
     }
